@@ -2,7 +2,7 @@
     <div id="page">
         <VoiceS @recordend="recordend" @updatelen="updatelen" @updateidx="updateidx" @showbox="showbox"></VoiceS>
         <Info :len="len" :idx="idx" :record_="record"></Info>
-        <Detailbox :isshow="is_show" @closebox="closebox" :wordsrecord="words_record"></Detailbox>
+        <Detailbox :isshow="is_show" @closebox="closebox" :wordsrecord="words_record" :_type="type"></Detailbox>
     </div>
 </template>
 
@@ -10,6 +10,7 @@
 import VoiceS from "./VoiceS"
 import Info from './Info'
 import Detailbox from './Detailbox'
+
 export default {
     name: "Sentence",
     components: {
@@ -23,7 +24,8 @@ export default {
             record: [],
             len: 65536,
             is_show: false,
-            words_record: []
+            words_record: [],
+            type: "sentence"
         }
     },
     methods: {
@@ -37,9 +39,6 @@ export default {
         },
         updateidx(value) {
             this.idx = value
-        },
-        updaterecord(value) {
-            this.record = value
         },
         showbox(value){
             this.is_show = value

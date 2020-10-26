@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     unpack(item, index) {
-      return index + 1 + "." + item.word + " " + item.score;
+      return index + 1 + "." + item.content + " " + item.score;
     },
   },
 };

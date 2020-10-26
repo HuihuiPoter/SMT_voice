@@ -81,6 +81,7 @@ export default {
       sentence_content: "show sentence",
       symbol_content: "voice",
       wav_data: null,
+      sentence_set: [],
       record: [],
       idx: 0,
       len: 65536,
@@ -130,9 +131,7 @@ export default {
         self.wav_data = blob
         self.submit(blob)
       })
-      this.recording = false
-      this.$emit('recordend', {idx: this.idx, record: this.record, words_record: this.words_record})
-      this.$emit('showbox', true)
+      this.recording = false     
     },
     recSave(name) {
       try {
@@ -150,7 +149,7 @@ export default {
       let url = "http://150.158.158.190/api/pro_sen/?course_id=3";
       let self = this;
       axios.get(url).then(function (responce) {
-          console.log(responce)
+          //console.log(responce)
           self.sentence_set = responce.data.data
           self.sentence_content = self.sentence_set[self.idx].sentence_content
           self.len = self.sentence_set.length
@@ -172,7 +171,7 @@ export default {
     },
     submit(data) {
       let self = this;
-      let url = "http://150.158.158.190/api/sen_recorder/";
+      let url = "http://150.158.158.190/api/ten_sen_recorder/";
       let formData = new FormData();
       let file = new File([data], this.sentence_content, {
         type: this.wav_data.type,
@@ -186,10 +185,12 @@ export default {
           self.score = res.data.pron_total_score
           //self.sentence_content = res.data.sentence_content
           self.words_record = res.data.words_record
-          let _record = {word: self.sentence_content, score: self.score}
+          let _record = {content: self.sentence_content, score: self.score}
           if (self.idx > self.record.length - 1)
             self.record.push(_record)
           else self.record.splice(self.idx, 1, _record)
+          self.$emit('recordend', {idx: self.idx, record: self.record, words_record: self.words_record})
+          self.$emit('showbox', true)
         }).catch((err) => console.log(err))
     },
   },

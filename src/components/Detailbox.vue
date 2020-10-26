@@ -3,20 +3,14 @@
         <div id="light" class="white_content" v-show="is_show">句子评测具体信息显示.
             <a href="javascript:void(0)" @click="closebox">点这里关闭本窗口</a>
             <div v-show="is_show">
-                <span v-for="(item, index) in words_record" :key="index" :class="{redclass: words_color[index]}">{{item.word + '   '}}</span>
-                <span>I </span>
-                <span>love  </span>
-                <span>my    </span>
-                <span style="color: red;">family</span>
+                <span v-show="type === 'sentence'" v-for="(item, index) in words_record" :key="'span_s' + index" :class="{redclass: colors[index]}">{{item.word + '   '}}</span>
+                <span v-show="type === 'word'" v-for="(item, index) in phone_record" :key="'span_w' + index" :class="{redclass: colors[index]}">{{item.phone + '   '}}</span>
                 <br>
-                <span style="color: yellowgreen;">Tips: Too fast, please slow down</span>
-                <p v-for="(item, index) in words_record" :key="index">{{item.word}}----------total_score: {{item.score}} {{getComment(item.score)}}
-                    <a href="#">Click here to hear the voice of (item.word)</a>
-                </p>
-                <p>I----------------total_score: 4  --- {{getComment(4)}} <a href="#">Click here to hear the voice of (I)</a></p>
-                <p>love-------------total_score: 3  --- {{getComment(3)}} <a href="#">Click here to hear the voice of (love)</a></p>
-                <p>my---------------total_score: 2  --- {{getComment(2)}} <a href="#">Click here to hear the voice of (my)</a></p>
-                <p>family-----------total_score: 1  --- {{getComment(1)}} <a href="#">Click here to hear the voice of (family)</a></p>
+                <!-- <span style="color: yellowgreen;">Tips: Too fast, please slow down</span> -->
+                <p v-show="type === 'sentence'" v-for="(item, index) in words_record" :key="'p_s' + index">{{item.word}}----------total_score: {{item.score}} 
+                    -----{{getCommentWord(item.score)}} </p>
+                <p v-show="type === 'word'" v-for="(item, index) in words_record" :key="'p_w' + index">{{item.phone}}----------total_score: {{item.score}} 
+                    -----{{getCommentPhone(item.score)}} </p>
             </div>
         </div>
         
@@ -28,26 +22,26 @@
 export default {
     name: "Detailbox",
     props: {
+        _type: String,
         isshow: Boolean,
-        wordsrecord: Array
+        wordsrecord: Array,
+        phonerecord: Array
     },
     data(){
         return {
+            type: this._type,
             words_record: [],
+            phone_record: [],
             is_show: this.isshow,
-            sentence: "I love my family",
-            words_color: []
+            colors: []
         }
     },
     methods: {
-        toWords(){
-            this.words = this.sentence.split(' ')
-        },
         closebox(){
             this.is_show = false
             this.$emit('closebox', false)
         },
-        getComment(score){
+        getCommentWord(score){
             if (score >= 4.5)
                 return "Perfect, keep up!"
             else if (score >= 4)
@@ -59,12 +53,35 @@ export default {
             else    
                 return "Not an expected result, continue to exert yourself!"
         },
+        getCommentPhone(score){
+            if (score >= 90)
+                return "做得非常好，继续保持"
+            else if (score >= 80)
+                return "很优秀，争取做到最好"
+            else if (score >= 70)
+                return "继续加油"
+            else if (score >= 60)
+                return "还需要继续提升"
+            else 
+                return "做得不够好，需要多练习"
+        },
         getColor(){
-            for (let item of this.words_record){
-                if (item.score < 4)
-                    this.words_color.push(true)
-                else
-                    this.words_color.push(false)
+            this.colors = []
+            if (this.type == "sentence"){
+                for (let item of this.words_record){
+                    if (item.score < 4)
+                        this.colors.push(true)
+                    else
+                        this.colors.push(false)
+                }
+            }
+            else {
+                for (let item of this.phone_record){
+                    if (item.score < 80)
+                        this.colors.push(true)
+                    else
+                        this.colors.push(false)
+                }
             }
         }
     },
@@ -75,6 +92,11 @@ export default {
         },
         wordsrecord(val){
             this.words_record = val
+            this.getColor()
+            return val
+        },
+        phonerecord(val){
+            this.phone_record = val
             this.getColor()
             return val
         }

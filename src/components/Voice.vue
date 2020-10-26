@@ -87,6 +87,7 @@ export default {
       len: 65536,
       score: 0,
       recording: false,
+      phone_record:[]
     };
   },
   mounted: function(){
@@ -170,7 +171,7 @@ export default {
     },
     submit(data) {
       let self = this;
-      let url = "http://150.158.158.190/api/recorder/";
+      let url = "http://150.158.158.190/api/ten_recorder/";
       let formData = new FormData();
       let file = new File([data], this.word_content, {
         type: this.wav_data.type,
@@ -180,13 +181,16 @@ export default {
       formData.append("word_content", this.word_content);
       formData.append("word_audio", file);
       axios.post(url, formData).then(function (res) {
-          console.log(res.data.pron_total_score)
+          //console.log(res.data.pron_total_score)
           self.score = res.data.pron_total_score
-          let _record = {word: self.word_content, score: self.score}
+          self.phone_record = res.data.phone_record
+          console.log(self.phone_record)
+          let _record = {content: self.word_content, score: self.score}
           if (self.idx > self.record.length - 1)
             self.record.push(_record)
           else self.record.splice(self.idx, 1, _record)
-          //info.update(self.idx, isRecord = true)
+          self.$emit('recordend', {idx: self.idx, record: self.record, phone_record: self.phone_record})
+          self.$emit('showbox', true)
         }).catch((err) => console.log(err))
     },
   },

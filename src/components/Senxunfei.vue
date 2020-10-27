@@ -1,7 +1,7 @@
 <template>
     <div id="page">
-        <h4>句子智慧评测（腾讯）</h4>
-        <VoiceS @recordend="recordend" @updatelen="updatelen" @updateidx="updateidx" @showbox="showbox"></VoiceS>
+        <h4>句子智慧评测（讯飞）</h4>
+        <VoiceSxunfei @recordend="recordend" @updatelen="updatelen" @updateidx="updateidx" @showbox="showbox"></VoiceSxunfei>
         <Info :len="len" :idx="idx" :record_="record"></Info>
         <Detailbox :isshow="is_show" @closebox="closebox" :wordsrecord="words_record" 
         :_type="type" :seninfo="sen_info"></Detailbox>
@@ -9,14 +9,14 @@
 </template>
 
 <script>
-import VoiceS from "./VoiceS"
+import VoiceSxunfei from "./VoiceSxunfei"
 import Info from './Info'
 import Detailbox from './Detailbox'
 
 export default {
-    name: "Sentence",
+    name: "Senxunfei",
     components: {
-        VoiceS,
+        VoiceSxunfei,
         Info,
         Detailbox
     },
@@ -28,7 +28,7 @@ export default {
             is_show: false,
             words_record: [],
             sen_info:{},
-            type: "sentence"
+            type: "senxunfei"
         }
     },
     methods: {

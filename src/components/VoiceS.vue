@@ -1,17 +1,16 @@
 <template>
   <div id="test">
     <slot><p>{{ sentence_content }}</p></slot>   
-    <p>{{ "[" + symbol_content + "]" }}</p>
-    <br />
-    <span>score: {{ score }}</span>
+    <p>{{ "[" + CN_content + "]" }}</p>
+    <span>score: {{ score }}(tencent版无总分，此处总分与准确度相同)</span>
     <br />
     <button class="move" id="btnPre" @click="pre()" :disabled="idx === 0 || recording" style="vertical-align: middle">
       <span>上一个</span>
     </button>
-    <button class="record" id="btnStart" @click="recOpen(recStart)" style="margin: 1vw; vertical-align: middle">
+    <button class="record" id="btnStart" @click="recOpen(recStart)">
       <span>开始录音</span>
     </button>
-    <button class="record" id="btnEnd" @click="recStop()" style="margin: 1vw; vertical-align: middle">
+    <button class="record" id="btnEnd" @click="recStop()">
       <span>结束录音</span>
     </button>
     <button class="move" id="btnNext" @click="next()" :disabled="idx === len - 1 || recording" style="vertical-align: middle">
@@ -50,7 +49,7 @@ export default {
   data() {
     return {
       sentence_content: "show sentence",
-      symbol_content: "中文翻译",
+      CN_content: "中文翻译",
       wav_data: null,
       sentence_set: [],
       record: [],
@@ -58,7 +57,9 @@ export default {
       len: 65536,
       score: 0,
       recording: false,
-      words_record: []
+      words_record: [],
+      completion: 0,//句子完整度
+      pron_fluency: 0//句子流畅度
     };
   },
   mounted: function(){
@@ -120,10 +121,11 @@ export default {
       let url = "https://www.worith.cn/api/pro_sen/?course_id=3";
       let self = this;
       axios.get(url).then(function (responce) {
-          //console.log(responce)
+          console.log(responce)
           self.sentence_set = responce.data.data
           self.sentence_content = self.sentence_set[self.idx].sentence_content
           self.len = self.sentence_set.length
+          self.CN_content = self.sentence_set[self.idx].CN_content
           self.$emit('updatelen', self.len)
         }).catch((error) => console.log(error));
     },
@@ -131,12 +133,14 @@ export default {
       this.idx++
       this.sentence_content = this.sentence_set[this.idx].sentence_content
       this.score = 0
+      this.CN_content = this.sentence_set[this.idx].CN_content
       this.$emit('updateidx', this.idx)
     },
     pre() {
       this.idx-- 
       this.sentence_content = this.sentence_set[this.idx].sentence_content
       this.score = 0
+      this.CN_content = this.sentence_set[this.idx].CN_content
       this.$emit('updateidx', this.idx)
     },
     submit(data) {
@@ -153,13 +157,18 @@ export default {
       axios.post(url, formData).then(function (res) {
           console.log(res.data)
           self.score = res.data.pron_accuracy
+          self.completion = res.data.completion
+          self.pron_fluency = res.data.pron_fluency
+          
+          let sen_info = {accuracy: self.score, completion: self.completion, fluency: self.pron_fluency}
+          //console.log("sen", sen_info)
           //self.sentence_content = res.data.sentence_content
           self.words_record = res.data.words_record
           let _record = {content: self.sentence_content, score: self.score}
           if (self.idx > self.record.length - 1)
             self.record.push(_record)
           else self.record.splice(self.idx, 1, _record)
-          self.$emit('recordend', {idx: self.idx, record: self.record, words_record: self.words_record})
+          self.$emit('recordend', {idx: self.idx, record: self.record, words_record: self.words_record, sen_info: sen_info})
           self.$emit('showbox', true)
         }).catch((err) => console.log(err))
     },
@@ -242,7 +251,7 @@ export default {
 
 .record {
   display: inline-block;
-  padding: 15px 25px;
+  padding: 10px 12px;
   font-size: 20px;
   cursor: pointer;
   text-align: center;
@@ -253,6 +262,8 @@ export default {
   border: none;
   border-radius: 15px;
   box-shadow: 0 9px #999;
+  margin: 1vw; 
+  vertical-align: middle;
 }
 
 .record:hover {

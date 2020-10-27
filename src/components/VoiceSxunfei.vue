@@ -1,56 +1,27 @@
 <template>
   <div id="test">
-    <p>{{ word_content }}</p>
-    <p>{{ "[" + symbol_content + "]" }}</p>
+    <slot><p>{{ sentence_content }}</p></slot>   
+    <p>{{ "[" + CN_content + "]" }}</p>
     <span>score: {{ score }}</span>
     <br />
-    <button
-      class="move"
-      id="btnPre"
-      @click="pre()"
-      :disabled="idx === 0 || recording"
-      style="vertical-align: middle"
-    >
+    <button class="move" id="btnPre" @click="pre()" :disabled="idx === 0 || recording" style="vertical-align: middle">
       <span>上一个</span>
     </button>
-    <button
-      class="record"
-      id="btnStart"
-      @click="recOpen(recStart)"
-      style="margin: 1vw; vertical-align: middle"
-    >
+    <button class="record" id="btnStart" @click="recOpen(recStart)">
       <span>开始录音</span>
     </button>
-    <button
-      class="record"
-      id="btnEnd"
-      @click="recStop()"
-      style="margin: 1vw; vertical-align: middle"
-    >
+    <button class="record" id="btnEnd" @click="recStop()">
       <span>结束录音</span>
     </button>
-    <button
-      class="move"
-      id="btnNext"
-      @click="next()"
-      :disabled="idx === len - 1 || recording"
-      style="vertical-align: middle"
-    >
+    <button class="move" id="btnNext" @click="next()" :disabled="idx === len - 1 || recording" style="vertical-align: middle">
       <span>下一个</span>
     </button>
     <br />
     <!-- <button @click="getPermission()" style="margin:1vw;">获取权限</button> -->
-    <button
-      class="record"
-      @click="recSave(word_content)"
-      style="margin: 1vw; vertical-align: middle"
-    >
+    <button class="record" @click="recSave(sentence_content)" style="margin: 1vw; vertical-align: middle">
       <span>下载录音</span>
     </button>
-    <div
-      id="wave"
-      style="width: 100%; height: 200px; border: 1px solid black"
-    ></div>
+    <div id="wave" style="width: 100%; height: 200px; border: 1px solid black"></div>
   </div>
 </template>
 
@@ -77,16 +48,19 @@ export default {
   name: "Voice",
   data() {
     return {
-      word_content: "show word",
-      symbol_content: "show symbol",
+      sentence_content: "show sentence",
+      CN_content: "中文翻译",
       wav_data: null,
+      sentence_set: [],
       record: [],
-      word_set: null,
       idx: 0,
       len: 65536,
       score: 0,
       recording: false,
-      phone_record:[]
+      words_record: [],
+      standard: 0, //句子标准分
+      integrity: 0, //句子完整度
+      accuracy: 0 //句子准确度
     };
   },
   mounted: function(){
@@ -122,6 +96,7 @@ export default {
     /**结束录音**/
     recStop() {
       let self = this
+      //this.$emit('showbox', true)
       rec.stop(function (blob, duration) {
         console.log(blob,window.URL.createObjectURL(blob),"时长:" + duration + "ms")
         rec.close() //释放录音资源，当然可以不释放，后面可以连续调用start；但不释放时系统或浏览器会一直提示在录音，最佳操作是录完就close掉
@@ -129,8 +104,7 @@ export default {
         self.wav_data = blob
         self.submit(blob)
       })
-      this.recording = false
-      this.$emit('recordend', {idx: this.idx, record: this.record})
+      this.recording = false     
     },
     recSave(name) {
       try {
@@ -145,50 +119,58 @@ export default {
       }
     },
     requestData() {
-      let url = "https://www.worith.cn/api/pro_word/?course_id=1";
+      let url = "https://www.worith.cn/api/pro_sen/?course_id=3";
       let self = this;
       axios.get(url).then(function (responce) {
-          console.log(responce);
-          self.word_set = responce.data.data;
-          self.word_content = self.word_set[self.idx].word_content;
-          self.len = self.word_set.length;
+          console.log(responce)
+          self.sentence_set = responce.data.data
+          self.sentence_content = self.sentence_set[self.idx].sentence_content
+          self.len = self.sentence_set.length
+          self.CN_content = self.sentence_set[self.idx].CN_content
           self.$emit('updatelen', self.len)
-          //console.log(self.len)
         }).catch((error) => console.log(error));
     },
     next() {
       this.idx++
-      this.word_content = this.word_set[this.idx].word_content
+      this.sentence_content = this.sentence_set[this.idx].sentence_content
       this.score = 0
+      this.CN_content = this.sentence_set[this.idx].CN_content
       this.$emit('updateidx', this.idx)
     },
     pre() {
       this.idx-- 
-      this.word_content = this.word_set[this.idx].word_content
+      this.sentence_content = this.sentence_set[this.idx].sentence_content
       this.score = 0
+      this.CN_content = this.sentence_set[this.idx].CN_content
       this.$emit('updateidx', this.idx)
     },
     submit(data) {
       let self = this;
-      let url = "https://www.worith.cn/api/ten_recorder/";
+      let url = "https://www.worith.cn/api/sen_recorder/";
       let formData = new FormData();
-      let file = new File([data], this.word_content, {
+      let file = new File([data], this.sentence_content, {
         type: this.wav_data.type,
         lastModified: Date.now(),
       });
       console.log(file);
-      formData.append("word_content", this.word_content);
-      formData.append("word_audio", file);
+      formData.append("sentence_content", this.sentence_content);
+      formData.append("sentence_audio", file);
       axios.post(url, formData).then(function (res) {
-          //console.log(res.data.pron_total_score)
-          self.score = res.data.pron_total_score
-          self.phone_record = res.data.phone_record
           console.log(res.data)
-          let _record = {content: self.word_content, score: self.score}
+          self.score = res.data.pron_total_score
+          self.standard = res.data.standard_score
+          self.integrity = res.data.integrity_score
+          self.accuracy = res.data.accuracy_score
+          
+          let sen_info = {accuracy: self.accuracy, integrity: self.integrity, standard: self.standard}
+          //console.log("sen", sen_info)
+          //self.sentence_content = res.data.sentence_content
+          self.words_record = res.data.words_record
+          let _record = {content: self.sentence_content, score: self.score}
           if (self.idx > self.record.length - 1)
             self.record.push(_record)
           else self.record.splice(self.idx, 1, _record)
-          self.$emit('recordend', {idx: self.idx, record: self.record, phone_record: self.phone_record})
+          self.$emit('recordend', {idx: self.idx, record: self.record, words_record: self.words_record, sen_info: sen_info})
           self.$emit('showbox', true)
         }).catch((err) => console.log(err))
     },
@@ -282,6 +264,8 @@ export default {
   border: none;
   border-radius: 15px;
   box-shadow: 0 9px #999;
+  margin: 1vw; 
+  vertical-align: middle;
 }
 
 .record:hover {

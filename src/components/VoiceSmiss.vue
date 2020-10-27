@@ -3,7 +3,6 @@
     <p><span v-for="(item, index) in words" :key="'span_show' + index" :style="words_show[index]">{{item}}   </span></p>   
     <p>请根据中文翻译用英文读出整个句子: </p>
     <p>Translation: {{ CN_content }}</p>
-    <br />
     <span>Sentence score: {{ score }}</span>
     <br />
     <button class="move" id="btnPre" @click="pre()" :disabled="idx === 0 || recording" style="vertical-align: middle">
@@ -271,7 +270,7 @@ export default {
 
 .record {
   display: inline-block;
-  padding: 15px 25px;
+  padding: 10px 12px;
   font-size: 20px;
   cursor: pointer;
   text-align: center;

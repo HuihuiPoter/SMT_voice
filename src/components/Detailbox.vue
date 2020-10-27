@@ -1,6 +1,8 @@
 <template>
     <div id="box">
-        <div id="light" class="white_content" v-show="is_show">句子评测具体信息显示.
+        <div id="light" class="white_content" v-show="is_show">
+            <span v-show="type === 'word'">单词评测具体信息。</span>
+            <span v-show="type === 'sentence'">句子评测具体信息。</span>
             <a href="javascript:void(0)" @click="closebox">点这里关闭本窗口</a>
             <div v-show="is_show">
                 <span v-show="type === 'sentence'" v-for="(item, index) in words_record" :key="'span_s' + index" :class="{redclass: colors[index]}">{{item.word + '   '}}</span>
@@ -9,7 +11,7 @@
                 <!-- <span style="color: yellowgreen;">Tips: Too fast, please slow down</span> -->
                 <p v-show="type === 'sentence'" v-for="(item, index) in words_record" :key="'p_s' + index">{{item.word}}----------total_score: {{item.score}} 
                     -----{{getCommentWord(item.score)}} </p>
-                <p v-show="type === 'word'" v-for="(item, index) in words_record" :key="'p_w' + index">{{item.phone}}----------total_score: {{item.score}} 
+                <p v-show="type === 'word'" v-for="(item, index) in phone_record" :key="'p_w' + index">{{item.phone}}----------total_score: {{item.score}} 
                     -----{{getCommentPhone(item.score)}} </p>
             </div>
         </div>

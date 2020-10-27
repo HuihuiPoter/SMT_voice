@@ -146,7 +146,7 @@ export default {
       }
     },
     requestData() {
-      let url = "http://150.158.158.190/api/pro_word/?course_id=1";
+      let url = "https://www.worith.cn/api/pro_word/?course_id=1";
       let self = this;
       axios.get(url).then(function (responce) {
           console.log(responce);
@@ -171,7 +171,7 @@ export default {
     },
     submit(data) {
       let self = this;
-      let url = "http://150.158.158.190/api/ten_recorder/";
+      let url = "https://www.worith.cn/api/ten_recorder/";
       let formData = new FormData();
       let file = new File([data], this.word_content, {
         type: this.wav_data.type,

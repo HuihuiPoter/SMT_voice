@@ -1,9 +1,10 @@
 <template>
   <div id="test">
-    <slot><p>{{ sentence_content }}</p></slot>   
-    <p>{{ "[" + symbol_content + "]" }}</p>
+    <p><span v-for="(item, index) in words" :key="'span_show' + index" :style="words_show[index]">{{item}}   </span></p>   
+    <p>请根据中文翻译用英文读出整个句子: </p>
+    <p>Translation: {{ CN_content }}</p>
     <br />
-    <span>score: {{ score }}</span>
+    <span>Sentence score: {{ score }}</span>
     <br />
     <button class="move" id="btnPre" @click="pre()" :disabled="idx === 0 || recording" style="vertical-align: middle">
       <span>上一个</span>
@@ -50,15 +51,19 @@ export default {
   data() {
     return {
       sentence_content: "show sentence",
-      symbol_content: "中文翻译",
+      //symbol_content: "voice",
       wav_data: null,
       sentence_set: [],
       record: [],
-      idx: 0,
+      idx: 0, //当前单词位置
       len: 65536,
       score: 0,
       recording: false,
-      words_record: []
+      words_record: [], 
+      words: [], //句子切割后的单词
+      miss_idx: -1,//标志空缺单词位置
+      CN_content: "中文翻译",
+      words_show: [] //指示单词显示
     };
   },
   mounted: function(){
@@ -120,22 +125,41 @@ export default {
       let url = "https://www.worith.cn/api/pro_sen/?course_id=3";
       let self = this;
       axios.get(url).then(function (responce) {
-          //console.log(responce)
+          console.log(responce)
           self.sentence_set = responce.data.data
           self.sentence_content = self.sentence_set[self.idx].sentence_content
           self.len = self.sentence_set.length
+          self.miss_idx = self.sentence_set[self.idx].miss_idx
+          self.CN_content = self.sentence_set[self.idx].CN_content
+          self.words = self.sentence_content.split(' ')
+          self.words_show = []
+          for (let i in self.words){
+              if (i == self.miss_idx)
+                self.words_show.push({color: 'black', opacity: 0})
+              else 
+                self.words_show.push({color: 'black', opacity: 1})
+          }
           self.$emit('updatelen', self.len)
         }).catch((error) => console.log(error));
     },
     next() {
       this.idx++
       this.sentence_content = this.sentence_set[this.idx].sentence_content
+      console.log(this.sentence_content)
+      this.miss_idx = this.sentence_set[this.idx].miss_idx
+      this.CN_content = this.sentence_set[this.idx].CN_content
+      this.words = this.sentence_content.split(' ')
+      this.words_show.splice(this.miss_idx, 1, {color: 'black', opacity: '0'})
       this.score = 0
       this.$emit('updateidx', this.idx)
     },
     pre() {
       this.idx-- 
       this.sentence_content = this.sentence_set[this.idx].sentence_content
+      this.miss_idx = this.sentence_set[this.idx].miss_idx
+      this.CN_content = this.sentence_set[this.idx].CN_content
+      this.words = this.sentence_content.split(' ')
+      this.words_show.splice(this.miss_idx, 1, {color: 'black', opacity: '0'})
       this.score = 0
       this.$emit('updateidx', this.idx)
     },
@@ -155,7 +179,12 @@ export default {
           self.score = res.data.pron_accuracy
           //self.sentence_content = res.data.sentence_content
           self.words_record = res.data.words_record
-          let _record = {content: self.sentence_content, score: self.score}
+          if (self.words_record[self.miss_idx].score >= 80)
+            self.words_show.splice(self.miss_idx, 1, {color: 'green', opacity: '1'})
+          else
+            self.words_show.splice(self.miss_idx, 1, {color: 'red', opacity: '1'})
+          console.log(self.words_show)
+          let _record = {content: self.words_record[self.miss_idx].word, score: self.words_record[self.miss_idx].score}
           if (self.idx > self.record.length - 1)
             self.record.push(_record)
           else self.record.splice(self.idx, 1, _record)

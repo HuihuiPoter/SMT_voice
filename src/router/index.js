@@ -1,8 +1,9 @@
+import Vue from 'vue'
 import VueRouter from "vue-router"
 import Word from '../components/Word'
 import Show from '../components/Show'
 import Sentence from '../components/Sentence'
-import Vue from 'vue'
+import Sentencemiss from '../components/Sentencemiss'
 
 //Vue.use()安装插件
 Vue.use(VueRouter)
@@ -20,11 +21,15 @@ const routes = [
     {
         path: "/sentence",
         component: Sentence
-    }  
+    },
+    {
+        path: "/sentence_miss",
+        component: Sentencemiss
+    }
 ]
 const router = new VueRouter({
     routes,
-    mode: "history"
+    mode: "hash"
 })
 
 export default router

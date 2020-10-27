@@ -123,7 +123,7 @@ export default {
         getColor(record){
             this.colors = []  
             for (let item of record){
-                if ((item.score < 80 && this.type == "sentence") || (item.score <= 4 && this.type == "senxunfei"))
+                if ((item.score < 80 && (this.type == "sentence" || this.type == "word")) || (item.score <= 4 && this.type == "senxunfei"))
                     this.colors.push(true)
                 else
                     this.colors.push(false)

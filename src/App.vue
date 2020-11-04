@@ -1,28 +1,24 @@
 <template>
   <div id="app">
-    <Head></Head>
-    <Navbar></Navbar>
-    <!-- <Show></Show> -->
-    <!-- <Word></Word> -->
-    
+    <login v-if="$store.state.loginState"></login>
+    <div v-else>
+      <Head></Head>
+      <Navbar></Navbar>
+    </div>   
   </div>
 </template>
 
 <script>
 import Head from "./components/Head"
 import Navbar from "./components/Navbar"
-// import Show from "./components/Show"
-// import Word from './components/Word'
-
+import login from './components/Login/login'
 
 export default {
   name: 'App',
-  //template: <Head/>,
   components: {
     Head,
     Navbar,
-    // Word
-    // Show
+    login
   }
 }
 </script>

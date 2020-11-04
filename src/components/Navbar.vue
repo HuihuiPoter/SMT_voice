@@ -2,10 +2,10 @@
   <div id="navigation">
     <ul id="ul_bar">
       <!-- <li><a href="#" @click="wordClick">单词智慧评测</a></li> -->
-      <li><router-link to="/word">单词智慧评测(tecent)</router-link></li>
-      <li><router-link to="/sentence">句子智慧评测(tecent)</router-link></li>
+      <li><router-link to="/word">单词智慧评测(tencent)</router-link></li>
+      <li><router-link to="/sentence">句子智慧评测(tencent)</router-link></li>
       <li><router-link to="/sen_xunfei">句子智慧评测(讯飞)</router-link></li>
-      <li><router-link to="/sentence_miss">填句智慧评测(tecent)</router-link></li>
+      <li><router-link to="/sentence_miss">填句智慧评测(tencent)</router-link></li>
     </ul>
   <router-view></router-view>
   </div>

@@ -30,7 +30,7 @@
   <el-button type="primary" @click="submitForm()">登录</el-button>
   </div>
  </el-form-item>
- <p style="font-size:12px;line-height:30px;color:black;">Tips : 请输入账号密码登陆</p>
+ <p style="font-size:12px;line-height:30px;color:black;">Tips : 请输入账号密码登陆  admin  123456</p>
  </el-form>
   </div>
 </template>
@@ -81,9 +81,11 @@ export default {
       }
   },
   methods: {
-      submitForm(str){
-          console.log(str)
-          this.$store.commit('loginMain')
+      submitForm(e){
+          console.log(e)
+          if (this.ruleForm.username == 'admin' && this.ruleForm.password == '123456')
+            this.$store.commit('loginMain')
+          else alert("账号密码输入错误")       
       },
       randomNum (min, max) {
           return Math.floor(Math.random() * (max - min) + min)

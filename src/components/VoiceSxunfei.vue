@@ -21,6 +21,9 @@
     <button class="record" @click="recSave(sentence_content)" style="margin: 1vw; vertical-align: middle">
       <span>下载录音</span>
     </button>
+    <button class="record" @click="export_csv(csv_str, '句子评测(Xunfei)')" style="margin: 1vw; vertical-align: middle">
+      <span>下载评测记录{{count}}</span>
+    </button>
     <div id="wave" style="width: 100%; height: 200px; border: 1px solid black"></div>
   </div>
 </template>
@@ -60,7 +63,10 @@ export default {
       words_record: [],
       standard: 0, //句子标准分
       integrity: 0, //句子完整度
-      accuracy: 0 //句子准确度
+      accuracy: 0, //句子准确度
+      fluency: 0, //句子流畅度
+      csv_str: '题目序号,句子,准确度,完整度,流畅度,标准度,总分=(0.5*准确度+0.3*流畅度+0.2*标准度)*完整度\n',
+      count: 0
     };
   },
   mounted: function(){
@@ -161,8 +167,11 @@ export default {
           self.standard = res.data.standard_score
           self.integrity = res.data.integrity_score
           self.accuracy = res.data.accuracy_score
-          
-          let sen_info = {accuracy: self.accuracy, integrity: self.integrity, standard: self.standard}
+          self.fluency = res.data.fluency_score
+          let sen_info = {accuracy: self.accuracy, integrity: self.integrity, standard: self.standard, fluency: self.fluency}
+          self.csv_str = self.csv_str + (self.idx + 1) + ',' + self.sentence_content + ',' + self.accuracy + ',' + self.integrity
+           + ',' + self.fluency + ',' + self.standard + ',' + self.score + '\n'
+          self.count++
           //console.log("sen", sen_info)
           //self.sentence_content = res.data.sentence_content
           self.words_record = res.data.words_record
@@ -174,6 +183,16 @@ export default {
           self.$emit('showbox', true)
         }).catch((err) => console.log(err))
     },
+    export_csv(data, name){
+       // “\ufeff” BOM头
+        let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(data);
+        let downloadLink = document.createElement("a");
+        downloadLink.href = uri;
+        downloadLink.download = (name+".csv")||"temp.csv";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
   },
 }
 

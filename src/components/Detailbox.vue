@@ -21,6 +21,8 @@
                     <span>准确度：{{sen_info.accuracy}} / 5------{{getAccX()}}</span>
                     <br>
                     <span>标准度：{{sen_info.standard}} / 5------{{getStdX()}}</span>
+                    <br>
+                    <span>流畅度：{{sen_info.fluency}} / 5------{{getFluX()}}</span>
                 </p>
                 <p v-show="type === 'sentence' || type === 'senxunfei'" v-for="(item, index) in words_record" :key="'p_s' + index">{{item.word}}----------total_score: {{item.score}} 
                     -----{{getCommentWord(item.score)}} </p>
@@ -115,10 +117,16 @@ export default {
                 return "句子未能完整读完"
         },
         getStdX(){
-            if (this.sen_info.fluency >= 4)
+            if (this.sen_info.standard >= 4)
                 return "发音标准，与原音相近"
             else 
                 return "发音不够标准，继续加油"
+        },
+        getFluX(){
+            if (this.sen_info.fluency >= 4)
+                return "发音流畅，与原音相近"
+            else 
+                return "发音不够流畅，继续加油"
         },
         getColor(record){
             this.colors = []  

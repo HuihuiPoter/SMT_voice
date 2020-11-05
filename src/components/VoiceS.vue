@@ -21,6 +21,9 @@
     <button class="record" @click="recSave(sentence_content)" style="margin: 1vw; vertical-align: middle">
       <span>下载录音</span>
     </button>
+    <button class="record" @click="export_csv(csv_str, '句子评测(Tencent)')" style="margin: 1vw; vertical-align: middle">
+      <span>下载评测记录{{count}}</span>
+    </button>
     <div id="wave" style="width: 100%; height: 200px; border: 1px solid black"></div>
   </div>
 </template>
@@ -59,12 +62,15 @@ export default {
       recording: false,
       words_record: [],
       completion: 0,//句子完整度
-      pron_fluency: 0//句子流畅度
+      pron_fluency: 0,//句子流畅度
+      csv_str: '题目序号,句子,准确度,完整度,流畅度\n',
+      count: 0
     };
   },
   mounted: function(){
     this.requestData()
   },
+  
   methods: {
     recOpen(success) {
       //一般在显示出录音按钮或相关的录音界面时进行此方法调用，后面用户点击开始录音时就能畅通无阻了
@@ -161,6 +167,8 @@ export default {
           self.pron_fluency = res.data.pron_fluency
           
           let sen_info = {accuracy: self.score, completion: self.completion, fluency: self.pron_fluency}
+          self.csv_str = self.csv_str + (self.idx + 1) + ',' + self.sentence_content + ',' + sen_info.accuracy + ',' + sen_info.completion + ',' + sen_info.fluency + '\n'
+          self.count++
           //console.log("sen", sen_info)
           //self.sentence_content = res.data.sentence_content
           self.words_record = res.data.words_record
@@ -172,6 +180,16 @@ export default {
           self.$emit('showbox', true)
         }).catch((err) => console.log(err))
     },
+    export_csv(data, name){
+       // “\ufeff” BOM头
+        let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(data);
+        let downloadLink = document.createElement("a");
+        downloadLink.href = uri;
+        downloadLink.download = (name+".csv")||"temp.csv";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
   },
 }
 

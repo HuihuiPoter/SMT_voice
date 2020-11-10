@@ -16,6 +16,10 @@ const routes = [
         component: Show
     },
     {
+        path: "/show",
+        component: Show
+    },
+    {
         path: "/word",
         component: Word
     },

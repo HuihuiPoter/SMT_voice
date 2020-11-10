@@ -5,9 +5,10 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-        user_name: "",
+        username: "小平",
         password: "",
-        loginState: true        
+        loginState: false,
+        base_color: "rgba(10, 194, 126, 1)"       
     },
     mutations: {
         loginMain(state){

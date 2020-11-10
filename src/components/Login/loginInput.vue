@@ -2,12 +2,12 @@
   <div id="div_form">
        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
  <el-form-item prop="username">
-  <el-input v-model="ruleForm.username" placeholder="账号">
+  <el-input v-model="ruleForm.username" placeholder="账号" clearable>
   <i slot="prepend" class="el-icon-s-custom"/>
   </el-input>
  </el-form-item>
  <el-form-item prop="password">
-  <el-input type="password" placeholder="密码" v-model="ruleForm.password">
+  <el-input type="password" placeholder="密码" v-model="ruleForm.password" clearable>
   <i slot="prepend" class="el-icon-lock"/>
   </el-input>
  </el-form-item>
@@ -15,7 +15,7 @@
   <el-row :span="24">
   <el-col :span="12">
   <el-input v-model="ruleForm.code" auto-complete="off" placeholder="请输入验证码" size=""
-   @keyup.enter.native="submitForm('ruleForm')"></el-input>
+   @keyup.enter.native="submitForm('ruleForm')" clearable></el-input>
   </el-col>
   <el-col :span="12">
   <div class="login-code" @click="refreshCode">

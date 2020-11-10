@@ -2,6 +2,7 @@
   <div id="navigation">
     <ul id="ul_bar">
       <!-- <li><a href="#" @click="wordClick">单词智慧评测</a></li> -->
+      <li><router-link to="/show">首页</router-link></li>
       <li><router-link to="/word">单词智慧评测(tencent)</router-link></li>
       <li><router-link to="/sentence">句子智慧评测(tencent)</router-link></li>
       <li><router-link to="/sen_xunfei">句子智慧评测(讯飞)</router-link></li>
@@ -27,7 +28,7 @@ export default {
   margin: 0;
   padding: 0;
   width: 130px;
-  /* background-color: #f1f1f1; */
+  background-color: #f1f1f1;
   height: 100%; /* 全屏高度 */
   position: fixed;
   overflow: auto; /*如果导航栏选项多，允许滚动 */

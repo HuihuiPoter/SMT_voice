@@ -24,11 +24,11 @@ export default {
 </script>
 
 <style>
-body {
+/* body {
   background: url(./assets/img_flwr.gif), url(./assets/sky.jpg);
   background-position: right bottom, left top;
   background-repeat: no-repeat;
   padding: 10px;
   background-size:200px 150px, 100%;        
-  }
+  } */
 </style>

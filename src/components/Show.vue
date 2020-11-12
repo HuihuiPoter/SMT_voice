@@ -35,9 +35,10 @@ export default {
 <style>
     #div_show{
         border: grey;
-        margin-left:25%;
+        margin-left:5%;
+        margin-top: 5%;
         padding:1px 16px;
-        height:1000px;
+        /* height:1000px; */
     }
     .box_card{
         width: 250px;

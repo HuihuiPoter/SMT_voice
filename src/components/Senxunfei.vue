@@ -1,6 +1,6 @@
 <template>
     <div id="page">
-        <h4>句子智慧评测（讯飞）</h4>
+        <!-- <h4>句子智慧评测（讯飞）</h4> -->
         <VoiceSxunfei @recordend="recordend" @updatelen="updatelen" @updateidx="updateidx" @showbox="showbox"></VoiceSxunfei>
         <Info :len="len" :idx="idx" :record_="record"></Info>
         <Detailbox :isshow="is_show" @closebox="closebox" :wordsrecord="words_record" 
@@ -56,10 +56,10 @@ export default {
 </script>
 
 <style>
-    #page{
+    /* #page{
         position: absolute;
         width: 100%;
         left: 160px;
         top: 100px;
-    }
+    } */
 </style>

@@ -9,7 +9,7 @@
                     <div class="block" style="margin-top: 20px">完成度</div>
                 </el-col>
                 <el-col :span="12" :offset="0">
-                    <el-progress type="circle" :percentage="percentage" :width="60"></el-progress>
+                    <el-progress type="circle" :percentage="percentage" :width="60" :color="$store.state.base_color"></el-progress>
                 </el-col>
             </el-row>
             

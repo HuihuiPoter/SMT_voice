@@ -13,7 +13,7 @@
         </el-row>
         <br>
         <el-row :gutter="20">
-            <el-col :span="10" :offset="0"><Unitprogress><span>自然拼读</span></Unitprogress></el-col>
+            <el-col :span="10" :offset="0"><Unitprogress :_page="'spelling'"><span>自然拼读</span></Unitprogress></el-col>
             <el-col :span="10" :offset="0"><Unitprogress><span>模板对话</span></Unitprogress></el-col>
         </el-row>      
     </div>

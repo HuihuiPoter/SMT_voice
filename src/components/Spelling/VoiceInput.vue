@@ -10,7 +10,7 @@
             </el-col>
             <el-col :span="4" :offset="2">
                 <div>
-                    <h4>{{word_list.join('-')}}</h4>
+                    <h4>{{word_list[idx].content}}</h4>
                     <h4>{{score_list.join('-')}}</h4>
                 </div>
                 
@@ -20,6 +20,10 @@
                     <h3>剩余时间：{{counter}}</h3>
                 </div>            
             </el-col>
+            <el-col :span="4" :offset="2">
+                <Table :_record="record"></Table>
+            </el-col>
+            
         </el-row>
         <el-row :gutter="20" style="margin-top: 8%">
             <el-col :span="4" :offset="8">
@@ -32,7 +36,9 @@
 
 <script>
 import Recorder from 'js-audio-recorder'
-// import axios from "axios"
+import axios from "axios"
+
+import Table from '../Table'
 
 let recorder = new Recorder({
     sampleBits: 16,                 // 采样位数，支持 8 或 16，默认是16
@@ -43,73 +49,138 @@ let recorder = new Recorder({
 
 export default {
     name: 'VoiceInput',
+    components: {
+        Table
+    },
     data() {
         return {
-            word_list: ['b', 'b', 'boy'],
+            word_list: [{content: '', id: 0}],
             score_list: [0, 0, 0],
             counter: 5,
             idx: 0,
-            len: 3,
-            recording: false
+            len: 0,
+            recording: false,
+            blob: null,
+            record: []
         }
     },
     mounted: function() {
+        this.requestData()
         // this.recStart()
         // this.dec()
     },
     methods: {
         recStart() {
             recorder.start().then(() => {
-
-            }, error => {
-                console.log(`${error.name} : ${error.message}`)
+                if (!this.recording){
+                    console.log('测试完毕')
+                    this.$message({
+                        message: '已完成测试',
+                        type: 'success'
+                    })
+                    return
+                }
+                this.dec()
+            }).catch((error) => {
+                //console.log(`${error.name} : ${error.message}`)
+                console.log(error)
             })
         },
         recStop() {
-            let blob = recorder.getWAVBlob()
-            console.log(blob)
+            this.blob = recorder.getWAVBlob()
+            console.log(this.blob)
         },
         next() {
             console.log("下一题")
+            this.idx++
         },
         dec() {           
-            if (this.counter < 0){
+            // if (this.counter < 0){
+            //     this.recStop()
+                
+            //     if (this.idx >= this.len - 1){
+            //         console.log('测试完毕')
+            //         this.idx = this.len - 1
+            //         this.counter = 0
+            //         this.recording = false
+            //         this.$message({
+            //             message: '已完成测试',
+            //             type: 'success'
+            //         })
+            //         return
+            //     }
+            //     this.next()
+            //     this.counter = 5
+            // }
+            if (this.counter <= 0){
                 this.recStop()
-                this.idx++
-                if (this.idx >= this.len){
-                    console.log('测试完毕')
-                    this.idx--
-                    this.counter = 0
-                    return
-                }
-                this.counter = 5
+                this.submit().then(() => {
+                    this.recStart()
+                })
+                return
             }  
             new Promise ((resolve) => {
                 setTimeout(() => {
                     this.counter--
                     resolve()
                 }, 1000)
-            }).then (this.dec)                          
-            // setTimeout(() => {
-            //     this.counter--            
-            //     this.dec()                                     
-            // }, 1000)                    
+            }).then(this.dec)                                              
         },
         testStart() {
+            let msg = this.recording?'结束测试':'开始测试'
+            if (!this.recording){
+                this.$notify({
+                    title: '提示',
+                    message: '你每道题有5秒钟的时间来思考并回答问题'
+                })
+            }
             this.recording = !this.recording
+            this.$message({
+                message: msg,
+                type: 'warning'
+            })
             if (!this.recording){
                 this.recStop()
                 return
             }                      
-            this.recStart()
-            // new Promise((resolve) => {
-            //     this.dec()
-            //     resolve()
-            // }).then(() => {
-            //     this.idx++
-            //     this.counter = 5
-            // })
-            this.dec()             
+            this.recStart()          
+        },
+        requestData() {
+            let url = "https://www.worith.cn/api/pro_spell/?course_id=1"
+            let self = this
+            axios.get(url).then(function (responce) {
+                console.log(responce)
+                self.word_list = responce.data.data
+                self.len = self.word_list.length
+            }).catch((error) => console.log(error))
+        },
+        submit() {
+            let self = this
+            let url = 'https://www.worith.cn/api/spell_eva'
+            let form_data = new FormData()
+            form_data.append("spell_audio", new File([this.blob], this.word_list[this.idx], {
+                type: this.blob.type
+            }))
+            form_data.append("spell_content", this.word_list[this.idx].content)
+            axios.post(url, form_data).then((res) => {
+                console.log(res.data.data)
+                self.score_list = res.data.data
+                self.record.push({
+                    words: self.word_list[self.idx].content,
+                    scores: self.score_list.join('-')
+                })
+            }).catch((err) => console.log(err))
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    if (this.idx < this.len - 1){
+                        this.next()
+                        this.counter = 5                
+                    }
+                    else this.recording = false
+                    resolve()
+                }, 3000)
+                
+            })
         }
     }
 }

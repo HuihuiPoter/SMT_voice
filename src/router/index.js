@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import VueRouter from "vue-router"
-import Word from '../components/Word'
-import Show from '../components/Show'
-import Sentence from '../components/Sentence'
-import Sentencemiss from '../components/Sentencemiss'
-import Senxunfei from '../components/Senxunfei'
 
-import Spelling from '../components/Spelling/Spelling'
+const Login = () => import('../components/Login/login')
+const Show = () => import('../components/Show')
+const Word = () => import('../components/Word')
+const Sentence = () => import('../components/Sentence')
+const Sentencemiss = () => import('../components/Sentencemiss')
+const Senxunfei = () => import('../components/Senxunfei')
+const Spelling = () => import('../components/Spelling/Spelling')
+const Main = () => import('../components/Main')
 
 //Vue.use()安装插件
 Vue.use(VueRouter)
@@ -14,8 +16,13 @@ Vue.use(VueRouter)
 //创建对象
 const routes = [
     {
-        path: "",
-        component: Show
+        path: "/",
+        //component: () => import('../components/Login/login')
+        redirect: '/login'
+    },
+    {
+        path: "/login",
+        component: Login
     },
     {
         path: "/show",
@@ -40,6 +47,36 @@ const routes = [
     {
         path: "/spelling",
         component: Spelling
+    },
+    {
+        path: "/main",
+        component: Main,
+        children: [
+            {
+                path:'',
+                redirect: 'show'
+            },
+            {
+                path: 'show',
+                component: Show 
+            },
+            {
+                path: 'word',
+                component: Word
+            },
+            {
+                path: 'sen_xunfei',
+                component: Senxunfei 
+            },
+            {
+                path: 'sentence_miss',
+                component: Sentencemiss 
+            },
+            {
+                path: 'spelling',
+                component: Spelling 
+            },
+        ]
     }
 ]
 const router = new VueRouter({

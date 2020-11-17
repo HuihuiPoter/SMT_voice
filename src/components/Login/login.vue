@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="div_login">
         <!-- <loginUI/> -->
         <loginInput/>      
     </div>
@@ -17,3 +17,13 @@ export default {
     },
 }
 </script>
+
+<style>
+#div_login{
+    background: url(../../assets/sky.jpg);
+  /* background-position: left top; */
+  /* background-size:100%; */
+  background-size: cover;
+  padding: 25%;
+}
+</style>

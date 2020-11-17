@@ -46,8 +46,8 @@ export default {
   data(){
       return {
           ruleForm: {
-              username: '',
-              password: '',
+              username: 'admin',
+              password: '123456',
               code: ''
           },
           rules: {
@@ -83,8 +83,11 @@ export default {
   methods: {
       submitForm(e){
           console.log(e)
-          if (this.ruleForm.username == 'admin' && this.ruleForm.password == '123456')
-            this.$store.commit('loginMain')
+          if (this.ruleForm.username == 'admin' && this.ruleForm.password == '123456'){
+              this.$store.commit('loginMain')
+              this.$router.replace('/main')
+          }
+            
           else alert("账号密码输入错误")       
       },
       randomNum (min, max) {
@@ -107,12 +110,13 @@ export default {
 <style scoped>
     #div_form {
         position: absolute;
-        left: 35%;
-        top: 30%;
+        left: 33%;
+        top: 25%;
         width: 30%;
-        height: 40%;
-        border: black;
-        border-radius: 10;
-        padding: 0;
+        height: 30%;
+        padding: 5% 3% 5% 3%;
+        border-style: outset;
+        border-width: 2px;
+        border-radius: 6%;
     }
 </style>

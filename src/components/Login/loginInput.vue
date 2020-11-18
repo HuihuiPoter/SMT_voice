@@ -81,8 +81,7 @@ export default {
       }
   },
   methods: {
-      submitForm(e){
-          console.log(e)
+      submitForm(){
           if (this.ruleForm.username == 'admin' && this.ruleForm.password == '123456'){
               this.$store.commit('loginMain')
               this.$router.replace('/main')

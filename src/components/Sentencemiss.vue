@@ -50,10 +50,10 @@ export default {
 </script>
 
 <style>
-    #page{
+    /* #page{
         position: absolute;
         width: 100%;
         left: 160px;
         top: 100px;
-    }
+    } */
 </style>

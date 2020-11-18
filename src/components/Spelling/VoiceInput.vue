@@ -66,6 +66,13 @@ export default {
     },
     mounted: function() {
         this.requestData()
+        recorder.onprogress = function(params) {
+            if (params.vol < 1){
+                console.log('声音太小了')
+            }
+            let dataArray = recorder.getRecordAnalyseData()
+            console.log(dataArray[0])
+        }
         // this.recStart()
         // this.dec()
     },
@@ -74,6 +81,7 @@ export default {
             recorder.start().then(() => {
                 if (!this.recording){
                     console.log('测试完毕')
+                    recorder.destroy()
                     this.$message({
                         message: '已完成测试',
                         type: 'success'
@@ -178,8 +186,7 @@ export default {
                     }
                     else this.recording = false
                     resolve()
-                }, 3000)
-                
+                }, 3000)     
             })
         }
     }

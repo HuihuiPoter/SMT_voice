@@ -1,27 +1,21 @@
 <template>
   <div id="app">
     <router-view></router-view>
-    <!-- <div v-else>
-      <Main></Main>
-    </div>    -->
+    <!-- <Waves></Waves> -->
   </div>
 </template>
 
 <script>
-
-//import login from './components/Login/login'
-// import Main from './components/Main'
+//import Wavss from './components/waves'
 
 export default {
   name: 'App',
   components: {
-    //login
+    //Wavss
   }
 }
 </script>
 
 <style>
-  body {
-          
-  } 
+
 </style>

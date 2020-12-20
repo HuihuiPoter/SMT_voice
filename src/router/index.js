@@ -9,6 +9,8 @@ const Sentencemiss = () => import('../components/Sentencemiss')
 const Senxunfei = () => import('../components/Senxunfei')
 const Spelling = () => import('../components/Spelling/Spelling')
 const Main = () => import('../components/Main')
+const RuleInform = () => import('../components/RuleInform')
+const Countdown = () => import('../components/Countdown')
 
 //Vue.use()安装插件
 Vue.use(VueRouter)
@@ -47,6 +49,14 @@ const routes = [
     {
         path: "/spelling",
         component: Spelling
+    },
+    {
+        path: "/rule",
+        component: RuleInform
+    },
+    {
+        path: "/countdown",
+        component: Countdown
     },
     {
         path: "/main",

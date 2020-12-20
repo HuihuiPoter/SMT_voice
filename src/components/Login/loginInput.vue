@@ -84,7 +84,7 @@ export default {
       submitForm(){
           if (this.ruleForm.username == 'admin' && this.ruleForm.password == '123456'){
               this.$store.commit('loginMain')
-              this.$router.replace('/main')
+              this.$router.replace('/rule')
           }
             
           else alert("账号密码输入错误")       

@@ -5,10 +5,12 @@
                 <th>单词</th>
                 <th>得分</th>
             </tr>
-            <tr v-for="(item, index) in record" :key="index">
-                <td>{{item.words}}</td>
-                <td>{{item.scores}}</td>
-            </tr>
+            <transition-group name="flip-list" tag="tr">
+                <tr v-for="(item, index) in record" :key="'tr' + index">
+                    <td>{{item.words}}</td>
+                    <td>{{item.scores}}</td>               
+                </tr>
+            </transition-group>          
         </table>
     </div>
 </template>
@@ -31,3 +33,11 @@ export default {
     }
 }
 </script>
+
+<style>
+    .flip-list-enter, .flip-list-leave-to
+/* .list-complete-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>

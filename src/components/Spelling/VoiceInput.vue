@@ -10,7 +10,9 @@
             </el-col>
             <el-col :span="4" :offset="2">
                 <div>
-                    <h4>{{word_list[idx].content}}</h4>
+                    <transition name="component-fade" mode="out-in">
+                        <h4>{{word_list[idx].content}}</h4>
+                    </transition>                   
                     <h4>{{score_list.join('-')}}</h4>
                 </div>
                 
@@ -193,3 +195,13 @@ export default {
 }
 
 </script>
+
+<style>
+    .component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .3s ease;
+}
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

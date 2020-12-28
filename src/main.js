@@ -16,7 +16,8 @@ import {
   ColorPicker,
   Avatar,
   Menu,
-  MenuItem
+  MenuItem,
+  Dialog
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -34,6 +35,7 @@ Vue.use(ColorPicker)
 Vue.use(Avatar)
 Vue.use(Menu)
 Vue.use(MenuItem)
+Vue.use(Dialog)
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 

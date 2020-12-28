@@ -7,9 +7,9 @@
         </el-row>
         
         <el-row :gutter="20">
-            <el-col :span="4" :offset="8">
+            <!-- <el-col :span="4" :offset="8">
                 <span id="count-font">{{counter}}</span>           
-            </el-col>
+            </el-col> -->
             <el-col :span="10" :offset="8">
                 <canvas id="myCanvas"></canvas>
             </el-col>
@@ -63,7 +63,7 @@ export default {
         dec() {
             if (this.counter == 0){
                 setTimeout(() => {
-                    //this.$router.replace('/main')                 
+                    this.$router.replace('/main')                 
                 }, 1000)
                 return 
             }      

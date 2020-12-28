@@ -32,7 +32,7 @@
                 <el-button type="primary" size="default" @click="testStart">{{recording?'结束测试':'开始测试'}}</el-button>
             </el-col>
         </el-row>
-        
+        <UpShow v-if='visible'><Wave></Wave></UpShow>
     </div>
 </template>
 
@@ -41,6 +41,9 @@ import Recorder from 'js-audio-recorder'
 import axios from "axios"
 
 import Table from '../Table'
+
+import UpShow from '../UpShow'
+import Wave from '../Wave'
 
 let recorder = new Recorder({
     sampleBits: 16,                 // 采样位数，支持 8 或 16，默认是16
@@ -52,7 +55,9 @@ let recorder = new Recorder({
 export default {
     name: 'VoiceInput',
     components: {
-        Table
+        Table,
+        UpShow,
+        Wave
     },
     data() {
         return {
@@ -63,7 +68,9 @@ export default {
             len: 0,
             recording: false,
             blob: null,
-            record: []
+            record: [],
+
+            visible: false
         }
     },
     mounted: function() {
@@ -82,6 +89,7 @@ export default {
         recStart() {
             recorder.start().then(() => {
                 if (!this.recording){
+                    this.visible = false
                     console.log('测试完毕')
                     recorder.destroy()
                     this.$message({
@@ -137,6 +145,7 @@ export default {
             }).then(this.dec)                                              
         },
         testStart() {
+            this.visible = true
             let msg = this.recording?'结束测试':'开始测试'
             if (!this.recording){
                 this.$notify({

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <canvas id="myCanvas" width="200" height="100" style="border:1px solid #000000;"></canvas>
+        <canvas id="myCanvas" width="600" height="300" style="border:0px solid #000000;"></canvas>
     </div>
 </template>
 
@@ -9,13 +9,17 @@ export default {
     name: 'Wave',
     data() {
         return {
-            r: 20,
-            o_r: 20,
-            opacity: 1.0
+            r: 50,
+            o_r: 50,
+            opacity: 1.0,
+            end: false
         }
     },
     mounted(){
         this.rander()
+    },
+    beforeDestroy() {
+        this.end = true
     },
     methods: {
         draw(r, color) {
@@ -25,27 +29,29 @@ export default {
             //中心圆
             ctx.fillStyle = 'rgba(10, 194, 126, 1)';
             ctx.beginPath()
-            ctx.arc(95,50,15,0,2*Math.PI);
+            ctx.arc(280,150,35,0,2*Math.PI);
             ctx.stroke()
-            ctx.strokeStyle = 'rgba(10, 194, 126, 1)'
+            ctx.strokeStyle = 'rgba(10, 194, 126, 0)'
             ctx.fill()
             ctx.fillStyle = color;
             ctx.beginPath()
-            ctx.arc(95,50,r,0,2*Math.PI);
+            ctx.arc(280,150,r,0,2*Math.PI);
             ctx.stroke()
             ctx.strokeStyle = color
             ctx.fill()
         },
         rander() {
+            if (this.end)
+                return
             console.log('drawing')
             this.draw(this.r, 'rgba(10, 194, 126, ' + this.opacity + ')')
-            this.r += 0.4
+            this.r += 0.6
             if (this.r - this.o_r >= 2){
-                this.opacity -= 0.06
+                this.opacity -= 0.04
                 this.o_r = this.r
                 }       
-            if (this.r > 50){
-                this.r = 20
+            if (this.r > 100){
+                this.r = 50
                 this.o_r = this.r
                 this.opacity = 1
             }

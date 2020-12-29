@@ -1,9 +1,10 @@
 <template>
     <div>
         <el-dialog
-            title="结果"
+            :title="uiName"
             :visible.sync="visible"
-            width="30%"
+            width="50%"
+            :show-close="false"
             @close="handleClose">
             <!-- 显示组件 -->
             <slot></slot>
@@ -16,6 +17,7 @@ export default {
     name: 'UpShow',
     data() {
         return {
+            uiName: '录音',
             visible: true
         }
     },

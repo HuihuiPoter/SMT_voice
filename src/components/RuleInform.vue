@@ -12,7 +12,7 @@
         </el-row>
         <el-row :gutter="20">
             <el-col :span="12" :offset="8">
-                <h2>当你听到“滴”的一声，或者看到单词闪烁时，念出你看到的单词</h2>
+                <h2>当你看到单词提示时，做好准备，出现录音界面时，念出你看到的单词</h2>
             </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -22,7 +22,7 @@
         </el-row>
         <el-row :gutter="20">
             <el-col :span="4" :offset="16">
-                <el-button type="primary" size="default" @click="hideThis">开始训练</el-button> 
+                <el-button type="primary" size="large" @click="hideThis">开始训练</el-button> 
             </el-col>
         </el-row>
         

@@ -11,6 +11,7 @@ const Spelling = () => import('../components/Spelling/Spelling')
 const Main = () => import('../components/Main')
 const RuleInform = () => import('../components/RuleInform')
 const Countdown = () => import('../components/Countdown')
+const VoiceMain = () => import('../components/VoiceMain')
 
 //Vue.use()安装插件
 Vue.use(VueRouter)
@@ -86,6 +87,10 @@ const routes = [
                 path: 'spelling',
                 component: Spelling 
             },
+            {
+                path: 'voice_main',
+                component: VoiceMain
+            }
         ]
     }
 ]

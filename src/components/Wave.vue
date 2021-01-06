@@ -43,7 +43,6 @@ export default {
         rander() {
             if (this.end)
                 return
-            console.log('drawing')
             this.draw(this.r, 'rgba(10, 194, 126, ' + this.opacity + ')')
             this.r += 0.6
             if (this.r - this.o_r >= 2){

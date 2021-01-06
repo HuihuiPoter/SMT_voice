@@ -25,7 +25,7 @@ export default {
     },
     data(){
         return {
-            percentage: 100,
+            percentage: 10,
             page: this._page
         }
     },

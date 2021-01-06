@@ -3,12 +3,12 @@
         <table border="0">
             <tr>
                 <th>单词</th>
-                <th>得分</th>
+                <th>时间</th>
             </tr>
             <transition-group name="flip-list" tag="tr">
                 <tr v-for="(item, index) in record" :key="'tr' + index">
-                    <td>{{item.words}}</td>
-                    <td>{{item.scores}}</td>               
+                    <td>{{item.content}}</td>
+                    <td>{{item.thinking_time}}</td>               
                 </tr>
             </transition-group>          
         </table>

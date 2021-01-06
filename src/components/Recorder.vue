@@ -15,10 +15,7 @@ let recorder = new Recorder({
 export default {
     name: 'Recorder',
     props: {
-        recording: {
-            type: Boolean,
-            default: false
-        }
+        recording: Boolean
     },
     data() {
         return {
@@ -31,62 +28,64 @@ export default {
             after_thinking: false //判断是否为思考时间
         }
     },
-    mounted: function() {
-        recorder.onprogress = function(params) {
-            if (!this.is_recording) {
-                this.after_thinking = false
-                this.begin = 0
-                this.end = 0
-                return
-            }
-            if (!this.after_thinking) { //正式录音前思考时间           
-                // if (params.vol < 1) {
-                //     console.log('声音太小了')
-                // }
-                if (params.vol > 20) { //计算思考时间
-                    this.end = new Date()
-                    this.thinking_time = this.end - this.begin
-                    this.after_thinking = true
-                    this.begin = 0
-                    this.end = 0
-                }
-            }
-            else {   
-                if (params.vol < 10){
-                    this.end = new Date()
-                    console.log('声音太小了，说完了吗')
-                }
-                else {
-                    this.begin = new Date()
-                }
-                if (this.end - this.begin >= 2) //两秒没有说话则结束录音
-                    this.recStop()
-            }
-        }
-    },
     watch: {
         recording(newVal) {
-            if (newVal === true)
+            if (newVal === true) 
                 this.recStart()
+            this.is_recording = newVal
         }
     },
     methods: {
         //开始录音
         recStart() {
-            recorder.start().then(() => {
-                this.begin = new Date() // 思考时间开始
-
-                if (!this.is_recording){
-                    this.wave_visible = false
-                    console.log('测试完毕')
-                    recorder.destroy()
-                    this.$message({
-                        message: '已完成测试',
-                        type: 'success'
-                    })
-                    return
+            const self = this
+            recorder.onprogress = function(params) {
+            if (!self.is_recording) {
+                self.after_thinking = false
+                self.begin = 0
+                self.end = 0
+                return
+            }
+            if (!self.after_thinking) { //正式录音前思考时间           
+                // if (params.vol < 1) {
+                //     console.log('声音太小了')
+                // }
+                if (params.vol > 10) { //计算思考时间
+                    self.end = new Date()
+                    self.thinking_time = self.end - self.begin//ms
+                    self.after_thinking = true
+                    self.begin = 0
+                    self.end = 0
                 }
-                this.dec()
+            }
+            else {   
+                if (params.vol < 2){
+                    self.end = new Date()
+                    console.log('声音太小了，说完了吗')
+                }
+                else {
+                    self.begin = new Date()
+                }
+                if (self.end - self.begin >= 2000) { //两秒没有说话则结束录音
+                    self.after_thinking = false
+                    self.begin = 0
+                    self.end = 0
+                    self.recStop()
+                }
+            }
+            }
+            recorder.start().then(() => {
+                self.begin = new Date() // 思考时间开始
+                // if (!this.is_recording){
+                //     this.wave_visible = false
+                //     console.log('测试完毕')
+                //     recorder.destroy()
+                //     this.$message({
+                //         message: '已完成测试',
+                //         type: 'success'
+                //     })
+                //     return
+                // }
             }).catch((error) => {
                 console.log(error)
             })

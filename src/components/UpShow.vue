@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-dialog
-            :title="uiName"
+            :title="fun_title"
             :visible.sync="visible"
             width="50%"
             :show-close="false"
@@ -15,9 +15,12 @@
 <script>
 export default {
     name: 'UpShow',
+    props: {
+        title: String
+    },
     data() {
         return {
-            uiName: '录音',
+            fun_title: this.title,
             visible: true
         }
     },

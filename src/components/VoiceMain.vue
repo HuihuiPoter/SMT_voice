@@ -31,8 +31,9 @@
             </el-col>
         </el-row>
         <Recorder :recording="recording" @recordEnd="recordEnd"></Recorder>
+        <!-- <UpShow v-if='wave_visible' title="录音"><Wave v-if="wave_visible"></Wave></UpShow>
+        <UpShow v-if='remark_visible' title="结果" ><Remark v-if='remark_visible' :record="RecordofRemark" @remarkClose="remarkClose"></Remark></UpShow> -->
         <UpShow v-if='wave_visible' title="录音"><Wave v-if="wave_visible"></Wave></UpShow>
-        <UpShow v-if='remark_visible' title="结果" :record="{content: word_list[idx].word_content, phone_record: phone_record}"><Remark></Remark></UpShow>
     </div>
 </template>
 
@@ -43,7 +44,7 @@ import Table from './Table'
 
 import UpShow from './UpShow'
 import Wave from './Wave'
-import Remark from './Remark'
+//import Remark from './Remark'
 import Recorder from './Recorder'
 
 export default {
@@ -52,7 +53,7 @@ export default {
         Table,
         UpShow,
         Wave,
-        Remark,
+        //Remark,
         Recorder
     },
     data() {
@@ -69,28 +70,37 @@ export default {
             phone_record: [],
             stat_data: [],   //统计数据
             thinking_time: 0,
-
-            level: {
-                excellent: 0,
-                ordinary: 1,
-                failed: 2
-            }
         }
     },
     computed: {
         words() {
             return this.word_list
+        },
+        RecordofRemark() {
+            return {
+                content: this.word_list[this.idx].word_content, 
+                score: this.score,
+                phone_record: this.phone_record
+            }
         }
     },
     mounted: function() {
         this.requestData()
-        this.prompt()
     },
     watch: {
         recording(newVal) {
             if (newVal === false) {
                 this.wave_visible = false//关闭录音界面
                 this.submit()              
+            }
+        },
+        remark_visible(val) {
+            //评价界面关闭时进入下一题
+            self.remark_visible = false
+            if (val === false) {
+                setTimeout(() => { //2s后开启下一道题          
+                    this.next()
+                }, 2000)
             }
         }
     },
@@ -105,13 +115,19 @@ export default {
                 thinking_time: this.thinking_time
             })
         },
+        //关闭评价页面
+        remarkClose(val) {
+            this.remark_visible = val
+        },
         //请求初始数据
         requestData() {
             let url = "https://www.worith.cn/api/pro_word/?course_id=1"
+            //let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
             let self = this
             axios.get(url).then(function (responce) {
                 self.word_list = responce.data.data
                 self.len = self.word_list.length
+                self.prompt()
             }).catch((error) => console.log(error))
         },
         //提交录音数据
@@ -124,22 +140,16 @@ export default {
             }))
             form_data.append("word_content", this.word_list[this.idx].word_content)
             axios.post(url, form_data).then((res) => {
-                console.log(res)
                 self.score = res.data.pron_total_score
-                self.phone_record = res.data.phone_record
-                // self.record.push({
-                //     words: self.word_list[self.idx].content,
-                //     scores: self.score_list.join('-')
-                // })
-                setTimeout(() => {
-                    this.next()
-                }, 2000)
+                self.phone_record = res.data.phone_record         
+            }).then(() => {
+                self.remark_visible = true
             }).catch((err) => console.log(err))
         },
         //下一题跳转
         next() {
-            if (this.idx < this.len) {
-                this.idx++
+            this.idx++
+            if (this.idx < this.len) {          
                 console.log('next one')
                 this.prompt()
             }

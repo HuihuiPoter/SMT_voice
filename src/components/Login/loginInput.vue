@@ -37,6 +37,7 @@
 
 <script>
 import SIdentify from './SIdentify'
+//import axios from 'axios'
 
 export default {
   name: "loginInput",
@@ -82,12 +83,19 @@ export default {
   },
   methods: {
       submitForm(){
-          if (this.ruleForm.username == 'admin' && this.ruleForm.password == '123456'){
-              this.$store.commit('loginMain')
-              this.$router.replace('/rule')
-          }
-            
-          else alert("账号密码输入错误")       
+        //   let formData = new FormData()
+        //   let url = 'http://192.168.137.1:8000/api/login'
+        //   formData.append('username', this.ruleForm.username)
+        //   formData.append('password', this.ruleForm.password)
+        //   axios.post(url, formData).then((res) => {
+        //         if (res.data.code === 200){
+        //             this.$store.commit('loginMain')
+        //             this.$router.replace('/rule')
+        //         }  
+        //         else alert("账号密码输入错误")
+        //   })
+        this.$store.commit('loginMain')
+        this.$router.replace('/rule')
       },
       randomNum (min, max) {
           return Math.floor(Math.random() * (max - min) + min)

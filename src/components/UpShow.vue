@@ -1,14 +1,15 @@
 <template>
     <div>
-        <el-dialog
+        <!-- <el-dialog
             :title="fun_title"
             :visible.sync="visible"
             width="50%"
             :show-close="false"
             @close="handleClose">
-            <!-- 显示组件 -->
+            
             <slot></slot>
-        </el-dialog>      
+        </el-dialog>       -->
+        <slot></slot>
     </div>
 </template>
 
@@ -23,6 +24,9 @@ export default {
             fun_title: this.title,
             visible: true
         }
+    },
+    mounted: function() {
+
     },
     methods: {
         handleClose(){

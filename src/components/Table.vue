@@ -3,7 +3,7 @@
         <table border="0">
             <tr>
                 <th>单词</th>
-                <th>时间</th>
+                <th>思考时间</th>
             </tr>
             <transition-group name="flip-list" tag="tr">
                 <tr v-for="(item, index) in record" :key="'tr' + index">

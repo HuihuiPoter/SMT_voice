@@ -1,19 +1,28 @@
 <template>
     <div>
-        <!-- <el-dialog
+        <el-dialog
             :title="fun_title"
             :visible.sync="visible"
             width="50%"
-            :show-close="false"
-            @close="handleClose">
+            :show-close="false">
+            
+            <!-- 内层dialog录音界面，普通模式下开启 -->
+            <!-- <el-dialog
+                title="录音"
+                :visible.sync="readAgain"
+                width="50%"
+                :show-close="false">
+                
+            </el-dialog> -->
             
             <slot></slot>
-        </el-dialog>       -->
-        <slot></slot>
+        </el-dialog>      
+        <!-- <slot></slot> -->
     </div>
 </template>
 
 <script>
+
 export default {
     name: 'UpShow',
     props: {
@@ -22,16 +31,14 @@ export default {
     data() {
         return {
             fun_title: this.title,
-            visible: true
+            visible: true,
+            readAgain: false
         }
     },
     mounted: function() {
 
     },
     methods: {
-        handleClose(){
-
-        }
     }
 }
 </script>

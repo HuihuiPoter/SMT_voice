@@ -15,37 +15,32 @@
                 </div>
                 
             </el-col>
-            <el-col :span="4" :offset="0">
-                <div>
-                    <h3>剩余时间：10</h3>
-                </div>            
-            </el-col>
             <el-col :span="4" :offset="2">
                 <Table :_record="record"></Table>
             </el-col>
             
         </el-row>
-        <el-row :gutter="20" style="margin-top: 8%">
-            <el-col :span="4" :offset="8">
-                <!-- <el-button type="primary" size="default" @click="testStart">{{recording?'结束测试':'开始测试'}}</el-button> -->
-            </el-col>
-        </el-row>
         <Recorder :recording="recording" @recordEnd="recordEnd"></Recorder>
-        <!-- <UpShow v-if='wave_visible' title="录音"><Wave v-if="wave_visible"></Wave></UpShow>
-        <UpShow v-if='remark_visible' title="结果" ><Remark v-if='remark_visible' :record="RecordofRemark" @remarkClose="remarkClose"></Remark></UpShow> -->
         <UpShow v-if='wave_visible' title="录音"><Wave v-if="wave_visible"></Wave></UpShow>
+        <UpShow v-if='remark_visible' title="结果" >
+            <Remark v-if='remark_visible' :record="RecordofRemark" :read_again="read_again"
+            @readAgain="readAgain"
+             @remarkClose="remarkClose">
+             </Remark>
+        </UpShow>
+        
     </div>
 </template>
 
 <script>
 import axios from "axios"
-
 import Table from './Table'
-
 import UpShow from './UpShow'
 import Wave from './Wave'
-//import Remark from './Remark'
+import Remark from './Remark'
 import Recorder from './Recorder'
+
+axios.defaults.withCredentials = true
 
 export default {
     name: 'VoiceMain',
@@ -53,7 +48,7 @@ export default {
         Table,
         UpShow,
         Wave,
-        //Remark,
+        Remark,
         Recorder
     },
     data() {
@@ -70,6 +65,8 @@ export default {
             phone_record: [],
             stat_data: [],   //统计数据
             thinking_time: 0,
+            read_again: false,
+            level: -1
         }
     },
     computed: {
@@ -82,6 +79,15 @@ export default {
                 score: this.score,
                 phone_record: this.phone_record
             }
+        },
+        getRemark() {
+            if (this.level == 0)
+                return '优秀'
+            else if (this.level == 1)
+                return '普通'
+            else if (this.level == 2)
+                return '不合格'
+            else return '数据错误'
         }
     },
     mounted: function() {
@@ -95,9 +101,13 @@ export default {
             }
         },
         remark_visible(val) {
-            //评价界面关闭时进入下一题
-            self.remark_visible = false
-            if (val === false) {
+            //评价界面关闭时进入下一题         
+            if (val === false && this.read_again === false) {
+                self.stat_data.splice({
+                    content: this.word_list[this.idx].word_content,
+                    remark: this.getRemark(),
+                    thinking_time: this.thinking_time
+                }, this.idx, 1) 
                 setTimeout(() => { //2s后开启下一道题          
                     this.next()
                 }, 2000)
@@ -117,12 +127,20 @@ export default {
         },
         //关闭评价页面
         remarkClose(val) {
-            this.remark_visible = val
+            this.remark_visible = val.visible
+            this.level = val.level//评价等级
+        },
+        //再读一次
+        readAgain(val) {
+            this.read_again = val
+            if (val) {             
+                this.prompt()
+            }
         },
         //请求初始数据
         requestData() {
-            let url = "https://www.worith.cn/api/pro_word/?course_id=1"
-            //let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
+            //let url = "https://www.worith.cn/api/pro_word/?course_id=1"
+            let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
             let self = this
             axios.get(url).then(function (responce) {
                 self.word_list = responce.data.data
@@ -148,13 +166,17 @@ export default {
         },
         //下一题跳转
         next() {
-            this.idx++
-            if (this.idx < this.len) {          
+            //this.idx++
+            if (this.idx + 1 < this.len) {  
+                this.idx++        
                 console.log('next one')
                 this.prompt()
             }
             else {
-                console.log('the last')
+                this.$message({
+                    message: '测试完成',
+                    type: 'success'
+                })
             }
         },
         //答题提示

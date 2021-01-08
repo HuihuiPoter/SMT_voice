@@ -20,6 +20,9 @@ import {
   Dialog
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import axios from 'axios'
+
+axios.defaults.withCredentials = true
 
 Vue.config.productionTip = false
 

@@ -18,7 +18,6 @@ export default {
     },
     data() {
         return {
-            is_recording: this.recording,
             blob: null,
             thinking_time: 0,//思考时间
             result: '',
@@ -29,9 +28,8 @@ export default {
     },
     watch: {
         recording(newVal) {
-            if (newVal === true) 
+            if (newVal) 
                 this.recStart()
-            this.is_recording = newVal
         }
     },
     methods: {
@@ -39,7 +37,7 @@ export default {
         recStart() {
             const self = this
             recorder.onprogress = function(params) {
-            if (!self.is_recording) {
+            if (!self.recording) {
                 self.after_thinking = false
                 self.begin = 0
                 self.end = 0
@@ -49,7 +47,7 @@ export default {
                 // if (params.vol < 1) {
                 //     console.log('声音太小了')
                 // }
-                if (params.vol > 10) { //计算思考时间
+                if (params.vol > 20) { //计算思考时间
                     self.end = new Date()
                     self.thinking_time = self.end - self.begin//ms
                     self.after_thinking = true
@@ -58,7 +56,7 @@ export default {
                 }
             }
             else {   
-                if (params.vol < 2){
+                if (params.vol < 5){
                     self.end = new Date()
                     console.log('声音太小了，说完了吗')
                 }
@@ -75,16 +73,6 @@ export default {
             }
             recorder.start().then(() => {
                 self.begin = new Date() // 思考时间开始
-                // if (!this.is_recording){
-                //     this.wave_visible = false
-                //     console.log('测试完毕')
-                //     recorder.destroy()
-                //     this.$message({
-                //         message: '已完成测试',
-                //         type: 'success'
-                //     })
-                //     return
-                // }
             }).catch((error) => {
                 console.log(error)
             })

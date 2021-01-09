@@ -63,7 +63,7 @@ export default {
         dec() {
             if (this.counter == 0){
                 setTimeout(() => {
-                    this.$router.replace('/main')                 
+                    this.$router.replace('/main/voice_main')                 
                 }, 1000)
                 return 
             }      

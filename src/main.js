@@ -17,7 +17,9 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Dialog
+  Dialog,
+  Table,
+  TableColumn
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
@@ -39,6 +41,8 @@ Vue.use(Avatar)
 Vue.use(Menu)
 Vue.use(MenuItem)
 Vue.use(Dialog)
+Vue.use(Table)
+Vue.use(TableColumn)
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 

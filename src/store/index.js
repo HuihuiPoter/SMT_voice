@@ -12,8 +12,10 @@ const store = new Vuex.Store({
         base_color: "rgba(10, 194, 126, 1)"       
     },
     mutations: {
-        loginMain(state){
+        loginMain(state, payload){
             state.loginState = false
+            state.username = payload.username
+            state.password = payload.password
         }
     }
 })

@@ -4,14 +4,15 @@
         <el-row :gutter="20" style="margin-top: 8%">
             <el-col :span="4" :offset="2">
                 <div>
+                    <h2>第{{round}}轮练习</h2>
                     <h4>题目总量：{{len}}</h4>
                     <h4>题目序号：{{idx + 1}}</h4>           
                 </div>
             </el-col>
             <el-col :span="4" :offset="2">
                 <div>
-                    <h4>{{word_list[idx].word_content}}</h4>                 
-                    <h4>{{score}}</h4>
+                    <h2>{{word_list[idx].word_content}}</h2>                 
+                    <h3>{{getRemark}}</h3>
                 </div>
                 
             </el-col>
@@ -28,7 +29,9 @@
              @remarkClose="remarkClose">
              </Remark>
         </UpShow>
-        
+        <UpShow v-if="result_visible" title="统计结果">
+            <Result v-if="result_visible" :stat="stat_data" :round="round" @resultClose="resultClose"></Result>
+        </UpShow>
     </div>
 </template>
 
@@ -39,6 +42,8 @@ import UpShow from './UpShow'
 import Wave from './Wave'
 import Remark from './Remark'
 import Recorder from './Recorder'
+import Result from './Result'
+import Vue from 'vue'
 
 axios.defaults.withCredentials = true
 
@@ -49,7 +54,8 @@ export default {
         UpShow,
         Wave,
         Remark,
-        Recorder
+        Recorder,
+        Result
     },
     data() {
         return {
@@ -62,16 +68,18 @@ export default {
             record: [],
             wave_visible: false,
             remark_visible: false,
+            result_visible: false,
             phone_record: [],
             stat_data: [],   //统计数据
             thinking_time: 0,
             read_again: false,
-            level: -1
+            level: -1,//本次评级
+            round: 1 //第几轮练习
         }
     },
     computed: {
-        words() {
-            return this.word_list
+        words() {         
+            return this.word_list.filter(word => word.level != 0)
         },
         RecordofRemark() {
             return {
@@ -87,7 +95,7 @@ export default {
                 return '普通'
             else if (this.level == 2)
                 return '不合格'
-            else return '数据错误'
+            else return '暂无评价'
         }
     },
     mounted: function() {
@@ -103,15 +111,20 @@ export default {
         remark_visible(val) {
             //评价界面关闭时进入下一题         
             if (val === false && this.read_again === false) {
-                self.stat_data.splice({
-                    content: this.word_list[this.idx].word_content,
-                    remark: this.getRemark(),
-                    thinking_time: this.thinking_time
-                }, this.idx, 1) 
+                this.updateStat()
                 setTimeout(() => { //2s后开启下一道题          
                     this.next()
                 }, 2000)
             }
+        },
+        round() {
+            this.idx = 0
+            this.remark = '暂无评价'
+            this.record = []
+            this.word_list = this.words
+            this.len = this.word_list.length
+            this.stat_data = []
+            this.prompt()
         }
     },
     methods: {
@@ -129,6 +142,12 @@ export default {
         remarkClose(val) {
             this.remark_visible = val.visible
             this.level = val.level//评价等级
+            Vue.set(this.word_list[this.idx], 'level', this.level)
+        },
+        //关闭结果页面
+        resultClose(val) {
+            this.round = 2
+            this.result_visible = val
         },
         //再读一次
         readAgain(val) {
@@ -139,8 +158,8 @@ export default {
         },
         //请求初始数据
         requestData() {
-            //let url = "https://www.worith.cn/api/pro_word/?course_id=1"
-            let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
+            let url = "https://www.worith.cn/api/pro_word/?course_id=1"
+            //let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
             let self = this
             axios.get(url).then(function (responce) {
                 self.word_list = responce.data.data
@@ -152,11 +171,13 @@ export default {
         submit() {
             let self = this
             let url = 'https://www.worith.cn/api/ten_recorder/'
+            //let url = "http://192.168.137.1:8000/api/ten_recorder/"
             let form_data = new FormData()
             form_data.append("word_audio", new File([this.blob], this.word_list[this.idx], {
                 type: this.blob.type
             }))
             form_data.append("word_content", this.word_list[this.idx].word_content)
+            form_data.append("word_id", this.word_list[this.idx].id)
             axios.post(url, form_data).then((res) => {
                 self.score = res.data.pron_total_score
                 self.phone_record = res.data.phone_record         
@@ -177,6 +198,7 @@ export default {
                     message: '测试完成',
                     type: 'success'
                 })
+                this.result_visible = true
             }
         },
         //答题提示
@@ -192,6 +214,23 @@ export default {
                     self.wave_visible = true//打开录音界面
                 }, 1000)                      
             }, 2000) //2s之后开始录音
+        },
+        //更新统计数据
+        updateStat() {
+            if (!this.read_again){
+                this.stat_data.push({
+                    content: this.word_list[this.idx].word_content,
+                    remark: this.getRemark,
+                    thinking_time: this.thinking_time
+                })
+            }
+            else{
+                this.stat_data.splice({
+                    content: this.word_list[this.idx].word_content,
+                    remark: this.getRemark,
+                    thinking_time: this.thinking_time
+                }, this.idx, 1) 
+            }
         }
     }
 }

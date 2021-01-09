@@ -9,7 +9,7 @@
                     <div class="block" style="margin-top: 20px">完成度</div>
                 </el-col>
                 <el-col :span="12" :offset="0">
-                    <el-progress type="circle" :percentage="percentage" :width="60" :color="$store.state.base_color"></el-progress>
+                    <el-progress type="circle" :percentage="per" :width="60" :color="$store.state.base_color"></el-progress>
                 </el-col>
             </el-row>
             
@@ -21,20 +21,17 @@
 export default {
     name: 'Unitprogress',
     props: {
-        _page: String
+        _page: String,
+        percentage: Number
     },
     data(){
         return {
-            percentage: 10,
+            per:this.percentage,
             page: this._page
         }
     },
     methods: {
         notice(page) {
-            // this.$notify({
-            //     title: "通知",
-            //     message: this.$createElement('i', {style: 'color: teal'}, "当前任务已完成")
-            // })
             if (this.percentage == 100){
                 this.$message({
                     message: "当前任务已完成",
@@ -47,7 +44,7 @@ export default {
                     type: 'warning'
                 })
             }
-            if (this.percentage < 100)
+            if (this.percentage == 100)
                 this.$router.replace('/' + page)
         }
     }

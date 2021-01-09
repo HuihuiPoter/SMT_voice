@@ -145,7 +145,8 @@ export default {
       }
     },
     requestData() {
-      let url = "https://www.worith.cn/api/pro_word/?course_id=1";
+      let url = "https://www.worith.cn/api/pro_word/?course_id=1"
+      //let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
       let self = this;
       axios.get(url).then(function (responce) {
           console.log(responce);

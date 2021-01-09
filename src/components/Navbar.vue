@@ -17,19 +17,19 @@
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        <el-menu-item index="2" route="/main/word">
+        <el-menu-item index="2" route="/main/word" disabled>
           <i class="el-icon-notebook-1"></i>
           <span slot="title">单词智慧评测</span>
         </el-menu-item>
-        <el-menu-item index="3" route="/main/sen_xunfei">
+        <el-menu-item index="3" route="/main/sen_xunfei" disabled>
           <i class="el-icon-notebook-1"></i>
           <span slot="title">句子智慧评测</span>
         </el-menu-item>
-        <el-menu-item index="4" route="/main/sentence_miss">
+        <el-menu-item index="4" route="/main/sentence_miss" disabled>
           <i class="el-icon-notebook-1"></i>
           <span slot="title">填句智慧评测</span>
         </el-menu-item>
-        <el-menu-item index="5" route="/main/spelling">
+        <el-menu-item index="5" route="/main/spelling" disabled>
           <i class="el-icon-notebook-1"></i>
           <span slot="title">自然拼读</span>
         </el-menu-item>

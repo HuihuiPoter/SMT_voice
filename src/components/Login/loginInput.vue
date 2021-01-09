@@ -84,14 +84,19 @@ export default {
   methods: {
       submitForm(){
           let formData = new FormData()
-          let url = 'http://192.168.137.1:8000/api/login'
+          //let url = 'http://192.168.137.1:8000/api/login'
+          let url = 'https://www.worith.cn/api/login'
           formData.append('username', this.ruleForm.username)
           formData.append('password', this.ruleForm.password)
           axios.post(url, formData).then((res) => {
+              console.log(res)
                 if (res.data.code === 200){
-                    console.log(res)
-                    this.$store.commit('loginMain')
-                    this.$router.replace('/rule')
+                    this.setCookie('username', this.ruleForm.username, 1)
+                    this.$store.commit('loginMain', {
+                        username: this.ruleForm.username,
+                        password: this.ruleForm.password
+                    })
+                    this.$router.replace('/main')
                 }  
                 else alert("账号密码输入错误")
           })
@@ -109,8 +114,14 @@ export default {
           for (let i = 0;i < len;i++){
               this.identifyCode += codes[this.randomNum(0, codes.length)]
           }
-      }
-      
+      },
+      setCookie(cname,cvalue,exdays){
+        let d = new Date()
+        d.setTime(d.getTime() + (exdays*24*60*60*1000))
+        let expires = "expires=" + d.toGMTString()
+        console.log(cname + "=" + cvalue + "; " + expires + '; ' + 'path=/')
+        document.cookie = cname + "=" + cvalue + "; " + expires + '; ' + 'path=/;'
+    }
   }
 }
 </script>

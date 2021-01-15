@@ -1,6 +1,6 @@
 <template>
     <div>
-        <canvas id="myCanvas" width="600" height="300" style="border:0px solid #000000;"></canvas>
+        <canvas id="myCanvas" width="200" height="200" style="border:0px solid #000000;"></canvas>
     </div>
 </template>
 
@@ -9,8 +9,8 @@ export default {
     name: 'Wave',
     data() {
         return {
-            r: 50,
-            o_r: 50,
+            r: 20,
+            o_r: 20,
             opacity: 1.0,
             end: false
         }
@@ -29,13 +29,13 @@ export default {
             //中心圆
             ctx.fillStyle = 'rgba(10, 194, 126, 1)';
             ctx.beginPath()
-            ctx.arc(280,150,35,0,2*Math.PI);
+            ctx.arc(100,100,25,0,2*Math.PI);
             ctx.stroke()
             ctx.strokeStyle = 'rgba(10, 194, 126, 0)'
             ctx.fill()
             ctx.fillStyle = color;
             ctx.beginPath()
-            ctx.arc(280,150,r,0,2*Math.PI);
+            ctx.arc(100,100,r,0,2*Math.PI);
             ctx.stroke()
             ctx.strokeStyle = color
             ctx.fill()

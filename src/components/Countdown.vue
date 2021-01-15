@@ -1,20 +1,6 @@
 <template>
     <div>
-        <el-row :gutter="20">
-            <el-col :span="12" :offset="8">
-                <h1>倒计时，请准备：</h1>
-            </el-col>
-        </el-row>
-        
-        <el-row :gutter="20">
-            <!-- <el-col :span="4" :offset="8">
-                <span id="count-font">{{counter}}</span>           
-            </el-col> -->
-            <el-col :span="10" :offset="8">
-                <canvas id="myCanvas"></canvas>
-            </el-col>
-            
-        </el-row>      
+        <canvas id="myCanvas"></canvas>     
     </div>
 </template>
 
@@ -49,21 +35,21 @@ export default {
         this.c = document.getElementById('myCanvas');
         this.ctx = this.c.getContext('2d');
 
-        this.mW = this.c.width = 300;
-        this.mH = this.c.height = 300;
+        this.mW = this.c.width = 200;
+        this.mH = this.c.height =200;
         this.lineWidth = 5;
         this.r = this.mW / 2; //中间位置
         this.cR = this.r - 4 * this.lineWidth; //圆半径
         this.startAngle = -(1 / 2 * Math.PI); //开始角度
         this.endAngle = this.startAngle + 2 * Math.PI; //结束角度
         this.xAngle = 2 * Math.PI / 180; //偏移角度量
-        this.fontSize = 100; //字号大小
+        this.fontSize = 40; //字号大小
         this.tmpAngle = this.startAngle; //临时角度变量
         },
         dec() {
             if (this.counter == 0){
                 setTimeout(() => {
-                    this.$router.replace('/main/voice_main')                 
+                    console.log('倒计时结束')                 
                 }, 1000)
                 return 
             }      
@@ -96,7 +82,7 @@ export default {
             this.ctx.textAlign='center';
             let text = this.counter
             if (this.tmpAngle >= this.endAngle) //及时绘制数字
-                text = 0
+                text = 'ready'
             this.ctx.fillText(text, this.r, this.r + this.fontSize / 2);
             requestAnimationFrame(this.drawCircle);
         }
@@ -105,7 +91,4 @@ export default {
 </script>
 
 <style>
-#count-font{
-    font-size: 100px;
-}
 </style>

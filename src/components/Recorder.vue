@@ -23,7 +23,7 @@ export default {
             result: '',
             begin: 0,
             end: 0,
-            after_thinking: false //判断是否为思考时间
+            after_thinking: false, //判断是否为思考时间
         }
     },
     watch: {
@@ -44,9 +44,6 @@ export default {
                 return
             }
             if (!self.after_thinking) { //正式录音前思考时间           
-                // if (params.vol < 1) {
-                //     console.log('声音太小了')
-                // }
                 if (params.vol > 20) { //计算思考时间
                     self.end = new Date()
                     self.thinking_time = self.end - self.begin//ms
@@ -56,14 +53,14 @@ export default {
                 }
             }
             else {   
-                if (params.vol < 5){
+                if (params.vol < 10){
                     self.end = new Date()
                     console.log('声音太小了，说完了吗')
                 }
                 else {
                     self.begin = new Date()
                 }
-                if (self.end - self.begin >= 2000) { //两秒没有说话则结束录音
+                if (self.end - self.begin >= 1000) { //1秒没有说话则结束录音
                     self.after_thinking = false
                     self.begin = 0
                     self.end = 0
@@ -73,6 +70,12 @@ export default {
             }
             recorder.start().then(() => {
                 self.begin = new Date() // 思考时间开始
+                setTimeout(() => {
+                    if (self.recording){
+                        self.thinking_time = 4000
+                        self.recStop()         
+                    }         
+                }, 4000) //4秒未录完则直接结束
             }).catch((error) => {
                 console.log(error)
             })

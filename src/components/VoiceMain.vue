@@ -1,18 +1,22 @@
 <template>
     <div>
         <slot></slot>
-        <el-row :gutter="20" style="margin-top: 8%">
-            <el-col :span="4" :offset="2">
+        <el-row :gutter="20" style="margin-top: 5%">
+            <el-col :span="4" :offset="4">
                 <div>
-                    <h2>第{{round}}轮练习</h2>
-                    <h4>题目总量：{{len}}</h4>
-                    <h4>题目序号：{{idx + 1}}</h4>           
+                    <el-progress type="dashboard" :percentage="percentage" :color="pro_color" :stroke-width="12"></el-progress>
+                    <div class="font-title">本次练习进度</div>
+                    <div class="font-title">题目总量：{{len}}</div>  
                 </div>
             </el-col>
             <el-col :span="4" :offset="2">
                 <div>
-                    <h2>{{word_list[idx].word_content}}</h2>                 
-                    <h3>{{getRemark}}</h3>
+                    <el-tooltip class="item" effect="dark" :content="tip" placement="top-start" :value="tipshow">
+                        <span id="content">{{word_list[idx].word_content}}</span>
+                    </el-tooltip>
+                    <div id="remark">{{getRemark}}</div>
+                    <Countdown v-if="ct_show"></Countdown>
+                    <Wave v-if="wave_visible"></Wave>
                 </div>
                 
             </el-col>
@@ -21,8 +25,18 @@
             </el-col>
             
         </el-row>
+        
+
+        
+        <el-row :gutter="20">
+            <el-col :span="4" :offset="10">
+                <el-button type="primary" size="default" @click="prepare">开始训练</el-button>
+                <el-button type="primary" size="default" @click="next">下一个</el-button>
+            </el-col>
+        </el-row>
+        
         <Recorder :recording="recording" @recordEnd="recordEnd"></Recorder>
-        <UpShow v-if='wave_visible' title="录音"><Wave v-if="wave_visible"></Wave></UpShow>
+        <!-- <UpShow v-if='wave_visible' title="录音"><Wave v-if="wave_visible"></Wave></UpShow> -->
         <UpShow v-if='remark_visible' title="结果" >
             <Remark v-if='remark_visible' :record="RecordofRemark" :read_again="read_again"
             @readAgain="readAgain"
@@ -44,6 +58,7 @@ import Remark from './Remark'
 import Recorder from './Recorder'
 import Result from './Result'
 import Vue from 'vue'
+import Countdown from './Countdown'
 
 axios.defaults.withCredentials = true
 
@@ -55,7 +70,8 @@ export default {
         Wave,
         Remark,
         Recorder,
-        Result
+        Result,
+        Countdown
     },
     data() {
         return {
@@ -74,10 +90,23 @@ export default {
             thinking_time: 0,
             read_again: false,
             level: -1,//本次评级
-            round: 1 //第几轮练习
+            round: 1, //第几轮练习
+            pro_color: [
+                {color: '#f56c6c', percentage: 20},
+                {color: '#e6a23c', percentage: 40},
+                {color: '#5cb87a', percentage: 60},
+                {color: '#1989fa', percentage: 80},
+                {color: '#6f7ad3', percentage: 100}
+            ],//进度条颜色
+            tip: '请认读屏幕中看到的单词',
+            tipshow: true, //提示显示
+            ct_show: false //倒计时显示
         }
     },
     computed: {
+        percentage() {
+            return this.idx * 100 / this.len
+        },
         words() {         
             return this.word_list.filter(word => word.level != 0)
         },
@@ -112,9 +141,9 @@ export default {
             //评价界面关闭时进入下一题         
             if (val === false && this.read_again === false) {
                 this.updateStat()
-                setTimeout(() => { //2s后开启下一道题          
-                    this.next()
-                }, 2000)
+                // setTimeout(() => { //2s后开启下一道题          
+                //     this.next()
+                // }, 2000)
             }
         },
         round() {
@@ -164,7 +193,7 @@ export default {
             axios.get(url).then(function (responce) {
                 self.word_list = responce.data.data
                 self.len = self.word_list.length
-                self.prompt()
+                //self.prompt()
             }).catch((error) => console.log(error))
         },
         //提交录音数据
@@ -200,6 +229,15 @@ export default {
                 })
                 this.result_visible = true
             }
+        },
+        //答题准备
+        prepare() {
+            this.ct_show = true
+            setTimeout(() => {
+                this.tipshow = false
+                this.ct_show = false
+                this.prompt()
+            }, 4000)
         },
         //答题提示
         prompt() {
@@ -238,5 +276,28 @@ export default {
 </script>
 
 <style>
-
+    .font-title{
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    #content{
+        font-size: 3.75em;
+        font-weight: bold;
+        color:black;
+        animation:turn 3s;
+    }
+    #remark{
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 8%;
+    }
+    @keyframes turn
+    {
+    0% {color: black;}
+    25% {color: rgba(10, 194, 126, 1);}
+    50% {color: black;}
+    75% {color: rgba(10, 194, 126, 1);}
+    100% {color: black;}
+    }
 </style>

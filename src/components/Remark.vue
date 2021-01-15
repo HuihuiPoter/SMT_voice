@@ -109,10 +109,11 @@ export default {
         //请求音频
         f_process(val) {
             this.failed_inform = val
-            setTimeout(() => {
-                this.audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.record.content
-            }, 1000)
-            
+            if (val) {
+                setTimeout(() => {
+                    this.audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.record.content
+                }, 1000)
+            }       
         }
     }
 }

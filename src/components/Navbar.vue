@@ -37,7 +37,7 @@
       
     </el-col>
     <el-col :span="20" :offset="0">
-      <router-view></router-view>
+      <!-- <router-view></router-view> -->
     </el-col>
   </el-row>
   

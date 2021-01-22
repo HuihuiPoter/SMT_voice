@@ -7,9 +7,9 @@
                 :label="col.label">
             </el-table-column>
         </el-table>
-        <h3>第一轮练习完成，接下来需要练习薄弱的部分，点击下面的按钮进行第二轮练习吧！</h3>
-        <el-button type="primary" @click="btnClick">{{btn_msg}}</el-button>
-        
+        <h3>本次练习已完成，点击下方的按钮回到主界面或者再次学习</h3>
+        <el-button type="primary" @click="btnEnd">回到主界面</el-button>
+        <el-button type="success" @click="btnAgain">再次练习</el-button>
     </div>
 </template>
 
@@ -17,15 +17,9 @@
 export default {
     name: 'Result',
     props: {
-        stat: Array,
-        round: Number
+        stat: Array
     },
     computed: {
-        btn_msg() {
-            if (this.round === 1)
-                return '开始第二轮练习'
-            else return '结束本次练习'
-        }
     },
     data() {
         return {
@@ -40,22 +34,20 @@ export default {
                     label: '评价',
                 },
                 {
-                    id: 'thinking_time',
-                    label: '思考时间（ms）',
+                    id: 'proficiency',
+                    label: '熟练度',
                 }
             ]
         }
     },
     methods: {
-        btnClick() {
-            if (this.round === 1) {
-                console.log('再来一轮')
-                this.$emit('resultClose', false)
-            }
-            else {
-                console.log('测试结束')
-                this.$router.replace('/main')
-            }
+        btnAgain() {
+            console.log('再来一次')
+            this.$emit('resultClose', false)
+        },
+        btnEnd() {
+            console.log('测试结束')
+            this.$router.replace('/main')
         }
     }
 }

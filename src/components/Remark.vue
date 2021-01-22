@@ -1,12 +1,16 @@
 <template>
     <div>
+        <h1>评价</h1>
         <h2>{{remark}}</h2>
-        <br>
         <h2><span v-for="(item, index) in phoneWithColor" :key="index" :style="{'color': item.color}">{{item.phone}}</span></h2>
-        <br>
         <h3 v-show="ord_inform">稍后请再读一次</h3>
-        <h3 v-show="failed_inform">请仔细听单词录音，并跟读</h3>
-        <audio :src="audio" v-if="failed_inform" autoplay></audio>
+        <div v-if="failed_inform">
+        <h3>请仔细听单词录音，并跟读</h3>
+        <el-tooltip content="点击下面的互动按钮听标准录音" placement="bottom" effect="dark" :value="true">
+            <!-- <audio id="myaudio" :src="audio" v-if="failed_inform"></audio> -->
+            <el-button type="primary" icon="el-icon-phone-outline" circle @click="btnClick"></el-button>
+        </el-tooltip>  
+        </div> 
     </div>
 </template>
 
@@ -28,8 +32,7 @@ export default {
             },
             ord_inform: false,
             failed_inform: false,
-            r_msg:'',
-            audio: null
+            r_msg:''
         }
     },
     mounted: function() {
@@ -63,17 +66,14 @@ export default {
             switch(current_level){
                 case this.level.excellent:
                     re = '优秀。做得很好!'
-                    this.f_process(false)
                     this.imformMain(false)            
                     break
                 case this.level.ordinary: 
                     re = '普通。做的不错，继续加油！'
-                    this.f_process(false)
                     this.imformMain(true)
                     break
                 case this.level.failed: 
                     re = '不合格。还需要继续努力！'
-                    this.f_process(true)
                     this.imformMain(false)
                     break
                 default: console.log('wrong level')
@@ -85,35 +85,42 @@ export default {
         //关闭评价页面
         closeThis() {
             this.$emit('remarkClose', {
-                visible: false,
+                btn_disabled: false,
                 level: this.computedLevel
             })
-        },
-        //再读一次
-        readAgain(val) {
-            this.$emit('readAgain', val) 
         },
         //延时调用
         imformMain(val) {
             const self = this
             this.ord_inform = val
+            if (this.computedLevel === this.level.failed)
+                this.failed_inform = true
+            setTimeout(() => {
+                self.closeThis()
+            }, 5000) 
+        },
+        //点击互动按钮
+        btnClick() {
+            let audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.record.content
+            let el_audio = new Audio(audio)
+            console.log(el_audio)
+            let total = 4.5
+            this.dec(el_audio, 1.5, total)
+        },
+        dec(el, time_span, total_time) {
+            if (total_time === 0)
+                return
+            const self = this
+            console.log(total_time)
             new Promise((resolve) => {
                 setTimeout(() => {
-                    self.readAgain(val) 
-                    resolve() 
-                }, 4000) 
+                    el.play()
+                    resolve()
+                }, time_span * 1000)
             }).then(() => {
-                self.closeThis()
-            }) 
-        },
-        //请求音频
-        f_process(val) {
-            this.failed_inform = val
-            if (val) {
-                setTimeout(() => {
-                    this.audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.record.content
-                }, 1000)
-            }       
+                self.dec(el, time_span, total_time - time_span)
+            })
+            
         }
     }
 }

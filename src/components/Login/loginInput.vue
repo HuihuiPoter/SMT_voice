@@ -91,7 +91,6 @@ export default {
           axios.post(url, formData).then((res) => {
               console.log(res)
                 if (res.data.code === 200){
-                    this.setCookie('username', this.ruleForm.username, 1)
                     this.$store.commit('loginMain', {
                         username: this.ruleForm.username,
                         password: this.ruleForm.password
@@ -115,13 +114,13 @@ export default {
               this.identifyCode += codes[this.randomNum(0, codes.length)]
           }
       },
-      setCookie(cname,cvalue,exdays){
-        let d = new Date()
-        d.setTime(d.getTime() + (exdays*24*60*60*1000))
-        let expires = "expires=" + d.toGMTString()
-        console.log(cname + "=" + cvalue + "; " + expires + '; ' + 'path=/')
-        document.cookie = cname + "=" + cvalue + "; " + expires + '; ' + 'path=/;'
-    }
+    //   setCookie(cname,cvalue,exdays){
+    //     let d = new Date()
+    //     d.setTime(d.getTime() + (exdays*24*60*60*1000))
+    //     let expires = "expires=" + d.toGMTString()
+    //     console.log(cname + "=" + cvalue + "; " + expires + '; ' + 'path=/')
+    //     document.cookie = cname + "=" + cvalue + "; " + expires + '; ' + 'path=/;'
+    // }
   }
 }
 </script>

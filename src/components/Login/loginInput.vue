@@ -44,6 +44,10 @@ export default {
   components: {
       SIdentify
   },
+  mounted: function () {
+      this.identifyCode = ''
+      this.makeCode(this.identifyCodes, 4)
+  },
   data(){
       return {
           ruleForm: {

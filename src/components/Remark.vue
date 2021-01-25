@@ -1,16 +1,15 @@
 <template>
-    <div>
+    <div id="box_remark">
         <h1>评价</h1>
         <h2>{{remark}}</h2>
-        <h2><span v-for="(item, index) in phoneWithColor" :key="index" :style="{'color': item.color}">{{item.phone}}</span></h2>
-        <h3 v-show="ord_inform">稍后请再读一次</h3>
-        <div v-if="failed_inform">
+        <!-- <h2><span v-for="(item, index) in phoneWithColor" :key="index" :style="{'color': item.color}">{{item.phone}}</span></h2> -->
+        <!-- <h3 v-show="ord_inform">稍后请再读一次</h3> -->
+        <!-- <div v-if="failed_inform">
         <h3>请仔细听单词录音，并跟读</h3>
         <el-tooltip content="点击下面的互动按钮听标准录音" placement="bottom" effect="dark" :value="true">
-            <!-- <audio id="myaudio" :src="audio" v-if="failed_inform"></audio> -->
             <el-button type="primary" icon="el-icon-phone-outline" circle @click="btnClick"></el-button>
         </el-tooltip>  
-        </div> 
+        </div>  -->
     </div>
 </template>
 
@@ -30,13 +29,13 @@ export default {
                 ordinary: 1,
                 failed: 2
             },
-            ord_inform: false,
-            failed_inform: false,
-            r_msg:''
+            // ord_inform: false,
+            // failed_inform: false,
+            // r_msg:''
         }
     },
     mounted: function() {
-
+        this.informMain()
     },
     computed: {
         phoneWithColor() {
@@ -51,30 +50,28 @@ export default {
             return phone_record
         },
         computedLevel() {
+            let le
             if (this.record.score >= 85)
-                return this.level.excellent
+                le = this.level.excellent
             else if (this.record.score >= 75)
-                return this.level.ordinary
-            else return this.level.failed
+                le = this.level.ordinary
+            else le = this.level.failed
+            if (le === this.level.ordinary && this.read_again)//第二次读时普通视为不合格
+                le = this.level.failed
+            return le
         },
         remark() {
             let re
             let current_level = this.computedLevel
-            if (this.read_again && current_level === this.level.ordinary)//第二次读时普通视为不合格
-                current_level = this.level.failed
-            // current_level = this.level.ordinary
             switch(current_level){
                 case this.level.excellent:
-                    re = '优秀。做得很好!'
-                    this.imformMain(false)            
+                    re = '优秀。做得很好!'     
                     break
                 case this.level.ordinary: 
                     re = '普通。做的不错，继续加油！'
-                    this.imformMain(true)
                     break
                 case this.level.failed: 
                     re = '不合格。还需要继续努力！'
-                    this.imformMain(false)
                     break
                 default: console.log('wrong level')
             }
@@ -82,46 +79,32 @@ export default {
         }
     },
     methods: {
-        //关闭评价页面
-        closeThis() {
+        //通知主界面
+        informMain() {
+            // this.ord_inform = val
+            // if (this.computedLevel === this.level.failed)
+            //     this.failed_inform = true
             this.$emit('remarkClose', {
-                btn_disabled: false,
-                level: this.computedLevel
-            })
-        },
-        //延时调用
-        imformMain(val) {
-            const self = this
-            this.ord_inform = val
-            if (this.computedLevel === this.level.failed)
-                this.failed_inform = true
-            setTimeout(() => {
-                self.closeThis()
-            }, 5000) 
-        },
-        //点击互动按钮
-        btnClick() {
-            let audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.record.content
-            let el_audio = new Audio(audio)
-            console.log(el_audio)
-            let total = 4.5
-            this.dec(el_audio, 1.5, total)
-        },
-        dec(el, time_span, total_time) {
-            if (total_time === 0)
-                return
-            const self = this
-            console.log(total_time)
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    el.play()
-                    resolve()
-                }, time_span * 1000)
-            }).then(() => {
-                self.dec(el, time_span, total_time - time_span)
-            })
-            
+                level: this.computedLevel,
+                color: this.phoneWithColor
+            })  
         }
     }
 }
 </script>
+
+<style>
+    /* #box_remark{
+        border: 1px solid black;
+        border-radius: 10px;
+        animation: border_turn 3s;
+    }
+    @keyframes border_turn
+    {
+    0% {border: 1px solid black;}
+    25% {border: 1px solid rgba(10, 194, 126, 1);}
+    50% {border: 1px solid black;}
+    75% {border: 1px solid rgba(10, 194, 126, 1);}
+    100% {border: 1px solid black;}
+    } */
+</style>

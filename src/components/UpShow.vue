@@ -4,7 +4,8 @@
             :title="fun_title"
             :visible.sync="visible"
             width="50%"
-            :show-close="false">
+            :show-close="false"
+            :close-on-click-modal="false">
             
             <!-- 内层dialog录音界面，普通模式下开启 -->
             <!-- <el-dialog

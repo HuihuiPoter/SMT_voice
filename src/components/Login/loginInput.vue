@@ -28,21 +28,29 @@
  <el-form-item>
   <div class="login-btn">
   <el-button type="primary" @click="submitForm()">登录</el-button>
+  <el-button type="primary" @click="registerForm()">注册</el-button>
   </div>
  </el-form-item>
- <p style="font-size:12px;line-height:30px;color:black;">Tips : 请输入账号密码登陆  admin  123456</p>
+ <p style="font-size:12px;line-height:30px;color:black;">Tips : 请输入账号密码登陆  admin  123456，可以重新注册新的账号</p>
  </el-form>
+ <UpShow v-if="reg_visible" title="注册账号">
+    <Register v-if="reg_visible" @closeReg="closeReg" @success="success"></Register>
+</UpShow>
   </div>
 </template>
 
 <script>
 import SIdentify from './SIdentify'
 import axios from 'axios'
+import Register from './Register'
+import UpShow from '../UpShow'
 axios.defaults.withCredentials = true
 export default {
   name: "loginInput",
   components: {
-      SIdentify
+      SIdentify,
+      Register,
+      UpShow
   },
   mounted: function () {
       this.identifyCode = ''
@@ -82,18 +90,24 @@ export default {
               ]
           },
           identifyCode: '1234',
-          identifyCodes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+          identifyCodes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          reg_visible: false
       }
   },
   methods: {
       submitForm(){
+          if (this.identifyCode != this.ruleForm.code){
+              alert('验证码错误')
+              return
+          }
+            
           let formData = new FormData()
           //let url = 'http://192.168.137.1:8000/api/login'
           let url = 'https://www.worith.cn/api/login'
           formData.append('username', this.ruleForm.username)
           formData.append('password', this.ruleForm.password)
           axios.post(url, formData).then((res) => {
-              console.log(res)
+                //console.log(res)
                 if (res.data.code === 200){
                     this.$store.commit('loginMain', {
                         username: this.ruleForm.username,
@@ -105,6 +119,9 @@ export default {
           })
         // this.$store.commit('loginMain')
         // this.$router.replace('/rule')
+      },
+      registerForm() {
+          this.reg_visible = true
       },
       randomNum (min, max) {
           return Math.floor(Math.random() * (max - min) + min)
@@ -118,13 +135,13 @@ export default {
               this.identifyCode += codes[this.randomNum(0, codes.length)]
           }
       },
-    //   setCookie(cname,cvalue,exdays){
-    //     let d = new Date()
-    //     d.setTime(d.getTime() + (exdays*24*60*60*1000))
-    //     let expires = "expires=" + d.toGMTString()
-    //     console.log(cname + "=" + cvalue + "; " + expires + '; ' + 'path=/')
-    //     document.cookie = cname + "=" + cvalue + "; " + expires + '; ' + 'path=/;'
-    // }
+      closeReg() {
+          this.reg_visible = false
+      },
+      success(val) {
+          this.ruleForm.username = val.username
+          this.ruleForm.password = val.password
+      }
   }
 }
 </script>

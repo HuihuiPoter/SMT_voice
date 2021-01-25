@@ -11,10 +11,22 @@ let recorder = new Recorder({
     sampleRate: 16000,              // 采样率，支持 11025、16000、22050、24000、44100、48000，根据浏览器默认值，我的chrome是48000
     numChannels: 1,                 // 声道，支持 1 或 2， 默认是1
 })
+
 export default {
     name: 'Recorder',
     props: {
         recording: Boolean
+    },
+    mounted: function() {
+        Recorder.getPermission().then(() => {
+            console.log('已打开权限')
+        }, (error) => {
+            console.log(`${error.name} : ${error.message}`)
+            this.$notify({
+                title: '提示',
+                message: '未打开录音权限'
+            })
+        })
     },
     data() {
         return {
@@ -87,7 +99,8 @@ export default {
             this.$emit('recordEnd', {
                 recording: false,
                 blob: blob,
-                thinking_time: this.thinking_time
+                thinking_time: this.thinking_time,
+                duration: recorder.duration > 4?recorder.duration - 2:recorder.duration - 1
             })
         },
     }

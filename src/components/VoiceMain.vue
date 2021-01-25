@@ -1,7 +1,7 @@
 <template>
     <div>
         <slot></slot>
-        <el-row :gutter="20" style="margin-top: 5%">
+        <el-row :gutter="20" style="margin-top: 5%" justify="center">
             <el-col :span="4" :offset="2">
                 <div>
                     <el-progress type="dashboard" :percentage="percentage" :color="pro_color" :stroke-width="12"></el-progress>
@@ -12,20 +12,33 @@
             <el-col :span="6" :offset="3">
                 <div>
                     <el-tooltip class="item" effect="dark" :content="tip" placement="top-start" :value="tipshow">
-                        <div id="content" style="text-align: center;">{{word_list[idx].word_content}}</div>
+                        <div id="content" style="text-align: center;font-size: 1">
+                            <!-- {{word_list[idx].word_content}} -->
+                            <span v-for="(item, index) in content_colors" :key="index" :style="{'color': item.color}">{{content_flow[index].phone}}</span>
+                        </div>
                     </el-tooltip>
                     <div id="remark">[没有音标]</div>  
+                    <div id="remark" v-if="btn_again_show">再听一次：
+                        <el-button type="primary" icon="el-icon-phone-outline" circle @click="btnAgainClick"></el-button>
+                    </div>
                     <audio :src="myaudio" autoplay></audio>          
                 </div>
                 <div style="margin-top: 5%;text-align: center;">
                     <Countdown v-if="ct_show"></Countdown>
-                    <Wave v-if="recording"></Wave>
+                    <Wave v-if="wave_visible"></Wave>
                 </div>
+                
+                <div v-show="btn_next_show">
+                <el-button type="warning" size="default" @click="reRecord" icon="el-icon-refresh" v-show="btn_show">重新录音</el-button>
+                    <el-button type="success" size="medium" @click="next">
+                        下一个<i class="el-icon-arrow-right el-icon--right"></i>
+                    </el-button>
+                </div> 
             </el-col>
-            <!-- <el-col :span="4" :offset="2">
-                <Table :_record="record"></Table>
-            </el-col> -->
-            <el-col :span="4" :offset="2">
+            <el-col :span="5" :offset="3">
+                <div>
+                    <img src="../assets/Helen.png" alt="Teacher Helen" srcset="" height="220" width="100">
+                </div>
                 <Remark v-if='remark_visible' :record="RecordofRemark" :read_again="read_again"
                     @remarkClose="remarkClose">
                 </Remark>
@@ -35,24 +48,16 @@
 
         
         <el-row :gutter="20" style="margin-top: 8%">
-            <el-col :span="10" :offset="9">
-                <el-tooltip content="点击按钮开始本次训练" placement="left" effect="dark" :value="tipshow">
-                    <el-button type="primary" size="medium" @click="prepare" icon="el-icon-edit">开始训练</el-button>
-                </el-tooltip>
-                <!-- <el-tooltip content="点击按钮重新录音" placement="left" effect="dark" :value="tipshow"> -->
-                <el-button type="warning" size="default" @click="reRecord" icon="el-icon-refresh" v-show="btn_show">重新录音</el-button>
-                <!-- </el-tooltip> -->
-                <el-tooltip content="点击按钮切换单词" placement="right" effect="dark" :value="tipshow">
-                    <el-button type="success" size="medium" @click="next" :disabled="btn_disabled">
-                        下一个<i class="el-icon-arrow-right el-icon--right"></i>
-                    </el-button>
-                </el-tooltip>   
+            <el-col :span="10" :offset="10">
+                 <div v-if="btn_start_show">
+                    <el-button type="primary" size="medium" @click="prepare" icon="el-icon-edit">开始</el-button>
+                </div>
             </el-col>
         </el-row>
         
         <Recorder :recording="recording" @recordEnd="recordEnd"></Recorder>
         <UpShow v-if="result_visible" title="本次练习成果">
-            <Result v-if="result_visible" :stat="stat_data" @resultClose="resultClose"></Result>
+            <Result v-if="result_visible" :stat="stat_data" :time="all_time" @resultClose="resultClose"></Result>
         </UpShow>
     </div>
 </template>
@@ -88,6 +93,7 @@ export default {
             idx: 0,
             len: 0,
             recording: false,
+            duration: 0,
             blob: null,
             record: [],
             wave_visible: false,
@@ -96,6 +102,7 @@ export default {
             phone_record: [],
             stat_data: [],   //统计数据
             thinking_time: 0,
+            all_time: 0,
             read_again: false,
             level: -1,//本次评级
             round: 1, //第几轮练习
@@ -109,9 +116,16 @@ export default {
             tip: '请认读屏幕中看到的单词',
             tipshow: true, //提示显示
             ct_show: false ,//倒计时显示
-            btn_disabled: true,
+            // btn_disabled: true,
             btn_show: false,
-            myaudio: ''
+            btn_start_show: false,
+            btn_next_show: false,
+            btn_again_show: false,
+            myaudio: '', 
+            percentage: 0,
+            //单词显示
+            content_flow: [],
+            content_colors: []
         }
     },
     computed: {
@@ -121,9 +135,6 @@ export default {
             else if (this.thinking_time < 1600)
                 return '一般'
             else return '不熟练'
-        },
-        percentage() {
-            return Math.ceil(this.idx * 100 / this.len)
         },
         words() {         
             return this.word_list.filter(word => word.level != 0)
@@ -147,6 +158,11 @@ export default {
     },
     mounted: function() {
         this.requestData()
+        this.audioPlay('welcomeaudio', 10000).then(() => {
+            this.audioPlay('321audio', 6000).then(() => {
+                this.btn_start_show = true 
+            })   
+        })       
     },
     watch: {
         recording(newVal) {
@@ -154,35 +170,27 @@ export default {
                 this.submit()              
             }
         },
-        remark_visible(val) {
-            //评价界面关闭时进入下一题         
-            if (val === false && this.read_again === false) {
-                this.updateStat()
-            }
-        },
-        round() {
-            this.idx = 0
-            this.remark = '暂无评价'
-            this.record = []
-            this.word_list = this.words
-            this.len = this.word_list.length
-            this.stat_data = []
-            this.prompt()
-        },
+        // remark_visible(val) { 
+        //     if (val === false && this.read_again === false) {
+                
+        //     }
+        // },
         level(val) {
             if (val === 1 && this.read_again === false) {
                 this.read_again = true
-                this.btn_disabled = true           
-                this.prompt()
             }
+            if (val === 1 && this.read_again === true)
+                this.level = 2
         }
     },
     methods: {
         //录音结束事件
         recordEnd(obj) {
+            this.wave_visible = false
             this.thinking_time = obj.thinking_time
             this.recording = obj.recording
             this.blob = obj.blob
+            this.duration = obj.duration
             this.record.push({
                 content: this.word_list[this.idx].word_content,
                 thinking_time: this.thinking_time
@@ -192,14 +200,30 @@ export default {
         },
         //关闭评价页面
         remarkClose(val) {
-            //this.remark_visible = val.visible
-            this.btn_disabled = val.btn_disabled
             this.level = val.level//评价等级
+            this.content_colors = val.color
+            this.content_flow = this.phone_record
+            this.updateStat()
+            const self = this
+            new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve()
+                }, self.duration * 1000)
+            }).then(() => {
+                return this.audioRemark()
+            }).then(() => {
+                    if (this.level == 1)
+                        this.prompt()
+                    if (this.level != 1)
+                        this.btn_next_show = true
+                    if (this.level == 2)
+                        this.btn_again_show = true
+                })
             Vue.set(this.word_list[this.idx], 'level', this.level)
             if (this.level === 2 && this.word_list[this.idx].round === 1){//记录不及格的单词再次训练
                 this.word_list.push(this.word_list[this.idx])
                 this.len = this.word_list.length
-                console.log(this.word_list[this.len - 1])
+                //console.log(this.word_list[this.len - 1])
                 Vue.set(this.word_list[this.len - 1], 'round', 2)
             }
         },
@@ -209,6 +233,10 @@ export default {
             //第二次练习
             this.requestData()
             this.idx = 0
+            this.btn_show = false
+            this.btn_start_show = true
+            this.btn_next_show = false
+            this.btn_again_show = false
         },
         //请求初始数据
         requestData() {
@@ -216,11 +244,14 @@ export default {
             //let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
             let self = this
             axios.get(url).then(function (responce) {
+                // console.log('responce', responce)
                 self.word_list = responce.data.data
                 self.len = self.word_list.length
                 for (let item of self.word_list) {
                      Vue.set(item, 'round', 1)
                 }
+                self.content_flow.push({phone: self.word_list[self.idx].word_content})
+                self.content_colors.push('black')
             }).catch((error) => console.log(error))
         },
         //提交录音数据
@@ -235,6 +266,7 @@ export default {
             form_data.append("word_content", this.word_list[this.idx].word_content)
             form_data.append("word_id", this.word_list[this.idx].id)
             axios.post(url, form_data).then((res) => {
+                //console.log(res)
                 self.score = res.data.pron_total_score
                 self.phone_record = res.data.phone_record         
             }).then(() => {
@@ -244,10 +276,17 @@ export default {
         //下一题跳转
         next() {
             //this.idx++
+            this.btn_next_show = false
             if (this.idx + 1 < this.len) {  
                 this.idx++ 
+                this.percentage = Math.ceil(this.idx * 100 / this.len)
+                this.content_flow = []
+                this.content_colors = []
+                this.content_flow.push({phone: this.word_list[this.idx].word_content})
+                this.content_colors.push('black')
                 this.btn_show = false     
                 this.read_again = false 
+                this.btn_again_show = false
                 console.log('next one')
                 this.prompt()
             }
@@ -256,31 +295,36 @@ export default {
                     message: '测试完成',
                     type: 'success'
                 })
+                this.audioPlay('endaudio', 4000)
+                this.all_time = new Date() - this.all_time
                 this.result_visible = true
             }
         },
         //答题准备
         prepare() {
+            this.all_time = new Date()
+            this.btn_start_show = false
             this.ct_show = true
+            this.audioCountdown()
             setTimeout(() => {
                 this.tipshow = false
                 this.ct_show = false
                 this.prompt()
-            }, 4000)
+            }, 5000)
         },
         //答题提示
         prompt() {
             const self = this
-            this.remark_visible = false 
+            this.remark_visible = false  
+            // this.$message({
+            //     message: '准备开始录音了，集中精神',
+            //     type: 'warning'
+            // })
             setTimeout(() => {
-                this.$message({
-                    message: '准备开始录音了，集中精神',
-                    type: 'warning'
-                })
-                setTimeout(() => {
-                    self.recording = true//开启录音组件
-                }, 1000)                      
-            }, 2000) //2s之后开始录音
+                self.wave_visible = true
+                self.recording = true//开启录音组件    
+            }, 1000)                      
+            
         },
         //更新统计数据
         updateStat() {
@@ -303,6 +347,78 @@ export default {
         reRecord() {
             console.log('重新录音')
             this.prompt()
+        }, 
+        //播放语音
+        audioPlay(content, time) {
+            // while (false){
+            //     //发送请求检查网络连接
+            // }
+            let helen_audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + content
+            let el_audio = new Audio(helen_audio)
+            el_audio.play()
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve()
+                }, time)   
+            })
+        },
+        //三种结果录音
+        audioRemark() {
+            if (this.level == 0) {
+                return this.audioPlay('goodaudio', 3000)
+            }
+            else if (this.level == 1) {
+                return this.audioPlay('normalaudio', 5000)
+            }
+            else {
+                return this.audioPlay('badaudio', 5000)
+            }
+        },
+        //倒计时录音
+        audioCountdown() {
+            const self = this
+            new Promise((resolve) => {
+                self.audioPlay('threeaudio', 1)
+                setTimeout(resolve, 999)
+            }).then(() => {
+                return new Promise((resolve) => {
+                    self.audioPlay('twoaudio', 1)
+                    setTimeout(resolve, 999)
+                })
+            }).then(() => {
+                return new Promise((resolve) => {
+                    self.audioPlay('oneaudio', 1)
+                    setTimeout(resolve, 999)
+                })
+            }).then(() => {
+                return new Promise((resolve) => {
+                    self.audioPlay('readyaudio', 1)
+                    setTimeout(resolve, 999)
+                })
+            })
+        },
+        //再听三遍录音
+        btnAgainClick() {
+            console.log(this.word_list[this.idx].word_content)
+            let audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.word_list[this.idx].word_content
+            let el_audio = new Audio(audio)
+            let total = 4.5
+            this.dec(el_audio, 1.5, total)
+        },
+        //三遍录音
+        dec(el, time_span, total_time) {
+            if (total_time === 0)
+                return
+            const self = this
+            new Promise((resolve) => {
+                setTimeout(() => {
+                    el.play()
+                    resolve()
+                }, time_span * 1000)
+            }).then(() => {
+                self.dec(el, time_span, total_time - time_span)
+            })
+            
         }
     }
 }

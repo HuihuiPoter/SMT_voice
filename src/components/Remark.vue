@@ -19,8 +19,7 @@ import Vue from 'vue'
 export default {
     name: 'Remark',
     props: {
-        record: Object,
-        read_again: Boolean
+        record: Object
     },
     data() {
         return {
@@ -56,14 +55,11 @@ export default {
             else if (this.record.score >= 75)
                 le = this.level.ordinary
             else le = this.level.failed
-            if (le === this.level.ordinary && this.read_again)//第二次读时普通视为不合格
-                le = this.level.failed
             return le
         },
         remark() {
             let re
-            let current_level = this.computedLevel
-            switch(current_level){
+            switch(this.computedLevel){
                 case this.level.excellent:
                     re = '优秀。做得很好!'     
                     break
@@ -81,9 +77,6 @@ export default {
     methods: {
         //通知主界面
         informMain() {
-            // this.ord_inform = val
-            // if (this.computedLevel === this.level.failed)
-            //     this.failed_inform = true
             this.$emit('remarkClose', {
                 level: this.computedLevel,
                 color: this.phoneWithColor

@@ -39,7 +39,7 @@
                 <div>
                     <img src="../assets/Helen.png" alt="Teacher Helen" srcset="" height="220" width="100">
                 </div>
-                <Remark v-if='remark_visible' :record="RecordofRemark" :read_again="read_again"
+                <Remark v-if='remark_visible' :record="RecordofRemark"
                     @remarkClose="remarkClose">
                 </Remark>
             </el-col>
@@ -125,7 +125,16 @@ export default {
             percentage: 0,
             //单词显示
             content_flow: [],
-            content_colors: []
+            content_colors: [],
+            audio_stack: [],
+            audio_ended: false,
+            audio_state_now: -1,
+            audio_state: {
+                start: 0,
+                countdown: 1,
+                remark: 2,
+                end: 3
+            }
         }
     },
     computed: {
@@ -158,11 +167,15 @@ export default {
     },
     mounted: function() {
         this.requestData()
-        this.audioPlay('welcomeaudio', 10000).then(() => {
-            this.audioPlay('321audio', 6000).then(() => {
-                this.btn_start_show = true 
-            })   
-        })       
+        // this.audioPlay('welcomeaudio', 10000).then(() => {
+        //     this.audioPlay('321audio', 6000).then(() => {
+        //         this.btn_start_show = true 
+        //     })   
+        // })
+        this.audio_stack = ['321audio' ,'welcomeaudio']  
+        let content = this.audio_stack.pop() 
+        this.audio_state_now = this.audio_state.start
+        this.audioPlay(content)   
     },
     watch: {
         recording(newVal) {
@@ -170,17 +183,30 @@ export default {
                 this.submit()              
             }
         },
-        // remark_visible(val) { 
-        //     if (val === false && this.read_again === false) {
-                
-        //     }
-        // },
+        audio_ended(val) {
+            //引导录音结束
+            if (val == true && this.audio_state_now == this.audio_state.start && !this.audio_stack.length) 
+                this.btn_start_show = true
+            //评价结束
+            if (val == true && this.audio_state_now == this.audio_state.remark && !this.audio_stack.length){
+                if (this.level == 1)
+                    this.prompt()
+                else
+                    this.btn_next_show = true
+                if (this.level == 2)
+                    this.btn_again_show = true
+            }
+            if (val == true && this.audio_stack.length) {
+                let content = this.audio_stack.pop()
+                this.audioPlay(content)  
+            }
+            if (val == true)
+                this.audio_ended = false
+        },
         level(val) {
             if (val === 1 && this.read_again === false) {
                 this.read_again = true
             }
-            if (val === 1 && this.read_again === true)
-                this.level = 2
         }
     },
     methods: {
@@ -201,6 +227,8 @@ export default {
         //关闭评价页面
         remarkClose(val) {
             this.level = val.level//评价等级
+            if (this.level == 1 && this.read_again == true)
+                this.level = 2
             this.content_colors = val.color
             this.content_flow = this.phone_record
             this.updateStat()
@@ -210,15 +238,8 @@ export default {
                     resolve()
                 }, self.duration * 1000)
             }).then(() => {
-                return this.audioRemark()
-            }).then(() => {
-                    if (this.level == 1)
-                        this.prompt()
-                    if (this.level != 1)
-                        this.btn_next_show = true
-                    if (this.level == 2)
-                        this.btn_again_show = true
-                })
+                self.audioRemark()
+            })
             Vue.set(this.word_list[this.idx], 'level', this.level)
             if (this.level === 2 && this.word_list[this.idx].round === 1){//记录不及格的单词再次训练
                 this.word_list.push(this.word_list[this.idx])
@@ -295,7 +316,7 @@ export default {
                     message: '测试完成',
                     type: 'success'
                 })
-                this.audioPlay('endaudio', 4000)
+                this.audioPlay('endaudio')
                 this.all_time = new Date() - this.all_time
                 this.result_visible = true
             }
@@ -349,53 +370,57 @@ export default {
             this.prompt()
         }, 
         //播放语音
-        audioPlay(content, time) {
-            // while (false){
-            //     //发送请求检查网络连接
-            // }
-            let helen_audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + content
+        audioPlay(content) {           
+            let helen_audio = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content +'.wav'
             let el_audio = new Audio(helen_audio)
-            el_audio.play()
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve()
-                }, time)   
-            })
+            setTimeout(() => {
+                el_audio.play()
+            }, 400)
+            const self = this  
+            el_audio.onended = function() {
+                self.audio_ended = true
+            }
         },
         //三种结果录音
         audioRemark() {
+            this.audio_state_now = this.audio_state.remark
             if (this.level == 0) {
-                return this.audioPlay('goodaudio', 3000)
+                this.audioPlay('goodaudio')
             }
             else if (this.level == 1) {
-                return this.audioPlay('normalaudio', 5000)
+                this.audioPlay('normalaudio')
             }
             else {
-                return this.audioPlay('badaudio', 5000)
+                this.audioPlay('badaudio')
             }
         },
         //倒计时录音
         audioCountdown() {
-            const self = this
-            new Promise((resolve) => {
-                self.audioPlay('threeaudio', 1)
-                setTimeout(resolve, 999)
-            }).then(() => {
-                return new Promise((resolve) => {
-                    self.audioPlay('twoaudio', 1)
-                    setTimeout(resolve, 999)
-                })
-            }).then(() => {
-                return new Promise((resolve) => {
-                    self.audioPlay('oneaudio', 1)
-                    setTimeout(resolve, 999)
-                })
-            }).then(() => {
-                return new Promise((resolve) => {
-                    self.audioPlay('readyaudio', 1)
-                    setTimeout(resolve, 999)
-                })
-            })
+            // const self = this
+            // new Promise((resolve) => {
+            //     self.audioPlay('threeaudio', 1)
+            //     setTimeout(resolve, 999)
+            // }).then(() => {
+            //     return new Promise((resolve) => {
+            //         self.audioPlay('twoaudio', 1)
+            //         setTimeout(resolve, 999)
+            //     })
+            // }).then(() => {
+            //     return new Promise((resolve) => {
+            //         self.audioPlay('oneaudio', 1)
+            //         setTimeout(resolve, 999)
+            //     })
+            // }).then(() => {
+            //     return new Promise((resolve) => {
+            //         self.audioPlay('readyaudio', 1)
+            //         setTimeout(resolve, 999)
+            //     })
+            // })
+            this.audio_state_now = this.audio_state.countdown
+            this.audio_stack = ['readyaudio', 'oneaudio', 'twoaudio', 'threeaudio']
+            let content = this.audio_stack.pop()
+            this.audio_state_now = this.audio_state.countdown
+            this.audioPlay(content) 
         },
         //再听三遍录音
         btnAgainClick() {

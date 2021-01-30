@@ -72,7 +72,7 @@ export default {
                 else {
                     self.begin = new Date()
                 }
-                if (self.end - self.begin >= 1500) { //1秒没有说话则结束录音
+                if (self.end - self.begin >= 1200) { //1秒没有说话则结束录音
                     self.after_thinking = false
                     self.begin = 0
                     self.end = 0
@@ -85,10 +85,10 @@ export default {
                 setTimeout(() => {
                     if (self.recording){
                         if (self.thinking_time === 0)
-                            self.thinking_time = 5000
+                            self.thinking_time = 4000
                         self.recStop()         
                     }         
-                }, 5000) //4秒未录完则直接结束
+                }, 4000) //4秒未录完则直接结束
             }).catch((error) => {
                 console.log(error)
             })

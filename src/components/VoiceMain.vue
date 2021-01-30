@@ -50,7 +50,7 @@
         <el-row :gutter="20" style="margin-top: 8%">
             <el-col :span="10" :offset="10">
                  <div v-if="btn_start_show">
-                    <el-button type="primary" size="medium" @click="prepare" icon="el-icon-edit">开始</el-button>
+                    <el-button type="primary" @click="prepare" icon="el-icon-edit">开始</el-button>
                 </div>
             </el-col>
         </el-row>
@@ -133,15 +133,16 @@ export default {
                 start: 0,
                 countdown: 1,
                 remark: 2,
-                end: 3
+                end: 3,
+                tick: 4
             }
         }
     },
     computed: {
         getProficiency() {
-            if (this.thinking_time < 800)
+            if (this.thinking_time < 1200)
                 return '熟练'
-            else if (this.thinking_time < 1600)
+            else if (this.thinking_time < 1800)
                 return '一般'
             else return '不熟练'
         },
@@ -167,12 +168,8 @@ export default {
     },
     mounted: function() {
         this.requestData()
-        // this.audioPlay('welcomeaudio', 10000).then(() => {
-        //     this.audioPlay('321audio', 6000).then(() => {
-        //         this.btn_start_show = true 
-        //     })   
-        // })
-        this.audio_stack = ['321audio' ,'welcomeaudio']  
+        // this.audio_stack = ['321audio' ,'welcomeaudio']  
+        this.audio_stack = ['321audio.wav']
         let content = this.audio_stack.pop() 
         this.audio_state_now = this.audio_state.start
         this.audioPlay(content)   
@@ -195,6 +192,11 @@ export default {
                     this.btn_next_show = true
                 if (this.level == 2)
                     this.btn_again_show = true
+            }
+            //录音提示音结束,开始录音
+            if (val == true && this.audio_state_now == this.audio_state.tick && !this.audio_stack.length) {
+                this.wave_visible = true
+                this.recording = true  
             }
             if (val == true && this.audio_stack.length) {
                 let content = this.audio_stack.pop()
@@ -258,6 +260,8 @@ export default {
             this.btn_start_show = true
             this.btn_next_show = false
             this.btn_again_show = false
+            this.content_flow = []
+            this.content_colors = []
         },
         //请求初始数据
         requestData() {
@@ -316,7 +320,7 @@ export default {
                     message: '测试完成',
                     type: 'success'
                 })
-                this.audioPlay('endaudio')
+                this.audioPlay('endaudio.wav')
                 this.all_time = new Date() - this.all_time
                 this.result_visible = true
             }
@@ -335,16 +339,14 @@ export default {
         },
         //答题提示
         prompt() {
-            const self = this
+            //const self = this
             this.remark_visible = false  
-            // this.$message({
-            //     message: '准备开始录音了，集中精神',
-            //     type: 'warning'
-            // })
-            setTimeout(() => {
-                self.wave_visible = true
-                self.recording = true//开启录音组件    
-            }, 1000)                      
+            this.audio_state_now = this.audio_state.tick
+            this.audioPlay('starttips.mp3')
+            // setTimeout(() => {
+            //     self.wave_visible = true
+            //     self.recording = true    
+            // }, 1000)                      
             
         },
         //更新统计数据
@@ -371,7 +373,7 @@ export default {
         }, 
         //播放语音
         audioPlay(content) {           
-            let helen_audio = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content +'.wav'
+            let helen_audio = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
             let el_audio = new Audio(helen_audio)
             setTimeout(() => {
                 el_audio.play()
@@ -379,45 +381,32 @@ export default {
             const self = this  
             el_audio.onended = function() {
                 self.audio_ended = true
+                // if (self.audio_state_now == self.audio_state.tick){
+                //     self.wave_visible = true
+                //     self.recording = true  
+                // }
             }
         },
         //三种结果录音
         audioRemark() {
             this.audio_state_now = this.audio_state.remark
             if (this.level == 0) {
-                this.audioPlay('goodaudio')
+                let goodaudios = ['goodaudio0.wav','goodaudio1.wav','goodaudio2.wav','goodaudio3.wav','goodaudio4.wav']
+                this.audioPlay(goodaudios[Math.floor(Math.random() * 5)])
             }
             else if (this.level == 1) {
-                this.audioPlay('normalaudio')
+                let normalaudios = ['normalaudio0.wav', 'normalaudio1.wav', 'normalaudio2.wav', 'normalaudio3.wav', 'normalaudio4.wav']
+                this.audioPlay(normalaudios[Math.floor(Math.random() * 5)])
             }
             else {
-                this.audioPlay('badaudio')
+                let badaudios = ['badaudio0.wav', 'badaudio1.wav', 'badaudio2.wav', 'badaudio3.wav', 'badaudio4.wav']
+                this.audioPlay(badaudios[Math.floor(Math.random() * 5)])
             }
         },
         //倒计时录音
         audioCountdown() {
-            // const self = this
-            // new Promise((resolve) => {
-            //     self.audioPlay('threeaudio', 1)
-            //     setTimeout(resolve, 999)
-            // }).then(() => {
-            //     return new Promise((resolve) => {
-            //         self.audioPlay('twoaudio', 1)
-            //         setTimeout(resolve, 999)
-            //     })
-            // }).then(() => {
-            //     return new Promise((resolve) => {
-            //         self.audioPlay('oneaudio', 1)
-            //         setTimeout(resolve, 999)
-            //     })
-            // }).then(() => {
-            //     return new Promise((resolve) => {
-            //         self.audioPlay('readyaudio', 1)
-            //         setTimeout(resolve, 999)
-            //     })
-            // })
             this.audio_state_now = this.audio_state.countdown
-            this.audio_stack = ['readyaudio', 'oneaudio', 'twoaudio', 'threeaudio']
+            this.audio_stack = ['readyaudio.wav', 'oneaudio.wav', 'twoaudio.wav', 'threeaudio.wav']
             let content = this.audio_stack.pop()
             this.audio_state_now = this.audio_state.countdown
             this.audioPlay(content) 
@@ -469,10 +458,10 @@ export default {
     }
     @keyframes turn
     {
-    0% {color: black;}
-    25% {color: rgba(10, 194, 126, 1);}
-    50% {color: black;}
-    75% {color: rgba(10, 194, 126, 1);}
-    100% {color: black;}
+        0% {color: black;}
+        25% {color: rgba(10, 194, 126, 1);}
+        50% {color: black;}
+        75% {color: rgba(10, 194, 126, 1);}
+        100% {color: black;}
     }
 </style>

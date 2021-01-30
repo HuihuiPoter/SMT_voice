@@ -52,10 +52,6 @@ const routes = [
         component: Spelling
     },
     {
-        path: "/rule",
-        component: RuleInform
-    },
-    {
         path: "/countdown",
         component: Countdown
     },
@@ -90,7 +86,11 @@ const routes = [
             {
                 path: 'voice_main',
                 component: VoiceMain
-            }
+            },
+            {
+                path: "rule",
+                component: RuleInform
+            },
         ]
     }
 ]

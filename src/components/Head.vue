@@ -2,7 +2,7 @@
     <div id="head" :style="{backgroundColor: $store.state.base_color}">
         <el-row :gutter="20" type="flex">
             <el-col :span="12" :offset="1">
-                <h1 class="color_white">SMarTree语音评测</h1>
+                <h1 class="color_white">SMarTree英语听说训练</h1>
             </el-col>
             <el-col :span="1" :offset="4">
                 <div class="" style="margin-top: 40%">

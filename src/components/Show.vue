@@ -2,7 +2,7 @@
     <div id="div_show">
         <h2>Welcome to the SMarTree, you are now at level 1</h2>
         <el-row :gutter="20">
-            <el-col :span="10" :offset="0"><Unitprogress :_page="'main/rule'" :percentage="100"><span>单词智慧评测</span></Unitprogress></el-col>
+            <el-col :span="10" :offset="0"><Unitprogress :_page="'main/voice_main'" :percentage="100"><span>单词智慧评测</span></Unitprogress></el-col>
             <el-col :span="10" :offset="0"><Unitprogress :_page="'main/sen_xunfei'" :percentage="0"><span>句子智慧评测</span></Unitprogress></el-col>
         </el-row>
         <br>

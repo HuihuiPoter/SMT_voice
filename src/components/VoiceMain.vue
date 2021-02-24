@@ -1,5 +1,17 @@
 <template>
     <div>
+        <div v-show="showRule" align='center' style="margin-top: 6%"> 
+            <div id="div_bi">
+            <button id="btn_go" type="success" @click="audioRule" v-if="btn_hi_show">Hello</button>
+            <button id="btn_go" type="success" @click="hideThis" v-if="btn_show">GO</button>
+            <img id="img_helen" src="../assets/Helen.png" alt="Teacher Helen" srcset="">  
+            <audio ref="audioplay">
+                <source :src="audiourl" type="audio/wav">
+                <source :src="audiourl" type="audio/mpeg">
+            </audio> 
+            </div>
+        </div>
+        <div v-show="!showRule">
         <slot></slot>
         <el-row :gutter="20" style="margin-top: 5%" justify="center">
             <el-col :span="4" :offset="2">
@@ -17,19 +29,21 @@
                             <span v-for="(item, index) in content_colors" :key="index" :style="{'color': item.color}">{{content_flow[index].phone}}</span>
                         </div>
                     </el-tooltip>
-                    <div id="remark">[没有音标]</div>  
+                    <!-- <div id="remark">[没有音标]</div>   -->
+                    <div v-show="img_show">
+                        <img :src="word_image_url" alt="Word Image" srcset="" height="200" width="200">
+                    </div>
                     <div id="remark" v-if="btn_again_show">再听一次：
                         <el-button type="primary" icon="el-icon-phone-outline" circle @click="btnAgainClick"></el-button>
-                    </div>
-                    <audio :src="myaudio" autoplay></audio>          
+                    </div>     
                 </div>
                 <div style="margin-top: 5%;text-align: center;">
                     <Countdown v-if="ct_show"></Countdown>
                     <Wave v-if="wave_visible"></Wave>
                 </div>
                 
-                <div v-show="btn_next_show">
-                <el-button type="warning" size="default" @click="reRecord" icon="el-icon-refresh" v-show="btn_show">重新录音</el-button>
+                <div v-show="btn_next_show" style="margin-top: 5%;">
+                <el-button type="warning" size="default" @click="reRecord" icon="el-icon-refresh">重新录音</el-button>
                     <el-button type="success" size="medium" @click="next">
                         下一个<i class="el-icon-arrow-right el-icon--right"></i>
                     </el-button>
@@ -54,11 +68,15 @@
                 </div>
             </el-col>
         </el-row>
-        
+        <audio ref="audioplay">
+            <source :src="audiourl" type="audio/wav">
+            <source :src="audiourl" type="audio/mpeg">
+        </audio>
         <Recorder :recording="recording" @recordEnd="recordEnd"></Recorder>
         <UpShow v-if="result_visible" title="本次练习成果">
             <Result v-if="result_visible" :stat="stat_data" :time="all_time" @resultClose="resultClose"></Result>
         </UpShow>
+        </div>
     </div>
 </template>
 
@@ -117,11 +135,9 @@ export default {
             tipshow: true, //提示显示
             ct_show: false ,//倒计时显示
             // btn_disabled: true,
-            btn_show: false,
             btn_start_show: false,
             btn_next_show: false,
             btn_again_show: false,
-            myaudio: '', 
             percentage: 0,
             //单词显示
             content_flow: [],
@@ -135,7 +151,14 @@ export default {
                 remark: 2,
                 end: 3,
                 tick: 4
-            }
+            },
+            audio_times: 0,
+            img_show: false,
+            word_image_url: '',
+            audiourl: '',
+            showRule: true,
+            btn_show: false,
+            btn_hi_show: true,
         }
     },
     computed: {
@@ -168,11 +191,9 @@ export default {
     },
     mounted: function() {
         this.requestData()
-        // this.audio_stack = ['321audio' ,'welcomeaudio']  
-        this.audio_stack = ['321audio.wav']
-        let content = this.audio_stack.pop() 
-        this.audio_state_now = this.audio_state.start
-        this.audioPlay(content)   
+        // this.audioPlay_1('321audio.wav', () => { //引导录音结束出现开始按钮
+        //     this.btn_start_show = true
+        // })   
     },
     watch: {
         recording(newVal) {
@@ -180,35 +201,14 @@ export default {
                 this.submit()              
             }
         },
-        audio_ended(val) {
-            //引导录音结束
-            if (val == true && this.audio_state_now == this.audio_state.start && !this.audio_stack.length) 
-                this.btn_start_show = true
-            //评价结束
-            if (val == true && this.audio_state_now == this.audio_state.remark && !this.audio_stack.length){
-                if (this.level == 1)
-                    this.prompt()
-                else
-                    this.btn_next_show = true
-                if (this.level == 2)
-                    this.btn_again_show = true
-            }
-            //录音提示音结束,开始录音
-            if (val == true && this.audio_state_now == this.audio_state.tick && !this.audio_stack.length) {
-                this.wave_visible = true
-                this.recording = true  
-            }
-            if (val == true && this.audio_stack.length) {
-                let content = this.audio_stack.pop()
-                this.audioPlay(content)  
-            }
-            if (val == true)
-                this.audio_ended = false
-        },
         level(val) {
             if (val === 1 && this.read_again === false) {
                 this.read_again = true
             }
+        },
+        btn_next_show(val) {
+            if (val)
+                this.audioPlay('ringaudio.mp3')
         }
     },
     methods: {
@@ -223,8 +223,23 @@ export default {
                 content: this.word_list[this.idx].word_content,
                 thinking_time: this.thinking_time
             })
-            this.btn_show = true
-            this.myaudio = window.URL.createObjectURL(this.blob)
+            // let el_audio = new Audio(window.URL.createObjectURL(this.blob))
+            // setTimeout(() => {
+            //     this.word_image_url = "https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/wordphoto/" + this.word_list[this.idx].word_content + ".png"
+            //     this.img_show = true 
+            //     el_audio.play()
+            // }, 500)
+            const self = this
+            this.audiourl = window.URL.createObjectURL(this.blob)
+            this.$refs.audioplay.load()
+            this.$refs.audioplay.oncanplay = function() {
+                self.word_image_url = "https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/wordphoto/" + self.word_list[self.idx].word_content + ".png"
+                self.img_show = true 
+                self.$refs.audioplay.play()
+            }
+            this.$refs.audioplay.onended = function() {
+                self.img_show = false 
+            }      
         },
         //关闭评价页面
         remarkClose(val) {
@@ -256,7 +271,6 @@ export default {
             //第二次练习
             this.requestData()
             this.idx = 0
-            this.btn_show = false
             this.btn_start_show = true
             this.btn_next_show = false
             this.btn_again_show = false
@@ -308,8 +322,7 @@ export default {
                 this.content_flow = []
                 this.content_colors = []
                 this.content_flow.push({phone: this.word_list[this.idx].word_content})
-                this.content_colors.push('black')
-                this.btn_show = false     
+                this.content_colors.push('black')    
                 this.read_again = false 
                 this.btn_again_show = false
                 console.log('next one')
@@ -342,12 +355,11 @@ export default {
             //const self = this
             this.remark_visible = false  
             this.audio_state_now = this.audio_state.tick
-            this.audioPlay('starttips.mp3')
-            // setTimeout(() => {
-            //     self.wave_visible = true
-            //     self.recording = true    
-            // }, 1000)                      
-            
+            //this.audioPlay('starttips.mp3')  
+            this.audioPlay_1('starttips.mp3', () => {//提示音后打开录音组件
+                this.wave_visible = true
+                this.recording = true 
+            })                
         },
         //更新统计数据
         updateStat() {
@@ -373,34 +385,59 @@ export default {
         }, 
         //播放语音
         audioPlay(content) {           
-            let helen_audio = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
-            let el_audio = new Audio(helen_audio)
-            setTimeout(() => {
-                el_audio.play()
-            }, 400)
+            // let helen_audio = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
+            // let el_audio = new Audio(helen_audio)
+            this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
+            // setTimeout(() => {
+            //     el_audio.play()
+            // }, 400)
+            this.$refs.audioplay.load()
             const self = this  
-            el_audio.onended = function() {
-                self.audio_ended = true
-                // if (self.audio_state_now == self.audio_state.tick){
-                //     self.wave_visible = true
-                //     self.recording = true  
-                // }
+            this.$refs.audioplay.oncanplay = function() {
+                setTimeout(() => {
+                    self.$refs.audioplay.play()
+                }, 400)    
             }
+            this.$refs.audioplay.onended = function() {
+                let content = self.audio_stack.pop()
+                if (content)
+                    self.audioPlay(content)
+            }
+        },
+        audioPlay_1(content, callback) {           
+            // let helen_audio = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
+            // let el_audio = new Audio(helen_audio)
+            // setTimeout(() => {
+            //     el_audio.play()
+            // }, 500) 
+            this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
+             this.$refs.audioplay.load()
+            const self = this  
+            this.$refs.audioplay.oncanplay = function() {
+                self.$refs.audioplay.play()
+            }
+            this.$refs.audioplay.onended = callback
         },
         //三种结果录音
         audioRemark() {
             this.audio_state_now = this.audio_state.remark
             if (this.level == 0) {
                 let goodaudios = ['goodaudio0.wav','goodaudio1.wav','goodaudio2.wav','goodaudio3.wav','goodaudio4.wav']
-                this.audioPlay(goodaudios[Math.floor(Math.random() * 5)])
+                this.audioPlay_1(goodaudios[Math.floor(Math.random() * 5)], () => {
+                    this.btn_next_show = true
+                })
             }
             else if (this.level == 1) {
                 let normalaudios = ['normalaudio0.wav', 'normalaudio1.wav', 'normalaudio2.wav', 'normalaudio3.wav', 'normalaudio4.wav']
-                this.audioPlay(normalaudios[Math.floor(Math.random() * 5)])
+                this.audioPlay_1(normalaudios[Math.floor(Math.random() * 5)], () => {
+                    this.prompt()
+                })
             }
             else {
                 let badaudios = ['badaudio0.wav', 'badaudio1.wav', 'badaudio2.wav', 'badaudio3.wav', 'badaudio4.wav']
-                this.audioPlay(badaudios[Math.floor(Math.random() * 5)])
+                this.audioPlay_1(badaudios[Math.floor(Math.random() * 5)], () => {
+                    this.btn_again_show = true
+                })
             }
         },
         //倒计时录音
@@ -413,26 +450,51 @@ export default {
         },
         //再听三遍录音
         btnAgainClick() {
-            console.log(this.word_list[this.idx].word_content)
-            let audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.word_list[this.idx].word_content
-            let el_audio = new Audio(audio)
-            let total = 4.5
-            this.dec(el_audio, 1.5, total)
-        },
-        //三遍录音
-        dec(el, time_span, total_time) {
-            if (total_time === 0)
-                return
+            //console.log(this.word_list[this.idx].word_content)
+            this.img_show = true
+            this.audio_times = 0
+            // let audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.word_list[this.idx].word_content
+            // let el_audio = new Audio(audio)
+            this.audiourl = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.word_list[this.idx].word_content
+            this.$refs.audioplay.load()
             const self = this
-            new Promise((resolve) => {
+            this.$refs.audioplay.onended = function() {
+                self.audio_times++
+                if (self.audio_times < 3){
+                    setTimeout(() => {
+                        self.$refs.audioplay.play()
+                    }, 500)
+                }
+                else self.btn_next_show = true
+                if (self.audio_times == 3)
+                    self.img_show = false
+            }
+            this.$refs.audioplay.oncanplay = function() {
                 setTimeout(() => {
-                    el.play()
-                    resolve()
-                }, time_span * 1000)
-            }).then(() => {
-                self.dec(el, time_span, total_time - time_span)
-            })
-            
+                    self.$refs.audioplay.play()
+                }, 500)
+            }  
+        },
+        hideThis(){
+            this.showRule = false
+            this.audioPlay_1('321audio.wav', () => { //引导录音结束出现开始按钮
+            this.btn_start_show = true
+        })
+        },
+        audioRule(){
+            this.btn_hi_show = false
+            setTimeout(() => {
+                this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/welcomeaudio.wav'
+                this.$refs.audioplay.load()
+                const self = this
+                this.$refs.audioplay.oncanplay = function() {
+                    self.$refs.audioplay.play()
+                }
+                
+                this.$refs.audioplay.onended = function() {
+                    self.btn_show = true
+                }
+            }, 500)
         }
     }
 }
@@ -463,5 +525,23 @@ export default {
         50% {color: black;}
         75% {color: rgba(10, 194, 126, 1);}
         100% {color: black;}
+    }
+    #img_helen{
+        width: auto;
+        height: auto;
+    }
+    #btn_go{
+        float: left;
+        cursor: pointer;
+        width: 150px;
+        height: 150px;
+        font-size: 50px;
+        border-radius:50%;
+        background-color: rgba(10, 194, 126, 1);
+        border: 1px solid #d5d5d5;
+    }
+    #div_bi{
+        width: 60%;
+        float: right;
     }
 </style>

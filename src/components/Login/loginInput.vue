@@ -113,7 +113,7 @@ export default {
                         username: this.ruleForm.username,
                         password: this.ruleForm.password
                     })
-                    this.$router.replace('/main')
+                    this.$router.replace('/main/evaluate')
                 }  
                 else alert("账号密码输入错误")
           })

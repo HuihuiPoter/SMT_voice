@@ -1,15 +1,30 @@
 <template>
-    <div id="box_remark">
-        <h1>评价</h1>
-        <h2>{{remark}}</h2>
-        <!-- <h2><span v-for="(item, index) in phoneWithColor" :key="index" :style="{'color': item.color}">{{item.phone}}</span></h2> -->
-        <!-- <h3 v-show="ord_inform">稍后请再读一次</h3> -->
-        <!-- <div v-if="failed_inform">
-        <h3>请仔细听单词录音，并跟读</h3>
-        <el-tooltip content="点击下面的互动按钮听标准录音" placement="bottom" effect="dark" :value="true">
-            <el-button type="primary" icon="el-icon-phone-outline" circle @click="btnClick"></el-button>
-        </el-tooltip>  
-        </div>  -->
+    <div id="remark_container" align="center">
+        <div id="div_remark">
+            评价：{{remark}}
+        </div>
+        <div id="div_word">
+            <span v-for="(item, idx) in phoneWithColor" :key="idx" :style="{'color': item.color}">{{item.phone}}</span>
+        </div>
+        <!-- 单词图片显示 -->
+        <div>
+            <img id="img_word" :src="img_URL" alt="">
+        </div>
+        <!-- 按钮显示 -->
+        <div v-show="computedLevel === 0 && is_show">
+            <!-- 优秀 -->
+            <img class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
+        </div>
+        <div v-show="computedLevel === 1 && is_show">
+            <!-- 普通 -->
+            <img class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
+            <!-- 再试一次没有 -->
+        </div>
+        <div v-show="computedLevel === 2 && is_show">
+            <!-- 不合格 -->
+            <img id="btn_listenagain" class="btn_remark" src="../assets/test_board/listenagain.png" alt="" @click="listenAgain">
+            <img id="btn_recordagain" class="btn_remark" src="../assets/test_board/recordagain.png" alt="" @click="recordAgain">
+        </div>
     </div>
 </template>
 
@@ -19,7 +34,8 @@ import Vue from 'vue'
 export default {
     name: 'Remark',
     props: {
-        record: Object
+        record_pro: Object,
+        btn_show: Boolean
     },
     data() {
         return {
@@ -28,13 +44,21 @@ export default {
                 ordinary: 1,
                 failed: 2
             },
-            // ord_inform: false,
-            // failed_inform: false,
-            // r_msg:''
+            word: 'word',
+            record: this.record_pro,
+            is_show: false
         }
     },
     mounted: function() {
         this.informMain()
+    },
+    watch: {
+        record_pro(val){
+            this.record = val
+        },
+        btn_show(val) {
+            this.is_show = val
+        }
     },
     computed: {
         phoneWithColor() {
@@ -50,9 +74,9 @@ export default {
         },
         computedLevel() {
             let le
-            if (this.record.score >= 85)
+            if (this.record.pron_total_score >= 85)
                 le = this.level.excellent
-            else if (this.record.score >= 75)
+            else if (this.record.pron_total_score >= 75)
                 le = this.level.ordinary
             else le = this.level.failed
             return le
@@ -72,6 +96,9 @@ export default {
                 default: console.log('wrong level')
             }
             return re
+        },
+        img_URL() {
+            return self.word_image_url = "https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/wordphoto/" + this.record.content + ".png"
         }
     },
     methods: {
@@ -81,23 +108,49 @@ export default {
                 level: this.computedLevel,
                 color: this.phoneWithColor
             })  
+        },
+        next() {
+            this.$emit('next', true)
+        },
+        listenAgain() {
+            this.$emit('listenAgain', true)
+        },
+        recordAgain() {
+            this.$emit('recordAgain', true)
         }
     }
 }
 </script>
 
 <style>
-    /* #box_remark{
-        border: 1px solid black;
-        border-radius: 10px;
-        animation: border_turn 3s;
+    #remark_container{
+        position: absolute;
+        z-index: 1;
+        margin-top: 15%;
+        margin-left: 20%;
+        width: 60%;
     }
-    @keyframes border_turn
-    {
-    0% {border: 1px solid black;}
-    25% {border: 1px solid rgba(10, 194, 126, 1);}
-    50% {border: 1px solid black;}
-    75% {border: 1px solid rgba(10, 194, 126, 1);}
-    100% {border: 1px solid black;}
-    } */
+    #div_remark{
+        color: #000000;
+        font-size: 1.6vw;
+        font-weight: bold;
+    }
+    #img_word{
+        width: 15%;
+        height: auto;
+    }
+    .btn_remark{
+        position: absolute;
+        /* margin-top: 3%; */
+        left: 37%;
+        width: 26%;
+        height: auto;
+        cursor: pointer;
+    }
+    #btn_listenagain{
+        left: 30%;
+    }
+    #btn_recordagain{
+        left: 44%;
+    }
 </style>

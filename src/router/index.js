@@ -13,6 +13,8 @@ const RuleInform = () => import('../components/RuleInform')
 const Countdown = () => import('../components/Countdown')
 const VoiceMain = () => import('../components/VoiceMain')
 
+const newResult = () => import('../components/newResult')
+const Evaluation = () => import('../components/Evaluation')
 //Vue.use()安装插件
 Vue.use(VueRouter)
 
@@ -91,6 +93,14 @@ const routes = [
                 path: "rule",
                 component: RuleInform
             },
+            {
+                path: "result",
+                component: newResult
+            },
+            {
+                path: "evaluate",
+                component: Evaluation
+            }
         ]
     }
 ]

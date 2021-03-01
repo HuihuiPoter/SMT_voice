@@ -56,7 +56,7 @@ export default {
                 return
             }
             if (!self.after_thinking) { //正式录音前思考时间           
-                if (params.vol > 20) { //计算思考时间
+                if (params.vol > 15) { //计算思考时间
                     self.end = new Date()
                     self.thinking_time = self.end - self.begin//ms
                     self.after_thinking = true

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Head></Head>
+        <!-- <Head></Head> -->
         <!-- <Navbar></Navbar> -->
         <router-view></router-view>
     </div>
@@ -8,13 +8,13 @@
 
 <script>
 // import Navbar from "./Navbar"
-import Head from "./Head"
+//import Head from "./Head"
 
 export default {
     name: 'Main',
     components: {
         // Navbar,
-        Head
+        //Head
     }
 }
 </script>

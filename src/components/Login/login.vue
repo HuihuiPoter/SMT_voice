@@ -20,10 +20,10 @@ export default {
 
 <style>
 #div_login{
-    background: url(../../assets/sky.jpg);
+    /* background: url(../../assets/sky.jpg); */
   /* background-position: left top; */
   /* background-size:100%; */
-  background-size: cover;
-  padding: 25%;
+  /* background-size: cover;
+  padding: 25%; */
 }
 </style>

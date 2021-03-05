@@ -1,7 +1,7 @@
 <template>
     <div id="div_select" align="center">
         <!-- 按钮 -->
-        <!-- <img id="img_back" src="../assets/select_lesson/back.png" alt=""> -->
+        <img id="img_back" src="../assets/select_lesson/back.png" alt="">
         <!-- 板块 -->
         <img class="lesson" id="img_lesson1" ref="lesson1" src="../assets/select_lesson/lesson1.png" alt="" @click="selectLesson1">
         <img class="lesson" id="img_lesson2" ref="lesson2" src="../assets/select_lesson/lesson2.png" alt="" @click="selectLesson2">
@@ -76,13 +76,13 @@ export default {
 <style>
     #div_select{
         background-color: #FFFBE8;
-        width: 100%;
-        height: 100%;
+        height: 44vw;
+        width: 100vw;
     }
     #img_back{
         position: absolute;
-        margin-top: 4%;
-        margin-left: 0.1%;
+        right: 85%;
+        top: 6%;
         width: 12%;
         height: auto;
         cursor: pointer;
@@ -92,7 +92,41 @@ export default {
         height: auto;
         cursor: pointer;
     }
+    #img_lesson1{
+        position: absolute;
+        top: 35%;
+        left: 5%;
+    }
+    #img_lesson2{
+        position: absolute;
+        top: 35%;
+        left: 20%;
+    }
+    #img_lesson3{
+        position: absolute;
+        top: 35%;
+        left: 35%;
+    }
+    #img_lesson4{
+        position: absolute;
+        top: 35%;
+        left: 50%;
+    }
+    #img_lesson5{
+        position: absolute;
+        top: 35%;
+        left: 65%;
+    }
+    #img_lesson6{
+        position: absolute;
+        top: 35%;
+        left: 80%;
+    }
     #img_enter{
+        position: absolute;
+        z-index: 1;
+        top: 70%;
+        right: 40%;
         width: 20%;
         height: auto;
         cursor: pointer;

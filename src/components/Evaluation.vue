@@ -12,6 +12,7 @@
         <img v-show="shadow_show" id="img_dialog" :src="dialogURL" alt="">
         <!-- 按钮 -->
         <img id="img_prev" src="../assets/test_board/prev.png" alt="">
+        <img id="img_main" src="../assets/test_board/main.png" alt="">
         <!-- <img  v-show="shadow_show" id="img_close" src="../assets/test_board/close.png" alt="" @click="closeDialog"> -->
         <!-- 进度条 -->
         <div id="div_prog" class="prog_box">
@@ -28,10 +29,10 @@
         <!-- 录音 -->
         <Recorder :recording="recording" @recordEnd="recordEnd"></Recorder>
         </div>
-        <div v-else>
-            <newResult></newResult>
-        </div>
-        <audio ref="audioplay">
+        <!-- <div> -->
+        <newResult v-else :stat="stat_data" :time="all_time" @resultClose="resultClose"></newResult>
+        <!-- </div> -->
+        <audio ref="audioplay" id="au">
             <source :src="audiourl" type="audio/wav">
             <source :src="audiourl" type="audio/mpeg">
         </audio>
@@ -60,7 +61,7 @@ export default {
     },
     data() {
         return {
-            step: 0,
+            step: 2,
             helen_URL: '',
             dialogURL: '',
             word_list: [],
@@ -85,12 +86,14 @@ export default {
             dialog_close: false,
             countdown: false,
             all_time: 0,
-            result_visible: false
+            result_visible: false,
+            stat_data: []
         }
     },
     mounted: function(){
         //this.prompt()
         this.requestData()
+        this.all_time = new Date()
     },
     watch: {
         recording(newVal) {
@@ -107,6 +110,7 @@ export default {
     methods: {
         //数据初始化
         _init_() {
+            this.step = 0
             this.recording_show = false
             this.idx = 0
         },
@@ -208,6 +212,7 @@ export default {
                 this.audioPlay('endaudio.wav')
                 this.all_time = new Date() - this.all_time
                 this.result_visible = true
+                this.step = 3
             }
         },
          //答题提示
@@ -243,7 +248,7 @@ export default {
             }
             if (this.level == 1 && this.read_again == true)
                 this.level = 2
-            //this.updateStat()
+            this.updateStat()
             const self = this
             new Promise((resolve) => {
                 setTimeout(() => {
@@ -303,7 +308,8 @@ export default {
                 this.$refs.audioplay.oncanplay = function() {
                     self.$refs.audioplay.play()
                 }
-                
+                // let x = document.getElementById('au')
+                // x.playbackRate = 0.8
                 this.$refs.audioplay.onended = function() {
                     // self.btn_show = true
                     self.dialog_close = true
@@ -336,6 +342,23 @@ export default {
                     self.audioPlay(content)
             }
         },
+        //更新统计数据
+        updateStat() {
+            if (!this.read_again){
+                this.stat_data.push({
+                    content: this.word_list[this.idx].word_content,
+                    remark: this.getRemark,
+                    proficiency: this.getProficiency
+                })
+            }
+            else{
+                this.stat_data.splice({
+                    content: this.word_list[this.idx].word_content,
+                    remark: this.getRemark,
+                    proficiency: this.getProficiency
+                }, this.idx, 1) 
+            }
+        },
         showText(percentage){
             return '本次学习进度' + percentage + '%'
         },
@@ -344,7 +367,11 @@ export default {
         },
         ruleStart(){
             this.audioRule()
-        }
+        },
+        //关闭结果页面
+        resultClose() {
+            this._init_()            
+        },
     }
 }
 </script>
@@ -371,17 +398,26 @@ export default {
     #img_dialog{
         position: absolute;
         z-index: 3;
-        margin-top: 20%;
+        margin-top: 25%;
         margin-left: 15%;
-        width: 35%;
+        width: 20%;
         height: auto;
     }
     #img_prev{
         position: absolute;
         z-index: 1;
-        margin-top: 5%;
-        margin-left: 1%;
-        width: 6%;
+        margin-top: 6%;
+        margin-left: 0.5%;
+        width: 3%;
+        height: auto;
+        cursor: pointer;
+    }
+    #img_main{
+        position: absolute;
+        z-index: 1;
+        margin-top: 6%;
+        margin-left: 4%;
+        width: 3%;
         height: auto;
         cursor: pointer;
     }
@@ -404,8 +440,12 @@ export default {
     .el-progress-bar__inner{
         background-image: linear-gradient(to right, #FEF79F , #B8D302);
     }
+    .el-progress-bar__outer{
+        height: 1.2rem !important;
+    }
     .el-progress-bar__innerText {
-        color: #000000
+        color: #000000;
+        font-size: 1rem;
     }
     
 </style>

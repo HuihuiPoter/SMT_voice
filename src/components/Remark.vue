@@ -17,8 +17,9 @@
         </div>
         <div v-show="computedLevel === 1 && is_show">
             <!-- 普通 -->
-            <img class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
-            <!-- 再试一次没有 -->
+            <img id="btn_ordin_next" class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
+            <!-- 再试一次 -->
+            <img id="btn_tryagain" class="btn_remark" src="../assets/test_board/tryagain.png" alt="" @click="next">
         </div>
         <div v-show="computedLevel === 2 && is_show">
             <!-- 不合格 -->
@@ -142,15 +143,21 @@ export default {
     .btn_remark{
         position: absolute;
         /* margin-top: 3%; */
-        left: 37%;
-        width: 26%;
+        left: 43%;
+        width: 12%;
         height: auto;
         cursor: pointer;
     }
     #btn_listenagain{
-        left: 30%;
+        left: 36%;
     }
     #btn_recordagain{
-        left: 44%;
+        left: 52%;
+    }
+    #btn_ordin_next{
+        left: 36%
+    }
+    #btn_tryagain{
+        left: 52%;
     }
 </style>

@@ -9,7 +9,8 @@
         <img v-show="!dialog_show" id="img_dialog" :src="dialogURL" alt="">
         <!-- 按钮 -->
         <!-- <img v-show="!dialog_show" id="img_follow" src="../assets/rule/following.png" alt="" @click="follow"> -->
-        <img id="img_prev" src="../assets/rule/prev.png" alt="" @click="pre">
+        <img id="img_prev" src="../assets/test_board/prev.png" alt="" @click="pre">
+        <img id="img_main" src="../assets/test_board/main.png" alt="">
         <!-- 背景板 -->
         <img id="img_bg" src="../assets/rule/background.jpg" alt="" height="46.125%" width="82%"> 
     </div>

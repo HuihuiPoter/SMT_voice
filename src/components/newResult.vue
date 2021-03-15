@@ -30,25 +30,31 @@
         <div id="div_greenlist">优秀单词列表</div>
         <img id="img_off" src="../assets/result/off.png" alt="">
         <div id="div_exTable">
-            <el-table :data="ex_stat_data" border stripe height="100">
+            <!-- <el-table :data="ex_stat_data" border stripe height="100">
             <el-table-column v-for="col in columns"
                 :prop="col.id"
                 :key="col.id"
                 :label="col.label">
             </el-table-column>
-            </el-table>
+            </el-table> -->
+            <div v-for="(row, idx) in ex_stat_data" :key="idx + 'ex_row'">
+                <div class="div_word_ceil" v-for="(item, index) in row" :key="index + 'ex_item'">{{item}}</div>
+            </div>
         </div>
         <!-- 需巩固单词列表 -->
         <div id="div_redlist">需巩固单词列表</div>
         <img id="img_on" src="../assets/result/on.png" alt="">
         <div id="div_notTable">
-            <el-table :data="not_stat_data" border stripe height="100">
+            <!-- <el-table :data="not_stat_data" border stripe height="100">
             <el-table-column v-for="col in columns"
                 :prop="col.id"
                 :key="col.id"
                 :label="col.label">
             </el-table-column>
-            </el-table>
+            </el-table> -->
+            <div v-for="(row, idx) in not_stat_data" :key="idx + 'not_row'" style="width: 25vw;">
+                <div class="div_word_ceil" v-for="(item, index) in row" :key="index + 'not_item'">{{item}}</div>
+            </div>
         </div>
         <!-- 背景板 -->
         <img id="img_bg" src="../assets/result/result_board.png" alt="" height="56%" width="82%">
@@ -83,7 +89,12 @@ export default {
             not_excel_num: 0,
             all_time: this.time,
             ex_stat_data: [],
-            not_stat_data: []
+            not_stat_data: [],
+            word_matrix: [
+                ['word', 'word', 'word'],
+                ['word', 'word', 'word'],
+                ['word', 'word'],
+            ]
         }
     },
     computed: {
@@ -101,13 +112,17 @@ export default {
         for (let item of this.stat_data){
             if (item.remark == '优秀'){
                 this.excel_num++
-                this.ex_stat_data.push(item)
+                this.ex_stat_data.push(item.content)
             }
             else {
                 this.not_excel_num++
-                this.not_stat_data.push(item)
+                this.not_stat_data.push(item.content)
             }
         }
+        // console.log(this.stat_data)
+        this.ex_stat_data = this.reshape5by3(this.ex_stat_data)
+        this.not_stat_data = this.reshape5by3(this.not_stat_data)
+        // console.log(this.not_stat_data)
     },
     methods: {
         backToMain() {
@@ -117,6 +132,26 @@ export default {
         praticeAgain() {
             console.log('再来一次')
             this.$emit('resultClose', false)
+        },
+        reshape5by3(original_list) {
+            let mat = []
+            let idx = 0
+            if (original_list.length == 0)
+                return []
+            for (let i = 0;i < 5;i++){
+                let list = []
+                for (let j = 0;j < 3;j++){
+                    // console.log(original_list[idx])
+                    list.push(original_list[idx])
+                    idx++
+                    if (idx >= original_list.length)
+                        break
+                }
+                mat.push(list)
+                if (idx >= original_list.length)
+                        break
+            }
+            return mat
         }
     }
 }
@@ -349,14 +384,21 @@ export default {
         z-index: 1;
         margin-top: 18%;
         margin-left: 52%;
-        width: 20%;
+        width: 24vw;
+    }
+    .div_word_ceil{
+        width: 8vw;
+        /* font-size: 1vw; */
+        float: left;
+        display: inline;
+        border: black solid 0.1vw;
     }
     #div_notTable{
         position: absolute;
         z-index: 1;
         margin-top: 33%;
         margin-left: 52%;
-        width: 20%;
+        width: 24vw;
     }
     .el-table{
         /* max-height: 8vw !important; */

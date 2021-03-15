@@ -19,12 +19,13 @@
             <!-- 普通 -->
             <img id="btn_ordin_next" class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
             <!-- 再试一次 -->
-            <img id="btn_tryagain" class="btn_remark" src="../assets/test_board/tryagain.png" alt="" @click="next">
+            <img id="btn_tryagain" class="btn_remark" src="../assets/test_board/tryagain.png" alt="" @click="recordAgain">
         </div>
         <div v-show="computedLevel === 2 && is_show">
             <!-- 不合格 -->
             <img id="btn_listenagain" class="btn_remark" src="../assets/test_board/listenagain.png" alt="" @click="listenAgain">
             <img id="btn_recordagain" class="btn_remark" src="../assets/test_board/recordagain.png" alt="" @click="recordAgain">
+            <img v-if="timesOfFailed == 2" id="btn_next_failed" class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
         </div>
     </div>
 </template>
@@ -36,7 +37,8 @@ export default {
     name: 'Remark',
     props: {
         record_pro: Object,
-        btn_show: Boolean
+        btn_show: Boolean,
+        failed_times: Number
     },
     data() {
         return {
@@ -47,7 +49,8 @@ export default {
             },
             word: 'word',
             record: this.record_pro,
-            is_show: false
+            is_show: false,
+            timesOfFailed: this.failed_times
         }
     },
     mounted: function() {
@@ -59,6 +62,10 @@ export default {
         },
         btn_show(val) {
             this.is_show = val
+        },
+        failed_times(val) {
+            // console.log(val)
+            this.timesOfFailed = val
         }
     },
     computed: {
@@ -159,5 +166,8 @@ export default {
     }
     #btn_tryagain{
         left: 52%;
+    }
+    #btn_next_failed{
+        margin-top: 5%;
     }
 </style>

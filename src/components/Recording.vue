@@ -2,7 +2,7 @@
     <div id="div_recording" align="center">
         <!-- 显示单词 -->
         <div id="div_word" align="center">
-            {{getWord}}
+            {{showing_content.word_content}}
         </div>
         <!-- 显示音标 -->
         <!-- 显示图片 -->
@@ -15,27 +15,22 @@
 export default {
     name: 'Recording',
     props: {
-        words: Array,
-        idx: Number,
-    
+        content: Object
     },
     data() {
         return {
-            word: 'word',
-            show_idx: 0,
-            
+            showing_content: this.content
         }
     },
     watch: {
-        idx(val) {
-            this.show_idx = val
-        },
-       
+       content(val) {
+           this.showing_content = val
+       }
     },
     computed: {
-        getWord() {
-            return this.words[this.show_idx].word_content
-        }
+        // getWord() {
+        //     return this.words[this.show_idx].word_content
+        // }
     },
     mounted: function() {
         

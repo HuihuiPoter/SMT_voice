@@ -76,7 +76,7 @@ export default {
 <style>
     #div_select{
         background-color: #FFFBE8;
-        height: 44vw;
+        height: 100vh;
         width: 100vw;
     }
     #img_back{

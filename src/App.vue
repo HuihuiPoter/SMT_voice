@@ -27,8 +27,8 @@ export default {
         padding: 0;
     }
     body{
-        display: flex;
         display: -webkit-flex;
+        display: flex;  
         align-items: center;
         justify-content: center;
     }

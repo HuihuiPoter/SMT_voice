@@ -3,10 +3,15 @@
         <!-- 中央图标 -->
         <img id="img_countdown" :src="countdownURL" alt="">
         <!-- helen老师 -->
-        <img id="img_intro" src="../assets/teacher_helen/intro.gif" alt="">
+        <transition name="fade">
+            <img id="img_intro" src="../assets/teacher_helen/intro.gif" alt="">
+        </transition>
+        
         <img id="img_shadow" src="../assets/teacher_helen/shadow.png" alt="">
         <!-- 对话框 -->
-        <img v-show="!dialog_show" id="img_dialog" :src="dialogURL" alt="">
+        <transition name="fade">
+            <img v-show="!dialog_show" id="img_dialog" :src="dialogURL" alt="">
+        </transition>
         <!-- 按钮 -->
         <!-- <img v-show="!dialog_show" id="img_follow" src="../assets/rule/following.png" alt="" @click="follow"> -->
         <img id="img_prev" src="../assets/test_board/prev.png" alt="" @click="pre">
@@ -22,12 +27,13 @@ import img_two from '../assets/rule/two.png'
 import img_one from '../assets/rule/one.png'
 import img_ready from '../assets/rule/ready.png'
 import img_go from '../assets/rule/go.png'
-import img_dialog_intro from '../assets/rule/intro.png'
+//import img_dialog_intro from '../assets/rule/intro.png'
 export default {
     name: 'RuleInform',
     props: {
         dialog_close: Boolean,
-        ct: Boolean
+        ct: Boolean,
+        rule_dialog: String
     },
     watch: {
         dialog_close(val){
@@ -37,13 +43,16 @@ export default {
             if (val){
                 this.dec()
             }
+        },
+        rule_dialog(val) {
+            this.dialogURL = val
         }
     },
     data() {
         return {
             countdownURL: '',
             countdownURLs: [img_go, img_ready, img_one, img_two, img_three],
-            dialogURL: img_dialog_intro,
+            dialogURL: this.rule_dialog,
             dialog_show: this.dialog_close,
             num: 4
         }
@@ -121,4 +130,16 @@ export default {
         height: auto;
         cursor: pointer;
     }
+    .fade-enter{
+			opacity: 0;
+		}
+		.fade-enter-active{
+			transition: opacity 0.6s;
+		}
+		.fade-leave-to{
+			opacity: 0;
+		}
+		.fade-leave-active{
+			transition: opacity 0.6s;
+		}
 </style>

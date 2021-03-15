@@ -40,8 +40,12 @@ export default {
     },
     watch: {
         recording(newVal) {
-            if (newVal) 
-                this.recStart()
+            if (newVal) {
+                setTimeout(() => {
+                    this.recStart()
+                }, 300)    
+            }
+                
         }
     },
     methods: {
@@ -81,6 +85,7 @@ export default {
             }
             }
             recorder.start().then(() => {
+                // console.log('recording......', new Date())
                 self.begin = new Date() // 思考时间开始
                 setTimeout(() => {
                     if (self.recording){

@@ -43,16 +43,19 @@ export default {
   left:0;top: 0;right: 0;
   position: absolute;
   transform:translateX(-500px) translateY(-500px) rotate(-150deg) scale(0.5);
+  -webkit-transform: translateX(-500px) translateY(-500px) rotate(-150deg) scale(0.5);
   opacity:1;
 }
 .slide-fade-enter-active {
   background-color: white;
   transition: all 0.6s ease;
+  -webkit-transition: all 0.6s ease;
 }
 .slide-fade-leave-active {
   transition: all 0.7s ease;
   background-color: white;
-  transform:translateX(500px) translateY(500px) rotate(150deg) scale(1) ;
+  transform:translateX(500px) translateY(500px) rotate(150deg) scale(1);
+  -webkit-transform:translateX(500px) translateY(500px) rotate(150deg) scale(1);
   z-index: 100;
 }
 </style>

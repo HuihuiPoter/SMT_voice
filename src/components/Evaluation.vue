@@ -25,9 +25,14 @@
         <img id="img_main" src="../assets/test_board/main.png" alt="">
         <!-- <img  v-show="shadow_show" id="img_close" src="../assets/test_board/close.png" alt="" @click="closeDialog"> -->
         <!-- 进度条 -->
-        <div id="div_prog" class="prog_box">
+        <!-- <div id="div_prog" class="prog_box">
             <el-progress :percentage="percentage" :stroke-width="18" :text-inside="true" :format="showText"></el-progress>
-        </div>
+        </div> -->
+        <img id="img_prog" src="../assets/test_board/prog_bar.png" alt="">
+        <transition-group name="fade" v-if="prog_show">
+            <ProblemLabel v-for="(item, idx) in prog_style" :key="idx + 'prog'" :finished='problem_label[idx]' :ml="item" :no="idx + 1"></ProblemLabel>
+        </transition-group>
+        
         <!-- 录音/评价显示 -->
         <transition name="fade">
             <Recording v-if="recording_show" :content="content" v-show="recording_show"></Recording>
@@ -63,6 +68,7 @@ import Recorder from './Recorder'
 import RuleInform from './RuleInform'
 import SelectLesson from './SelectLesson'
 import newResult from './newResult'
+import ProblemLabel from './ProblemLabel'
 
 export default {
     name: 'Evaluation',
@@ -72,7 +78,8 @@ export default {
         Recorder,
         RuleInform,
         SelectLesson,
-        newResult
+        newResult,
+        ProblemLabel
     },
     data() {
         return {
@@ -105,12 +112,17 @@ export default {
             result_visible: false,
             stat_data: [],
             timesOfFailed: 0,
-            rule_dialog: ''
+            rule_dialog: '',
+            prog_style: [],
+            prog_show: false,
+            problem_label: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+
         }
     },
     mounted: function(){
         //this.prompt()
-        this.requestData()
+        this.requestData()  
+        this.setProgStyle()
         this.all_time = new Date()
     },
     watch: {
@@ -135,7 +147,7 @@ export default {
         },
         RecordofRemark() {
             return {
-                content: this.word_list[this.idx].word_content, 
+                content: this.content.word_content, 
                 score: this.score,
                 phone_record: this.phone_record
             }
@@ -297,6 +309,9 @@ export default {
                 self.audioRemark()
             })
             Vue.set(this.content, 'level', this.level)
+            if (this.level === 0 && this.content.round === 1)
+                this.problem_label.splice(this.idx, 1, true)
+            
             if (this.level === 2 && this.content.round === 1 && this.content.word_content != this.word_list[this.len - 1].word_content){//记录不及格的单词再次训练
                 this.word_list.push(this.word_list[this.idx])
                 this.word_list.splice(this.idx, 1)
@@ -359,24 +374,6 @@ export default {
         },
         //规则录音
         audioRule(){
-            // setTimeout(() => {
-            //     this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/welcomeaudio.wav'
-            //     this.$refs.audioplay.load()
-            //     const self = this
-            //     this.$refs.audioplay.oncanplay = function() {
-            //         self.$refs.audioplay.play()
-            //     }
-                // let x = document.getElementById('au')
-                // x.playbackRate = 0.8
-                // this.$refs.audioplay.onended = function() {
-                    // self.btn_show = true
-            //         self.dialog_close = true
-            //         setTimeout(() => {
-            //             self.countdown = true
-            //             self.audioCountdown()
-            //         }, 1000)
-            //     }
-            // }, 500)
             this.rule_dialog = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/hello.png'
             this.audioPlay_1('welcomeaudio.wav', () => {
                 this.rule_dialog = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/ready.png'
@@ -384,7 +381,7 @@ export default {
                     this.dialog_close = true
                     setTimeout(() => {
                         this.countdown = true
-                        this.audioCountdown()
+                        // this.audioCountdown()
                     }, 1000)
                 })
             })
@@ -419,7 +416,7 @@ export default {
             this.audio_times = 0
             // let audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.word_list[this.idx].word_content
             // let el_audio = new Audio(audio)
-            this.audiourl = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.word_list[this.idx].word_content
+            this.audiourl = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.content.word_content
             this.$refs.audioplay.load()
             const self = this
             this.$refs.audioplay.onended = function() {
@@ -462,13 +459,29 @@ export default {
         closeDialog(){
             console.log('结束对话')
         },
-        ruleStart(){
-            this.audioRule()
+        ruleStart(val){
+            if (val)
+                this.audioRule()
+            else
+                this.audioCountdown()
         },
         //关闭结果页面
         resultClose() {
             this._init_()            
         },
+        setProgStyle() {
+            let ini_ml = 0.264
+            this.prog_style.push({
+                marginLeft: String(ini_ml * 100) + '%'
+            })
+            for (let i = 1;i < 15;i++){
+                ini_ml += 0.032
+                this.prog_style.push({
+                    marginLeft: String(ini_ml * 100) + '%'
+                })
+            }
+            this.prog_show = true
+        }
     }
 }
 </script>
@@ -527,7 +540,7 @@ export default {
         height: auto;
         /* cursor: pointer; */
     }
-    #div_prog{
+    /* #div_prog{
         position: absolute;
         z-index: 1;
         margin-top: 8.75%;
@@ -543,17 +556,26 @@ export default {
     .el-progress-bar__innerText {
         color: #000000;
         font-size: 1rem;
+    } */
+     #img_prog{
+        position: absolute;
+        z-index: 1;
+        margin-top: 6%;
+        margin-left: 14.2%;
+        width: 55%;
     }
     .fade-enter{
 			opacity: 0;
 		}
 		.fade-enter-active{
 			transition: opacity 0.6s;
+            -webkit-transition: opacity 0.6s;
 		}
 		.fade-leave-to{
 			opacity: 0;
 		}
 		.fade-leave-active{
 			transition: opacity 0.6s;
+            -webkit-transition: opacity 0.6s;
 		}
 </style>

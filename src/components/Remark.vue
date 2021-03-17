@@ -13,19 +13,19 @@
         <!-- 按钮显示 -->
         <div v-show="computedLevel === 0 && is_show">
             <!-- 优秀 -->
-            <img class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
+            <img class="btn_remark" src="../assets/test_board/btn_next.png" alt="" @click="next">
         </div>
         <div v-show="computedLevel === 1 && is_show">
             <!-- 普通 -->
-            <img id="btn_ordin_next" class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
+            <img id="btn_ordin_next" class="btn_remark" src="../assets/test_board/btn_next.png" alt="" @click="next">
             <!-- 再试一次 -->
-            <img id="btn_tryagain" class="btn_remark" src="../assets/test_board/tryagain.png" alt="" @click="recordAgain">
+            <img id="btn_tryagain" class="btn_remark" src="../assets/test_board/btn_tryagain.png" alt="" @click="recordAgain">
         </div>
         <div v-show="computedLevel === 2 && is_show">
             <!-- 不合格 -->
-            <img id="btn_listenagain" class="btn_remark" src="../assets/test_board/listenagain.png" alt="" @click="listenAgain">
-            <img id="btn_recordagain" class="btn_remark" src="../assets/test_board/recordagain.png" alt="" @click="recordAgain">
-            <img v-if="timesOfFailed == 2" id="btn_next_failed" class="btn_remark" src="../assets/test_board/next.png" alt="" @click="next">
+            <img id="btn_listenagain" class="btn_remark" src="../assets/test_board/btn_listenagain.png" alt="" @click="listenAgain">
+            <img id="btn_recordagain" class="btn_remark" src="../assets/test_board/btn_recordagain.png" alt="" @click="recordAgain">
+            <img v-if="timesOfFailed == 1" id="btn_next_failed" class="btn_remark" src="../assets/test_board/btn_next.png" alt="" @click="next">
         </div>
     </div>
 </template>

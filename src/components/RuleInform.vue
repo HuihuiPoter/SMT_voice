@@ -1,7 +1,8 @@
 <template>
     <div id="rulebox" align="center">
         <!-- 中央图标 -->
-        <img id="img_countdown" :src="countdownURL" alt="">
+        <img v-if="!show_ct" v-show="show_center" class="img_countdown" src="../assets/rule/start.png" alt="" @click="ctBegin">
+        <img v-else class="img_countdown" :src="countdownURL" alt="">
         <!-- helen老师 -->
         <transition name="fade">
             <img id="img_intro" src="../assets/teacher_helen/intro.gif" alt="">
@@ -41,7 +42,7 @@ export default {
         },
         ct(val) {
             if (val){
-                this.dec()
+                this.show_center = true
             }
         },
         rule_dialog(val) {
@@ -54,7 +55,9 @@ export default {
             countdownURLs: [img_go, img_ready, img_one, img_two, img_three],
             dialogURL: this.rule_dialog,
             dialog_show: this.dialog_close,
-            num: 4
+            num: 4,
+            show_ct: false,
+            show_center: false
         }
     },
     mounted: function(){
@@ -77,13 +80,18 @@ export default {
                 }    
                 this.dec()
             }, 1000)   
+        },
+        ctBegin() {
+            this.show_ct = true
+            this.$emit('ruleStart', false)
+            this.dec()
         }
     }
 }
 </script>
 
 <style>
-    #img_countdown{
+    .img_countdown{
         position: absolute;
         z-index: 1;
         /* flex-shrink: 0; */
@@ -91,6 +99,7 @@ export default {
         margin-left: 28%;
         width: 25%;
         height: auto;
+        cursor: pointer;
     }
     #img_intro{
         position: absolute;
@@ -135,11 +144,13 @@ export default {
 		}
 		.fade-enter-active{
 			transition: opacity 0.6s;
+            -webkit-transition: opacity 0.6s;
 		}
 		.fade-leave-to{
 			opacity: 0;
 		}
 		.fade-leave-active{
 			transition: opacity 0.6s;
+            -webkit-transition: opacity 0.6s;
 		}
 </style>

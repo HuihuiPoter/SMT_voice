@@ -15,6 +15,7 @@ const VoiceMain = () => import('../components/VoiceMain')
 
 const newResult = () => import('../components/newResult')
 const Evaluation = () => import('../components/Evaluation')
+const Course = () => import('../components/Course')
 //Vue.use()安装插件
 Vue.use(VueRouter)
 
@@ -58,6 +59,10 @@ const routes = [
         component: Countdown
     },
     {
+        path: "/course",
+        component: Course
+    },
+    {
         path: "/main",
         component: Main,
         children: [
@@ -99,6 +104,7 @@ const routes = [
             },
             {
                 path: "evaluate",
+                name: "evaluate",
                 component: Evaluation
             }
         ]

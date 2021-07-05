@@ -1,27 +1,27 @@
 <template>
     <div id="remark_container" align="center">
-        <div id="div_remark">
+        <div class="remark_margin" id="div_remark" align="center">
             评价：{{remark}}
         </div>
-        <div id="div_word">
+        <div class="div_word remark_margin">
             <span v-for="(item, idx) in phoneWithColor" :key="idx" :style="{'color': item.color}">{{item.phone}}</span>
         </div>
         <!-- 单词图片显示 -->
-        <div>
-            <img id="img_word" :src="img_URL" alt="">
+        <div class="remark_margin" id="div_word_img">
+            <img class="img_word" :src="img_URL" alt="">
         </div>
         <!-- 按钮显示 -->
-        <div v-show="computedLevel === 0 && is_show">
+        <div class="remark_margin" v-show="computedLevel === 0 && is_show">
             <!-- 优秀 -->
             <img class="btn_remark" src="../assets/test_board/btn_next.png" alt="" @click="next">
         </div>
-        <div v-show="computedLevel === 1 && is_show">
+        <div class="remark_margin" v-show="computedLevel === 1 && is_show">
             <!-- 普通 -->
             <img id="btn_ordin_next" class="btn_remark" src="../assets/test_board/btn_next.png" alt="" @click="next">
             <!-- 再试一次 -->
             <img id="btn_tryagain" class="btn_remark" src="../assets/test_board/btn_tryagain.png" alt="" @click="recordAgain">
         </div>
-        <div v-show="computedLevel === 2 && is_show">
+        <div class="remark_margin" v-show="computedLevel === 2 && is_show">
             <!-- 不合格 -->
             <img id="btn_listenagain" class="btn_remark" src="../assets/test_board/btn_listenagain.png" alt="" @click="listenAgain">
             <img id="btn_recordagain" class="btn_remark" src="../assets/test_board/btn_recordagain.png" alt="" @click="recordAgain">
@@ -105,8 +105,9 @@ export default {
             }
             return re
         },
-        img_URL() {
-            return self.word_image_url = "https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/wordphoto/" + this.record.content + ".png"
+        img_URL(){
+            // console.log(this.record.path)
+            return this.record.path
         }
     },
     methods: {
@@ -134,40 +135,31 @@ export default {
     #remark_container{
         position: absolute;
         z-index: 1;
-        margin-top: 15%;
-        margin-left: 20%;
-        width: 60%;
+        top: 27%;
+        width: 30%;
+    }
+    @media only screen and (max-width: 1600px){
+        #remark_container{
+            width: 35%;
+        }
     }
     #div_remark{
         color: #000000;
-        font-size: 1.6vw;
+        font-size: 1.8vw;
         font-weight: bold;
     }
-    #img_word{
-        width: 15%;
+    .img_word{
+        width: 40%;
         height: auto;
     }
     .btn_remark{
-        position: absolute;
-        /* margin-top: 3%; */
-        left: 43%;
-        width: 12%;
+        width: 25%;
         height: auto;
+        margin-right: 6%;
+        margin-left: 6%;
         cursor: pointer;
     }
-    #btn_listenagain{
-        left: 36%;
-    }
-    #btn_recordagain{
-        left: 52%;
-    }
-    #btn_ordin_next{
-        left: 36%
-    }
-    #btn_tryagain{
-        left: 52%;
-    }
-    #btn_next_failed{
-        margin-top: 5%;
+    .remark_margin{
+        padding: 2% 0 2% 0;
     }
 </style>

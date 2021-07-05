@@ -103,7 +103,7 @@ export default {
             
           let formData = new FormData()
           //let url = 'http://192.168.137.1:8000/api/login'
-          let url = 'https://www.worith.cn/api/login'
+          let url = 'https://www.smartreelearners.com:9000/api/login'
           formData.append('username', this.ruleForm.username)
           formData.append('password', this.ruleForm.password)
           axios.post(url, formData).then((res) => {
@@ -113,7 +113,8 @@ export default {
                         username: this.ruleForm.username,
                         password: this.ruleForm.password
                     })
-                    this.$router.replace('/main/evaluate')
+                    // this.$router.replace('/main/evaluate')
+                    this.$router.replace('/course')
                 }  
                 else alert("账号密码输入错误")
           })

@@ -1,63 +1,67 @@
 <template>
-    <div align='center'>
+    <div id="result_box" align='center'>
         <!-- 按钮 -->
-        <img id="img_tomain" src="../assets/result/backtomain.png" alt="" @click="backToMain">
-        <img id="img_again" src="../assets/result/praticeagain.png" alt="" @click="praticeAgain">
-        <img id="img_resultback" src="../assets/select_lesson/back.png" alt="" @click="backToMain">
+        <div id="div_main_again">
+            <img class="mainagain" src="../assets/result/btn_backToMain.png" alt="" @click="backToMain">
+            <img class="mainagain" src="../assets/result/btn_practiseAgain.png" alt="" @click="praticeAgain">
+        </div>
+        <div id="div_main_back">
+            <img class="mainback" src="../assets/result/back.png" alt="" @click="praticeAgain">
+            <img class="mainback" src="../assets/test_board/main.png" alt="" @click="backToMain">
+        </div>
+        
         <!-- 标题 -->
         <img id="img_titleblock" src="../assets/result/titleblock.png" alt="">
         <!-- 时间 -->
-        <div id="div_timeTips">本次训练消耗时间</div>
-        <img id="img_timeprog" src="../assets/result/time_progress.png" alt="">
-        <div id="div_timedes">答题时长</div>
-        <div id="div_time" align="center">{{getTime[0]}}分{{getTime[1]}}秒</div>
-        <!-- 分隔线 -->
-        <div id="div_h1"></div>
-        <div id="div_h2"></div>
-        <div id="div_v1"></div>
-        <div id="div_v2"></div>
-        <!-- 优秀单词数 -->
-        <img id="img_green" src="../assets/result/greenblock.png" alt="">
-        <div id="div_green">优秀单词数</div>
-        <div id="div_exnum">{{excel_num}}</div>
-        <div id="div_exTi">题</div>
-        <!-- 需巩固单词数 -->
-        <img id="img_red" src="../assets/result/redblock.png" alt="">
-        <div id="div_red">需巩固单词数</div>
-        <div id="div_notnum">{{not_excel_num}}</div>
-        <div id="div_notTi">题</div>
-        <!-- 优秀单词列表 -->
-        <div id="div_greenlist">优秀单词列表</div>
-        <img id="img_off" src="../assets/result/off.png" alt="">
-        <div id="div_exTable">
-            <!-- <el-table :data="ex_stat_data" border stripe height="100">
-            <el-table-column v-for="col in columns"
-                :prop="col.id"
-                :key="col.id"
-                :label="col.label">
-            </el-table-column>
-            </el-table> -->
-            <div v-for="(row, idx) in ex_stat_data" :key="idx + 'ex_row'">
-                <div class="div_word_ceil" v-for="(item, index) in row" :key="index + 'ex_item'">{{item}}</div>
+        <div class="time_pos">
+            <div class="half" id="div_timeTips">本次训练消耗时间</div>
+            <div class="half">
+                <img id="img_timeprog" src="../assets/result/time_progress.gif" alt="">
+                <div id="div_time" align="center">
+                <div align="center">答题时长</div>
+                <div align="center" style="color:red;">
+                    {{getTime[0]}}分{{getTime[1]}}秒
+                </div>
+            </div>
+            </div>
+           
+        </div>
+        
+        
+        <div class="redgreen">
+            <!-- 优秀单词数 -->
+            <div class="excellent inline">
+                <img class="inline" id="img_green" src="../assets/result/greenblock.png" alt="">
+                <div class="inline" id="div_green">优秀单词数</div>
+                <div class="inline" id="div_exnum">{{excel_num}}</div>
+                <div class="inline" id="div_exTi">题</div>
+            </div>
+            <!-- 需巩固单词数 -->
+            <div class="notgood inline">
+                <img class="inline" id="img_red" src="../assets/result/redblock.png" alt="">
+                <div class="inline" id="div_red">需巩固单词数</div>
+                <div class="inline" id="div_notnum">{{not_excel_num}}</div>
+                <div class="inline" id="div_notTi">题</div>
             </div>
         </div>
-        <!-- 需巩固单词列表 -->
-        <div id="div_redlist">需巩固单词列表</div>
-        <img id="img_on" src="../assets/result/on.png" alt="">
-        <div id="div_notTable">
-            <!-- <el-table :data="not_stat_data" border stripe height="100">
-            <el-table-column v-for="col in columns"
-                :prop="col.id"
-                :key="col.id"
-                :label="col.label">
-            </el-table-column>
-            </el-table> -->
-            <div v-for="(row, idx) in not_stat_data" :key="idx + 'not_row'" style="width: 25vw;">
-                <div class="div_word_ceil" v-for="(item, index) in row" :key="index + 'not_item'">{{item}}</div>
+        <!-- 列表 -->
+        <div class="list">
+            <div class="list_title">
+                <div :class="{'shape_title': true, 'green': is_good}" @click="showGood">
+                    优&emsp;秀&emsp;单&emsp;词&emsp;列&emsp;表
+                </div>
+                <div :class="{'shape_title': true, 'red': !is_good}" @click="showNotGood">
+                    需&emsp;巩&emsp;固&emsp;单&emsp;词&emsp;列&emsp;表
+                </div>
+            </div>
+            <div class="table">
+                <div class="table_row" v-for="(row, idx) in word_matrix" :key="idx + 'ex_row'">
+                    <div class="table_cell" v-for="(item, index) in row" :key="index + 'ex_item'">{{item}}</div>
+                </div>
             </div>
         </div>
         <!-- 背景板 -->
-        <img id="img_bg" src="../assets/result/result_board.png" alt="" height="56%" width="82%">
+        <img id="img_bg" src="../assets/result/result_board.jpg" alt="">
     </div>
 </template>
 
@@ -91,10 +95,11 @@ export default {
             ex_stat_data: [],
             not_stat_data: [],
             word_matrix: [
-                ['word', 'word', 'word'],
-                ['word', 'word', 'word'],
+                ['word', 'word', 'word', 'word'],
+                ['word', 'word', 'word', 'word'],
                 ['word', 'word'],
-            ]
+            ],
+            is_good: true
         }
     },
     computed: {
@@ -108,7 +113,7 @@ export default {
         }
     },
     mounted: function() {
-        // let total_num = this.stat_data.length
+        // console.log(this.stat_data)
         for (let item of this.stat_data){
             if (item.remark == '优秀'){
                 this.excel_num++
@@ -119,28 +124,27 @@ export default {
                 this.not_stat_data.push(item.content)
             }
         }
-        // console.log(this.stat_data)
-        this.ex_stat_data = this.reshape5by3(this.ex_stat_data)
-        this.not_stat_data = this.reshape5by3(this.not_stat_data)
-        // console.log(this.not_stat_data)
+        this.ex_stat_data = this.reshape(this.ex_stat_data, 4, 4)
+        this.not_stat_data = this.reshape(this.not_stat_data, 4, 4)
+        this.word_matrix = this.ex_stat_data
     },
     methods: {
         backToMain() {
             console.log('回到主界面')
-            this.$emit('resultClose', false)
+            window.location.href = 'https://www.smartreelearners.com/'
         },
         praticeAgain() {
             console.log('再来一次')
-            this.$emit('resultClose', false)
+            this.$emit('resultClose')
         },
-        reshape5by3(original_list) {
+        reshape(original_list, row, col) {
             let mat = []
             let idx = 0
             if (original_list.length == 0)
                 return []
-            for (let i = 0;i < 5;i++){
+            for (let i = 0;i < row;i++){
                 let list = []
-                for (let j = 0;j < 3;j++){
+                for (let j = 0;j < col;j++){
                     // console.log(original_list[idx])
                     list.push(original_list[idx])
                     idx++
@@ -152,257 +156,209 @@ export default {
                         break
             }
             return mat
+        },
+        showGood(){
+            this.is_good = true
+            this.word_matrix = this.ex_stat_data
+        },
+        showNotGood(){
+            this.is_good = false
+            this.word_matrix = this.not_stat_data
         }
     }
 }
 </script>
 
 <style>
-    #img_tomain{
+    #result_box{
         position: absolute;
-        z-index: 1;
-        margin-top: 43%;
-        margin-left: 26%;
-        width: 10%;
-        height: auto;
-        cursor: pointer;
+        /* width: 100%; */
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-    #img_again{
+    #div_main_again{
         position: absolute;
         z-index: 1;
-        margin-top: 43%;
-        margin-left: 44%;
-        width: 10%;
-        height: auto;
-        cursor: pointer;
+        top: 91%;
+        width: 50%;
     }
-    #img_resultback{
-        position: absolute;
-        z-index: 1;
-        /* margin-top: 2%;
-        margin-left: 2%; */
-        width: 10%;
+    .mainagain{
+        width: 28%;
         height: auto;
         cursor: pointer;
+        margin: 0 6% 0 6%;
+    }
+    #div_main_back{
+        position: absolute;
+        z-index: 1;
+        width: 10%;
+        top: 4%;
+        left: 1%;
+    }
+    .mainback {
+        width: 30%;
+        height: auto;
+        cursor: pointer;
+        margin: 0 5% 0 5%;
     }
     #img_titleblock{
         position: absolute;
         z-index: 1;
-        margin-top: 5%;
-        margin-left: 8%;
+        top: 14%;
+        left: 14%;
         width: 20%;
         height: auto;
     }
-    #img_timeprog{
+    .time_pos{
         position: absolute;
         z-index: 1;
-        margin-top: 6%;
-        margin-left: 65%;
-        width: 12%;
+        width: 30%;
+        top: 14%;
+        left: 62%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #img_timeprog{  
+        width: 80%;
         height: auto;
     }
-    #div_timeTips{
-        position: absolute;
-        z-index: 1;
-        margin-top: 10%;
-        margin-left: 63%;
-        font-size: 1.2vw;
-        font-weight: bold;
+    .half{
+        width: 50%;
     }
-    #div_timedes{
-        position: absolute;
-        z-index: 1;
-        margin-top: 9.6%;
-        margin-left: 78%;
-        font-size: 0.8vw;
+    #div_timeTips{
+        font-size: 1.1vw;
+        font-weight: bold;
+        /* width: 60%; */
     }
     #div_time{
-        position: absolute;
-        z-index: 1;
-        margin-top: 10.8%;
-        margin-left: 77%;
-        font-size: 1.2vw;
+        margin-top: -50%;
+        font-size: 1.1vw;
         font-weight: bold;
-        color: red;
-        width: 5vw;
-        /* border: 1px solid black; */
     }
-    #div_h1{
+    .inline{
+        display: inline;
+        margin: 0 2% 0 2%;
+    }
+    .excellent{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 5% 0 5%;
+    }
+    .notgood{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 5% 0 5%;
+    }
+    .redgreen{
         position: absolute;
         z-index: 1;
-        margin-top: 15%;
-        margin-left: 48.5%;
-        /* width: 0px; */
-        height: 10vw;
-        border: 0.05vw solid grey;
-        background: grey;
-    }
-    #div_h2{
-        position: absolute;
-        z-index: 1;
-        margin-top: 30%;
-        margin-left: 48.5%;
-        /* width: 0px; */
-        height: 10vw;
-        border: 0.05vw solid grey;
-        background: grey;
-    }
-    #div_v1{
-        position: absolute;
-        z-index: 1;
-        margin-top: 27%;
-        margin-left: 22%;
-        width: 22vw;
-        /* height: 0px; */
-        border: 0.05vw solid grey;
-        background: grey;
-    }
-    #div_v2{
-        position: absolute;
-        z-index: 1;
-        margin-top: 27%;
-        margin-left: 53%;
-        width: 22vw;
-        /* height: 0px; */
-        border: 0.05vw solid grey;
-        background: grey;
+        width: 100%;
+        top: 32%;
+        display: flex;
+        justify-content: center;
     }
     #img_green{
-        position: absolute;
-        z-index: 1;
-        margin-top: 10%;
-        margin-left: 10%;
-        width: 10%;
+        width: 7%;
         height: auto;
     }
     #div_green{
-        position: absolute;
-        z-index: 1;
-        margin-top: 14%;
-        margin-left: 28%;
-        width: 15%;
-        height: auto;
-        font-size: 2vw;
+        width: 50%;
+        height: 50%;
+        font-size: 1.4vw;
         font-weight: bold;
         border:1px solid black;
-        border-radius: 1vw 1vw 1vw 1vw;
-    }
-    #img_red{
-        position: absolute;
-        z-index: 1;
-        margin-top: 26%;
-        margin-left: 9%;
-        width: 10%;
-        height: auto;
-    }
-    #div_red{
-        position: absolute;
-        z-index: 1;
-        margin-top: 29%;
-        margin-left: 28%;
-        width: 15%;
-        height: auto;
-        font-size: 2vw;
-        font-weight: bold;
-        border:1px solid black;
-        border-radius: 1vw 1vw 1vw 1vw;
-    }
-    #div_greenlist{
-        position: absolute;
-        z-index: 1;
-        margin-top: 14%;
-        margin-left: 52%;
-        width: 15%;
-        height: auto;
-        font-size: 2vw;
-        font-weight: bold;
-        border:1px solid black;
-        border-radius: 1vw 1vw 1vw 1vw;
-    }
-     #div_redlist{
-        position: absolute;
-        z-index: 1;
-        margin-top: 29%;
-        margin-left: 52%;
-        width: 15%;
-        height: auto;
-        font-size: 2vw;
-        font-weight: bold;
-        border:1px solid black;
-        border-radius: 1vw 1vw 1vw 1vw;
-    }
-    #img_off{
-        position: absolute;
-        z-index: 1;
-        margin-top: 11.5%;
-        margin-left: 57%;
-        width: 9%;
-        height: auto;
-    }
-    #img_on{
-        position: absolute;
-        z-index: 1;
-        margin-top: 26.5%;
-        margin-left: 57%;
-        width: 9%;
-        height: auto;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     #div_exnum{
-        position: absolute;
-        z-index: 1;
-        margin-top: 19%;
-        margin-left: 36%;
-        font-size: 5vw;
+        font-size: 4vw;
         font-weight: bold;
     }
     #div_exTi{
-        position: absolute;
-        z-index: 1;
-        margin-top: 21.5%;
-        margin-left: 43%;
-        font-size: 2vw;
+        font-size: 1.6vw;
         font-weight: bold;
+        margin-top: 5%;
     }
+    #img_red{
+        width: 7%;
+        height: auto;
+    }
+    #div_red{
+        width: 50%;
+        height: 50%;
+        font-size: 1.4vw;
+        font-weight: bold;
+        border:1px solid black;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     #div_notnum{
-        position: absolute;
-        z-index: 1;
-        margin-top: 34%;
-        margin-left: 36%;
-        font-size: 5vw;
+        font-size: 4vw;
         font-weight: bold;
     }
     #div_notTi{
-        position: absolute;
-        z-index: 1;
-        margin-top: 36.5%;
-        margin-left: 43%;
-        font-size: 2vw;
+        font-size: 1.6vw;
         font-weight: bold;
+        margin-top: 5%;
     }
-    #div_exTable{
+    .list{
         position: absolute;
         z-index: 1;
-        margin-top: 18%;
-        margin-left: 52%;
-        width: 24vw;
+        top: 42%;
+        width: 70%;
+        height: 40%;
     }
-    .div_word_ceil{
-        width: 8vw;
-        /* font-size: 1vw; */
+    .list_title{
+        width: 100%;
+        height: 20%;
+    }
+    .shape_title{
+        width: 50%;
+        height: 100%;
+        border-radius: 0 0 10px 10px;
+        background-color: rgb(200, 201, 202);
+        /* display: inline; */
         float: left;
-        display: inline;
-        border: black solid 0.1vw;
+        font-size: 2vw;
+        color: #ffffff;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
     }
-    #div_notTable{
-        position: absolute;
-        z-index: 1;
-        margin-top: 33%;
-        margin-left: 52%;
-        width: 24vw;
+    .red{
+        background-image: linear-gradient(to bottom, rgb(243, 159, 125), rgb(230, 44, 41));
     }
-    .el-table{
-        /* max-height: 8vw !important; */
-        font-size: 1vw;
+    .green{
+        background-image: linear-gradient(to bottom, rgb(165, 209, 142), rgb(70, 182, 142));
+    }
+    .table{
+        width: 100%;
+        height: 80%;
+    }
+    .table_row{
+        width: 100%;
+        height: 25%;
+    }
+    .table_cell{
+        height: 100%;
+        width: 24.7%;
+        font-size: 2vw;
+        float: left;
+        border: 1px solid rgb(241, 241, 242);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>
 

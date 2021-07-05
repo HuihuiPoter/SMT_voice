@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <transition name="slide-fade">
+    <transition name="fade">
       <router-view></router-view>
     </transition>
     
@@ -20,6 +20,10 @@ export default {
 </script>
 
 <style>
+html{
+  font-size: 62.5%;
+  font-family: "Century Gothic";
+}
   html, body{
         width: 100%;
         height: 100%;
@@ -29,6 +33,13 @@ export default {
     body{
         display: -webkit-flex;
         display: flex;  
+        align-items: center;
+        justify-content: center;
+    }
+    #app{
+      height: 100%;
+      width: 100%;
+      display: flex;  
         align-items: center;
         justify-content: center;
     }

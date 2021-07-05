@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main_div">
         <!-- <Head></Head> -->
         <!-- <Navbar></Navbar> -->
         <router-view></router-view>
@@ -18,3 +18,10 @@ export default {
     }
 }
 </script>
+
+<style>
+    #main_div{
+        height: 100%;
+        width: 100%;
+    }
+</style>

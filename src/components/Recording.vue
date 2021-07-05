@@ -1,13 +1,20 @@
 <template>
-    <div id="div_recording" align="center">
+    <div id="div_recording">
         <!-- 显示单词 -->
-        <div id="div_word" align="center">
+        <div v-if="showing_content.picture_show == 0" class="div_word record_margin" align="center">
             {{showing_content.word_content}}
         </div>
-        <!-- 显示音标 -->
-        <!-- 显示图片 -->
+        <div class="record_margin" v-else-if="showing_content.picture_show == 1">
+            <img class="img_word" :src="showing_content.picture_path" alt="">
+        </div>
+        <div v-else class="div_word record_margin">
+            <span v-for="(item, idx) in showing_content.miss_idx" :key="idx + 'phone'">{{showPhone(item)}}</span>
+        </div>
         <!-- 录音按钮 -->
-        <img id="img_voice" src="../assets/test_board/voice.png" alt="" @click="mention">
+        <div class="record_margin">
+            <img id="img_voice" src="../assets/test_board/voice.gif" alt="" @click="mention">
+        </div>
+        
     </div>
 </template>
 
@@ -24,13 +31,19 @@ export default {
     },
     watch: {
        content(val) {
+        //    console.log(val)
            this.showing_content = val
        }
     },
     computed: {
-        // getWord() {
-        //     return this.words[this.show_idx].word_content
-        // }
+        showPhone() {
+            // console.log(item.phone)
+            return function(item) {
+                if (item.is_miss == 0)
+                    return item.phone
+                else return '_'.repeat(item.phone.length)
+            }   
+        }
     },
     mounted: function() {
         
@@ -47,18 +60,21 @@ export default {
     #div_recording{
         position: absolute;
         z-index: 1;
-        margin-top: 15%;
-        margin-left: 20%;
-        width: 60%;
+        margin-top: 4%;
+        margin-left: 1%;
+        width: 36%;
     }
-    #div_word{
+    .div_word{
         color: #5A5657;
         font-size: 5vw;
         font-weight: bold;
     }
     #img_voice{
-        width: 25%;
+        width: 30%;
         height: auto;
         cursor: pointer;
+    }
+    .record_margin{
+        margin: 4% 0 0 0;
     }
 </style>

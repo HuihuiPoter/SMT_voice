@@ -73,7 +73,7 @@ export default {
   methods: {
       submitForm(){        
           let formData = new FormData()
-          let url = 'https://www.worith.cn/api/register'
+          let url = 'https://www.smartreelearners.com:9000/api/register'
           formData.append('username', this.ruleForm.username)
           formData.append('password', this.ruleForm.password)
           formData.append('repass', this.ruleForm.comfirm)

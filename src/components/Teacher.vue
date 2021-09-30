@@ -1,13 +1,19 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-03-23 16:46:39
+ * @LastEditTime: 2021-09-29 20:31:34
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \SMT_voice\src\components\Teacher.vue
+-->
 <template>
     <div id="div_helen">
-        <transition name="fade">
-            <!-- <img v-show="dialog_show" id="img_dialog" :src="dialogURL" alt=""> -->
-            <div v-if="dialog_show" id="dialog_container" :style="{width: dialog_item.container_width}">
-                <div class="dialog_font" v-html="dialog_item.content">
-                </div>
+        <!-- <img v-show="dialog_show" id="img_dialog" :src="dialogURL" alt=""> -->
+        <div id="dialog_container" :style="{width: dialog_item.container_width, backgroundImage: font_bgc}">
+            <div class="dialog_font" v-html="dialog_item.content" :style="{color: font_color}">
             </div>
-            <div v-else id="dialog_space"></div>
-        </transition>
+        </div>
+        <!-- <div v-else id="dialog_space"></div> -->
         <img id="img_helen" :src="helen_url" alt="">
         <div id="div_shadow"></div>
     </div>
@@ -24,9 +30,9 @@ export default {
     data() {
         return {
             helen_url: this.url,
-            dialog_show: this.dialog_view,
-            // dialogURL: this.dialogurl,
-            dialog_item: this.dialog
+            dialog_item: this.dialog,
+            font_color: 'black',
+            font_bgc: 'linear-gradient(to bottom, rgb(252, 247, 175), rgb(206, 223, 76))'
         }
     },
     watch: {
@@ -34,7 +40,11 @@ export default {
             this.helen_url = val
         },
         dialog_view(val) {
-            this.dialog_show = val
+            if (val == false){
+                this.font_color = 'transparent'
+                this.font_bgc = 'none'
+            }
+                
         },
         dialog(val){
             this.dialog_item = val
@@ -70,9 +80,10 @@ export default {
     }
     #dialog_container{
         background-image: linear-gradient(to bottom, rgb(252, 247, 175), rgb(206, 223, 76));
-        border-radius: 30px;
-        position: relative;
-        left: 10%;
+        border-radius: 1vw;
+        position: absolute;
+        top: 70%;
+        left: 90%;
         height: 20%;
         display: flex;
         align-items: center;
@@ -84,7 +95,7 @@ export default {
         text-align: left;
         font-weight: bold;
     }
-    @media only screen and (max-width: 1050px){
+    /* @media only screen and (max-width: 1050px){
         .dialog_font{
             transform: scale(0.9);
         }
@@ -93,5 +104,5 @@ export default {
         .dialog_font{
             transform: scale(0.7);
         }
-    }
+    } */
 </style>

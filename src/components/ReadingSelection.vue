@@ -1,5 +1,5 @@
 <template>
-    <div id="div_select" align="center">
+    <div class="div_select" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
         <!-- 按钮 -->
         <img id="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
         <div id="div_level">等级/L{{level}}</div>
@@ -26,7 +26,7 @@
         <div id="div_theme">{{theme}}</div>
         <!-- 按钮 -->
         <img id="img_enter" src="../assets/select_lesson/enter.png" alt="" @click="enter">
-        <img id="img_bg" src="../assets/select_lesson/select_board.jpg" alt="">
+        <!-- <img id="img_bg" src="../assets/select_lesson/select_board.jpg" alt=""> -->
     </div>
 </template>
 
@@ -34,6 +34,10 @@
 
 export default {
     name: 'ReadingSelection',
+    props: {
+        bg_width: Number,
+        bg_height: Number
+    },
     data() {
         return {
             title: 'Reading',
@@ -112,143 +116,7 @@ export default {
 </script>
 
 <style>
-    #div_select{
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    /* #img_back{
-        position: inherit;
-        z-index: 1;
-        width: 4%;
-        margin-left: -90%;
-        margin-top: -40%;
-        height: auto;
-        cursor: pointer;
-    }
-    #div_level{
-        position: inherit;
-        z-index: 1;
-        font-size: 1.5vw;
-        width: 10%;
-        height: 6%;
-        margin-left: 86%;
-        margin-top: -40%;
-        border-radius: 100px;
-        color: #1DAA8C;
-        font-weight: bold;
-        background-color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    } */
-    /* #div_title{
-        position: inherit;
-        z-index: 1;
-        font-size: 2vw;
-        width: 10%;
-        height: 6%;
-        margin-top: -16%;
-        color: #ffffff;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    } */
-    /* .lesson {
-        width: 8%;
-        height: auto;
-        height: auto;
-        cursor: pointer;
-    } */
     .less {
         padding: 0 1.2% 0 1.2%;
     }
-    /* img.lesson:hover, img.lesson:active{
-        width: 10%;
-    } */
-    /* #div_lesson{
-        position: inherit;
-        width: 88%;
-    } */
-    /* #more_right{
-        position: inherit;
-        z-index: 1;
-        width: 6%;
-        height: 10%;
-        margin-top: -1.3%;
-        margin-left: 92.8%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    #right_top{
-        position: inherit;
-        z-index: 2;
-        width: 60%;
-        height: 12%;
-        top: 25%;
-        background-color:#ffffff;
-        border-radius: 100px;
-        transform: rotate(45deg);
-    }
-    #right_bottom{
-        position: inherit;
-        z-index: 3;
-        width:60%;
-        height:12%;
-        bottom: 25%;
-        background-color:#ffffff;
-        border-radius:100px;
-        transform: rotate(-45deg);
-    }
-    #more_left{
-        position: inherit;
-        z-index: 1;
-        width: 6%;
-        height: 10%;
-        margin-top: -1.3%;
-        margin-left: -92.8%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    #left_top{
-        position: inherit;
-        z-index: 2;
-        width: 60%;
-        height: 12%;
-        bottom: 25%;
-        background-color:#ffffff;
-        border-radius: 100px;
-        transform: rotate(45deg);
-    }
-    #left_bottom{
-        position: inherit;
-        z-index: 3;
-        width:60%;
-        height:12%;
-        top: 25%;
-        background-color:#ffffff;
-        border-radius:100px;
-        transform: rotate(-45deg);
-    } */
-    /* #div_theme{
-        position: inherit;
-        z-index: 1;
-        margin-top: 20%;
-        font-size: 2vw;
-        font-weight: bold;
-    } */
-    /* #img_enter{
-        position: absolute;
-        z-index: 1;
-        margin-top: 36%;
-        width: 12%;
-        height: auto;
-        cursor: pointer;
-    } */
 </style>

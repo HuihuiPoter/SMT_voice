@@ -1,19 +1,12 @@
 <template>
-    <div id="evaluate_container">
-        <!-- 选择课程 -->
-        <transition  v-if="step === 0 && $store.state.course_type == 0" name="fade">
-            <SpeakingSelection @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></SpeakingSelection>
-        </transition>
-        <transition  v-else-if="step === 0 && $store.state.course_type == 1" name="fade">
-            <ReadingSelection @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></ReadingSelection>
-        </transition>
+    <div id="evaluate_container" align="center">
         <!-- 规则 -->
-        <transition v-else-if="step === 1" name="fade">
+        <transition v-if="step === 1" name="fade">
             <RuleInform  @nextStep="nextStep" @ruleStart="ruleStart" :dialog_close="dialog_close" :ct="countdown"
             :rule_dialog="dialog" :no="ct_num" :bg_width="bgWidth" :bg_height="bgHeight"></RuleInform>
         </transition>
         <transition v-else-if="step === 2" name="fade">
-        <div id="evaluate_box" align="center" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+        <div id="evaluate_box"  align="center" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
             <!-- 按钮 -->
         <div class="left_btn">
             <img class="img_btn" src="../assets/test_board/prev.png" alt="" @click="pre">
@@ -24,23 +17,20 @@
             <ProblemLabel v-for="(item, idx) in problem_label" :key="idx + 'prog'" :state="item" :no="idx + 1"></ProblemLabel>
         </div>
         <!-- helen老师 -->
-        <transition name="fade">
+        <transition name="fade" >
             <div class="div_teacher" id="eva_teacher">
                 <Teacher :url="helen_URL" v-show="shadow_show" :dialog_view="shadow_show" :dialog="dialog"></Teacher>
             </div>
         </transition>
-        
-        <!-- 录音/评价显示 -->
-        <div class="div_record">
-            <Recorder :content="content" :recording="recording" @recordEnd="recordEnd" v-show="recording_show" :recorder_show="recording_show"></Recorder>
+        <div class="div_record" v-if="recording_show">
+            <SenTestRecorder :content="content" :recording="recording" :phase="phase" @recordEnd="recordEnd" v-if="recording_show" :recorder_show="recording_show"></SenTestRecorder>
         </div>
-        <!-- <Recorder :content="content" :recording="recording" @recordEnd="recordEnd" v-show="recording_show" :recorder_show="recording_show"></Recorder> -->
         <transition name="fade">
-            <div class="div_remarkEva">
-                <Remark v-if="remark_visible" v-show="!recording" :record_pro="phone_record" :failed_times="timesOfFailed"
-                :btn_show="btn_show" @next="next" @listenAgain="listenAgain" @recordAgain="recordAgain"
-                @remarkClose="remarkClose"></Remark>
-            </div>  
+            <div class="div_remarkEva" v-if="remark_visible">
+                <SenTestRemark v-if="remark_visible" v-show="!recording" :record_pro="phone_record" :failed_times="timesOfFailed"
+                :btn_show="btn_show" :phase="phase" @next="next" @listenAgain="listenAgain" @recordAgain="recordAgain"
+                @remarkClose="remarkClose"></SenTestRemark>
+            </div>
         </transition>
         <!-- 背景板 -->
         <!-- <img id="img_bg" src="../assets/public/background.png" alt="">  -->
@@ -60,12 +50,12 @@
 <script>
 import axios from "axios"
 // import Recording from './Recording'
-import Remark from './Remark'
+import SenTestRemark from './SenTestRemark'
 import Vue from 'vue'
-import Recorder from './Recorder'
+import SenTestRecorder from './SenTestRecorder'
 import RuleInform from './RuleInform'
-import SpeakingSelection from './SpeakingSelection'
-import ReadingSelection from './ReadingSelection'
+// import SpeakingSelection from './SpeakingSelection'
+// import ReadingSelection from './ReadingSelection'
 // import Result from './Result'
 import ProblemLabel from './ProblemLabel'
 import Teacher from './Teacher'
@@ -74,18 +64,16 @@ export default {
     name: 'Evaluation',
     components: {
         // Recording,
-        Remark,
-        Recorder,
+        SenTestRemark,
+        SenTestRecorder,
         RuleInform,
-        SpeakingSelection,
-        ReadingSelection,
         // Result,
         ProblemLabel,
         Teacher
     },
     data() {
         return {
-            step: 0,
+            step: 1,
             helen_URL: '',
             dialog: {},
             word_list: [],
@@ -117,12 +105,14 @@ export default {
             prog_show: false,
             problem_label: [],
             ct_num: 5,
+            phase: 0,
             bgWidth: 1080,
             bgHeight: 720
         }
     },
     mounted: function(){
         // console.log(this.$route.params.type)
+        this.requestData(1, 1)
         this.all_time = new Date()
         this.bgWidth = window.innerWidth;
         this.setSize();
@@ -180,12 +170,14 @@ export default {
         },
         //请求初始数据
         requestData(course_id, lesson_type) {
-            let url = "https://www.smartreelearners.com:9000/api/pro_word/?course_id=" + course_id + "&lesson_type=" + lesson_type
-            //let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
+            console.log(lesson_type)
+            // let url = "https://www.smartreelearners.com:9000/api/pro_sen?course_id=" + course_id + "&lesson_type=" + lesson_type
+            let url = "https://www.smartreelearners.com:9000/api/pro_sen?course_id=" + course_id
             let self = this
             axios.get(url).then(function (responce) {
                 console.log('responce', responce)
                 if (responce.status == 200) {
+                    
                     self.word_list = responce.data.data
                     self.len = self.word_list.length
                     let i = 0
@@ -208,20 +200,22 @@ export default {
         //提交录音数据
         submit() {
             let self = this
-            let url = 'https://www.smartreelearners.com:9000/api/ten_recorder/'
-            //let url = "http://192.168.137.1:8000/api/ten_recorder/"
+            let url = 'https://www.smartreelearners.com:9000/api/sen_recorder'
+            // console.log(this.content.sentence_content)
             let form_data = new FormData()
-            form_data.append("word_audio", new File([this.blob], this.content.word_content, {
+            form_data.append("sentence_audio", new File([this.blob], this.content.sentence_content, {
                 type: this.blob.type
             }))
-            form_data.append("word_content", this.content.word_content)
-            form_data.append("word_id", this.content.id)
+            form_data.append("sentence_content", this.content.sentence_content)
+            form_data.append("sentence_id", this.content.id)
+            form_data.append("round", this.content.round)
             axios.post(url, form_data).then((res) => {
-                // console.log('res', res)
+                console.log('res', res)
                 if (res.status == 200) {
                     self.score = res.data.pron_total_score
                     self.phone_record = res.data  
                     Vue.set(self.phone_record, 'path', self.content.picture_path)
+                    Vue.set(self.phone_record, 'question', self.content.CN_content)
                 }
                 // console.log(this.record)       
             }).then(() => {
@@ -274,7 +268,6 @@ export default {
         next() {
             //this.idx++
             // this.btn_next_show = false
-            // console.log(this.len)
             if (this.idx + 1 < this.len) {  
                 this.idx++ 
                 this.content = this.word_list[this.idx]
@@ -293,12 +286,12 @@ export default {
                 // this.audioPlay('endaudio.wav')
                 this.all_time = new Date() - this.all_time
                 // this.result_visible = true
-                this.$store.commit('wordStat', {
-                    word_stat: this.stat_data,
+                this.$store.commit('senStat', {
+                    sen_stat: this.stat_data,
                     time: this.all_time
                 })
                 // this.step = 3
-                this.$router.replace('/main/sentest')
+                this.$router.replace('/main/result')
             }
         },
          //答题提示
@@ -367,33 +360,34 @@ export default {
             if (this.level == 0) {
                 let goodaudios = ['excellent','wonderful','bravo','great','fantastic']
                 let audio_idx = Math.floor(Math.random() * 5)
-                switch(goodaudios[audio_idx]){
-                    case 'excellent': this.dialog = {
-                        content: `Excellent!<br><br>你非常棒哦!`,
-                        container_width: '90%'
-                    };
-                    break;
-                    case 'wonderful': this.dialog = {
-                        content: `Wonderful!<br><br>你非常棒哦!`,
-                        container_width: '90%'
-                    };
-                    break;
-                    case 'bravo': this.dialog = {
-                        content: `Bravo!<br><br>你非常棒哦!`,
-                        container_width: '90%'
-                    };
-                    break;
-                    case 'great': this.dialog = {
-                        content: `Great!<br><br>你非常棒哦!`,
-                        container_width: '90%'
-                    };
-                    break;
-                    case 'fantastic': this.dialog = {
-                        content: `Fantastic!<br><br>你非常棒哦!`,
-                        container_width: '90%'
-                    };
-                    break;
-                }
+                // switch(goodaudios[audio_idx]){
+                //     case 'excellent': this.dialog = {
+                //         content: `Excellent!<br><br>你非常棒哦!`,
+                //         container_width: '90%'
+                //     };
+                //     break;
+                //     case 'wonderful': this.dialog = {
+                //         content: `Wonderful!<br><br>你非常棒哦!`,
+                //         container_width: '90%'
+                //     };
+                //     break;
+                //     case 'bravo': this.dialog = {
+                //         content: `Bravo!<br><br>你非常棒哦!`,
+                //         container_width: '90%'
+                //     };
+                //     break;
+                //     case 'great': this.dialog = {
+                //         content: `Great!<br><br>你非常棒哦!`,
+                //         container_width: '90%'
+                //     };
+                //     break;
+                //     case 'fantastic': this.dialog = {
+                //         content: `Fantastic!<br><br>你非常棒哦!`,
+                //         container_width: '90%'
+                //     };
+                //     break;
+                // }
+                this.dialog = {}
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/happy.gif'
                 this.shadow_show = true
                 this.audioPlay_1(goodaudios[audio_idx] + '.wav', () => {
@@ -405,10 +399,11 @@ export default {
             else if (this.level == 1) {
                 let normalaudios = ['ok']
                 let audio_idx = Math.floor(Math.random() * 1)
-                this.dialog = {
-                        content: `It is ok!读得不错，<br><br>但是要注意红色部分的发音哦。加油!再试一次看看!`,
-                        container_width: '150%'
-                }
+                // this.dialog = {
+                //         content: `It is ok!读得不错，<br><br>但是要注意红色部分的发音哦。加油!再试一次看看!`,
+                //         container_width: '150%'
+                // }
+                this.dialog = {}
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/encourage.gif'
                 this.shadow_show = true
                 this.audioPlay_1(normalaudios[audio_idx] + '.wav', () => {
@@ -420,10 +415,11 @@ export default {
             else {
                 let badaudios = ['oops']
                 let audio_idx = Math.floor(Math.random() * 1)
-                this.dialog = {
-                    content: `Oops!仔细听一下老师是怎么读的...<br><br>加油!再试一次看看吧!`,
-                    container_width: '110%'
-                }                
+                // this.dialog = {
+                //     content: `Oops!仔细听一下老师是怎么读的...<br><br>加油!再试一次看看吧!`,
+                //     container_width: '110%'
+                // }    
+                this.dialog = {}       
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/sad.gif'
                 this.shadow_show = true
                 this.audioPlay_1(badaudios[audio_idx] + '.wav', () => {
@@ -487,7 +483,12 @@ export default {
             this.audio_times = 0
             // let audio = 'https://www.worith.cn/api/pro_audio?code=2&content=' + this.word_list[this.idx].word_content
             // let el_audio = new Audio(audio)
-            this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/wordaudio/' + this.content.word_content + '.mp3'
+            try{
+                this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/wordaudio/' + this.content.sentence_content + '.mp3'
+            }
+            catch{
+                alert('暂无录音，请等待更新')
+            }
             this.$refs.audioplay.load()
             const self = this
             this.$refs.audioplay.onended = function() {
@@ -510,7 +511,7 @@ export default {
         //更新统计数据
         updateStat() {
             this.stat_data.splice(this.content.serial_no, 1, {
-                    content: this.content.word_content,
+                    content: this.content.sentence_content,
                     remark: this.getRemark,
                     proficiency: this.getProficiency
                 })
@@ -570,8 +571,8 @@ export default {
     }
     .div_remarkEva{
         position: relative;
-        width: 40%;
-        bottom: 85%;
+        width: 50%;
+        bottom: 30%;
     }
     .fade-enter{
 			opacity: 0;

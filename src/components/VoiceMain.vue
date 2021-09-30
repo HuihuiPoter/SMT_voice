@@ -74,7 +74,7 @@
         </audio>
         <Recorder :recording="recording" @recordEnd="recordEnd"></Recorder>
         <UpShow v-if="result_visible" title="本次练习成果">
-            <Result v-if="result_visible" :stat="stat_data" :time="all_time" @resultClose="resultClose"></Result>
+            <!-- <Result v-if="result_visible" :stat="stat_data" :time="all_time" @resultClose="resultClose"></Result> -->
         </UpShow>
         </div>
     </div>
@@ -87,7 +87,7 @@ import UpShow from './UpShow'
 import Wave from './Wave'
 import Remark from './Remark'
 import Recorder from './Recorder'
-import Result from './Result'
+// import Result from './Result'
 import Vue from 'vue'
 import Countdown from './Countdown'
 
@@ -101,7 +101,7 @@ export default {
         Wave,
         Remark,
         Recorder,
-        Result,
+        // Result,
         Countdown
     },
     data() {

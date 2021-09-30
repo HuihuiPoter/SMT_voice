@@ -13,9 +13,12 @@ const RuleInform = () => import('../components/RuleInform')
 const Countdown = () => import('../components/Countdown')
 const VoiceMain = () => import('../components/VoiceMain')
 
-const newResult = () => import('../components/newResult')
+// const newResult = () => import('../components/newResult')
 const Evaluation = () => import('../components/Evaluation')
 const Course = () => import('../components/Course')
+
+const SenTest = () => import('../components/SenTest')
+const Result = () => import('../components/Result')
 //Vue.use()安装插件
 Vue.use(VueRouter)
 
@@ -100,12 +103,17 @@ const routes = [
             },
             {
                 path: "result",
-                component: newResult
+                component: Result
             },
             {
                 path: "evaluate",
                 name: "evaluate",
                 component: Evaluation
+            },
+            {
+                path: "sentest",
+                // name: "evaluate",
+                component: SenTest
             }
         ]
     }

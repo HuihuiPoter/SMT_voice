@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-03-01 16:09:47
+ * @LastEditTime: 2021-09-30 15:55:00
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \SMT_voice\src\App.vue
+-->
 <template>
   <div id="app">
     <transition name="fade">
@@ -31,14 +39,13 @@ html{
         padding: 0;
     }
     body{
-        display: -webkit-flex;
-        display: flex;  
+        /* display: flex;  
         align-items: center;
-        justify-content: center;
+        justify-content: center; */
     }
     #app{
-      height: 100%;
-      width: 100%;
+      /* height: 100%;
+      width: 100%; */
       display: flex;  
         align-items: center;
         justify-content: center;

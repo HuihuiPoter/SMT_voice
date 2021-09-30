@@ -1,5 +1,5 @@
 <template>
-    <div id="div_select" align="center">
+    <div class="div_select" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
         <!-- 按钮 -->
         <img id="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
         <div id="div_level">等级/L{{level}}</div>
@@ -26,7 +26,7 @@
         <div id="div_theme">{{theme}}</div>
         <!-- 按钮 -->
         <img id="img_enter" src="../assets/select_lesson/enter.png" alt="" @click="enter">
-        <img id="img_bg" src="../assets/select_lesson/select_board.jpg" alt="">
+        <!-- <img id="img_bg" src="../assets/select_lesson/select_board.jpg" alt=""> -->
     </div>
 </template>
 
@@ -34,6 +34,10 @@
 
 export default {
     name: 'SpeakingSelection',
+    props: {
+        bg_width: Number,
+        bg_height: Number
+    },
     data() {
         return {
             title: 'Speaking',
@@ -126,31 +130,25 @@ export default {
 </script>
 
 <style>
-    #div_select{
-        position: absolute;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .div_select{
+        background-image: url(../assets/select_lesson/select_board.jpg);
+        background-size: 100%;
     }
     #img_back{
-        position: inherit;
-        z-index: 1;
+        position: relative;
+        top: 8%;
+        right: 40%;
         width: 4%;
-        top: 10%;
-        left: 5%;
         height: auto;
         cursor: pointer;
     }
     #div_level{
-        position: inherit;
-        z-index: 1;
+        position: relative;
         font-size: 1.5vw;
         width: 10%;
         height: 6%;
-        left: 82%;
-        top: 12%;
-        border-radius: 100px;
+        left: 40%;
+        border-radius: 10vw;
         color: #1DAA8C;
         font-weight: bold;
         background-color: white;
@@ -159,12 +157,11 @@ export default {
         justify-content: center;
     }
     #div_title{
-        position: inherit;
-        z-index: 1;
+        position: relative;
+        top: 19%;
         font-size: 2vw;
         width: 10%;
         height: 6%;
-        top: 33%;
         color: #ffffff;
         font-weight: bold;
         display: flex;
@@ -184,88 +181,86 @@ export default {
         width: 90%;
     }
     #div_lesson{
-        position: inherit;
+        position: relative;
         width: 85%;
-        /* height: 14%; */
+        height: 10%;
+        top: 24%;
         display: flex;
         justify-items: center;
         justify-content: center;
     }
     #more_right{
-        position: inherit;
-        z-index: 1;
-        width: 6%;
-        height: 10%;
-        top: 43.8%;
-        left: 93.4%;
+        position: relative;
+        top: 14%;
+        left: 46.5%;
+        width: 6vw;
+        height: 6vw;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     #right_top{
-        position: inherit;
-        z-index: 2;
+        position: relative;
         width: 60%;
         height: 12%;
-        top: 25%;
+        top: -15%;
+        left: 24%;
         background-color:#ffffff;
         border-radius: 100px;
         transform: rotate(45deg);
     }
     #right_bottom{
-        position: inherit;
-        z-index: 3;
+        position: relative;
         width:60%;
         height:12%;
-        bottom: 25%;
+        top: 15%;
+        left: -24%;
         background-color:#ffffff;
         border-radius:100px;
         transform: rotate(-45deg);
     }
     #more_left{
-        position: inherit;
-        z-index: 1;
-        width: 6%;
-        height: 10%;
-        top: 43.8%;
-        left: 0.5%;
+        position: relative;
+        width: 6vw;
+        height: 6vw;
+        top: 3.5%;
+        right: 46.7%;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     #left_top{
-        position: inherit;
-        z-index: 2;
+        position: relative;
         width: 60%;
         height: 12%;
-        bottom: 25%;
+        top: 15%;
+        left: 24%;
         background-color:#ffffff;
         border-radius: 100px;
         transform: rotate(45deg);
     }
     #left_bottom{
-        position: inherit;
-        z-index: 3;
+        position: relative;
         width:60%;
         height:12%;
-        top: 25%;
+        top: -15%;
+        left: -24%;
         background-color:#ffffff;
         border-radius:100px;
         transform: rotate(-45deg);
     }
     #div_theme{
-        position: inherit;
-        z-index: 1;
-        top: 65%;
+        position: relative;
+        height: 5%;
+        top: 15%;
         font-size: 2vw;
         font-weight: bold;
     }
     #img_enter{
-        position: absolute;
-        z-index: 1;
-        top: 80%;
+        position: relative;
+        top: 26%;
         width: 12%;
         height: auto;
         cursor: pointer;

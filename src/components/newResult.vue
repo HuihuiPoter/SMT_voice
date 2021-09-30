@@ -61,7 +61,7 @@
             </div>
         </div>
         <!-- 背景板 -->
-        <img id="img_bg" src="../assets/result/result_board.jpg" alt="">
+        <!-- <img id="img_bg" src="../assets/result/result_bg.png" alt=""> -->
     </div>
 </template>
 
@@ -171,7 +171,6 @@ export default {
 
 <style>
     #result_box{
-        position: absolute;
         /* width: 100%; */
         display: flex;
         justify-content: center;

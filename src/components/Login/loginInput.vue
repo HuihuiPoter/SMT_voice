@@ -29,6 +29,7 @@
   <div class="login-btn">
   <el-button type="primary" @click="submitForm()">登录</el-button>
   <el-button type="primary" @click="registerForm()">注册</el-button>
+  <el-button type="primary" @click="test()">句子样板测试</el-button>
   </div>
  </el-form-item>
  <p style="font-size:12px;line-height:30px;color:black;">Tips : 请输入账号密码登陆  admin  123456，可以重新注册新的账号</p>
@@ -114,7 +115,8 @@ export default {
                         password: this.ruleForm.password
                     })
                     // this.$router.replace('/main/evaluate')
-                    this.$router.replace('/course')
+                    this.$router.replace('course')
+                    // this.$router.replace('main/result')
                 }  
                 else alert("账号密码输入错误")
           })
@@ -123,6 +125,31 @@ export default {
       },
       registerForm() {
           this.reg_visible = true
+      },
+      test(){
+          if (this.identifyCode != this.ruleForm.code){
+              alert('验证码错误')
+              return
+          }
+          let formData = new FormData()
+          //let url = 'http://192.168.137.1:8000/api/login'
+          let url = 'https://www.smartreelearners.com:9000/api/login'
+          formData.append('username', this.ruleForm.username)
+          formData.append('password', this.ruleForm.password)
+          axios.post(url, formData).then((res) => {
+                //console.log(res)
+                if (res.data.code === 200){
+                    this.$store.commit('loginMain', {
+                        username: this.ruleForm.username,
+                        password: this.ruleForm.password
+                    })
+                    // this.$router.replace('main/sentest')
+                    this.$router.replace('main/result')
+                }  
+                else alert("账号密码输入错误")
+          })
+        // this.$store.commit('loginMain')
+        // this.$router.replace('/rule')
       },
       randomNum (min, max) {
           return Math.floor(Math.random() * (max - min) + min)

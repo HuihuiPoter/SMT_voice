@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-03-01 16:09:47
+ * @LastEditTime: 2021-09-29 22:05:40
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \SMT_voice\src\components\Main.vue
+-->
 <template>
     <div id="main_div">
         <!-- <Head></Head> -->
@@ -21,7 +29,5 @@ export default {
 
 <style>
     #main_div{
-        height: 100%;
-        width: 100%;
     }
 </style>

@@ -1,20 +1,49 @@
 <template>
-    <div id="div_recording">
-        <!-- 显示单词 -->
-        <div v-if="showing_content.picture_show == 0" class="div_word record_margin" align="center">
-            {{showing_content.word_content}}
+    <div id="div_recording">   
+        <!-- 显示单个答句 -->
+        <div v-if="phase == 0" class="div_sentence record_margin" align="center">
+            <div class="SenA">
+                <img class="SenAImg" src="../assets/public/A.png" alt="">
+                {{showing_content.sentence_content}}
+            </div>
+            <img class="img_sen" :src="showing_content.picture_path" alt="">
         </div>
-        <div class="record_margin word_img" v-else-if="showing_content.picture_show == 1">
-            <img class="img_word" :src="showing_content.picture_path" alt="">
+        <!-- 看问题回答 -->
+        <div class="div_sentence record_margin" v-if="phase == 1">
+            <div>
+                <div class="SenQ">
+                    <img class="SenQImg" src="../assets/public/Q.png" alt="">
+                    {{showing_content.CN_content}}
+                </div>
+                <div class="SenA">
+                    <img class="SenAImg" src="../assets/public/A.png" alt="">
+                    _______________
+                </div>
+            </div>
+            <img class="img_sen" :src="showing_content.picture_path" alt="">
         </div>
-        <div v-else class="div_word record_margin">
+        <!-- 看答句问问题 -->
+        <div v-if="phase == 2" class="div_sentence record_margin" align="center">
+             <div>
+                <div class="SenQ">
+                    <img class="SenQImg" src="../assets/public/Q.png" alt="">
+                    _______________
+                </div>
+                <div class="SenA">
+                    <img class="SenAImg" src="../assets/public/A.png" alt="">
+                    {{showing_content.sentence_content}}
+                </div>
+            </div>
+            <img class="img_sen" :src="showing_content.picture_path" alt="">
+        </div>
+        <!-- <div v-else class="div_word record_margin">
             <span v-for="(item, idx) in showing_content.miss_idx" :key="idx + 'phone'">{{showPhone(item)}}</span>
-        </div>
+        </div> -->
         <!-- 录音按钮 -->
         <div class="record_margin">
             <img id="img_voice" src="../assets/test_board/voice.gif" alt="">
         </div>
-        <div class="progress_bg record_margin">
+        <div class="progress_bg">
             <div class="progress" :style="{'width': res_time * 100/ all_time + '%'}"></div>
         </div>
     </div> 
@@ -34,7 +63,8 @@ export default {
     props: {
         recording: Boolean,
         recorder_show: Boolean,
-        content: Object
+        content: Object,
+        phase: Number
     },
     mounted: function() {
         Recorder.getPermission().then(() => {
@@ -57,7 +87,7 @@ export default {
             after_thinking: false, //判断是否为思考时间
             all_time: 4000,
             res_time: 4000,
-            showing_content: this.content
+            showing_content: this.content,
         }
     },
     watch: {
@@ -82,6 +112,17 @@ export default {
                     return item.phone
                 else return '_'.repeat(item.phone.length)
             }   
+        },
+        showSentence(){
+            return function(sentence, miss_idx){
+                if (miss_idx < 0)
+                    return sentence
+                else {
+                    let sen_list = sentence.split(' ')
+                    sen_list[miss_idx] = '_____'
+                    return sen_list.join(' ')
+                }
+            }
         }
     },
     methods: {
@@ -143,7 +184,7 @@ export default {
             let blob =  recorder.getWAVBlob()  //默认调用stop()
             recorder.play()
             this.$emit('recordEnd', {
-                recording: false,
+                // recording: false,
                 blob: blob,
                 thinking_time: this.thinking_time,
                 duration: recorder.duration > 4?recorder.duration - 2:recorder.duration - 1
@@ -159,12 +200,7 @@ export default {
         width: 100%;
         height: 100%;
     }
-    .div_word{
-        color: #5A5657;
-        font-size: 5vw;
-        font-weight: bold;
-    }
-    .word_img{
+    .img_sen{
         border: solid#FED001 0.5vw;
         border-radius: 1.5vw;
         width: 20vw;

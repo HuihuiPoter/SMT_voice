@@ -1,27 +1,24 @@
 <template>
-    <div id="rulebox" align="center">
+    <div id="rulebox" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
+        <div class="left_btn">
+            <img class="img_btn" src="../assets/test_board/prev.png" alt="" @click="pre">
+            <img class="img_btn" src="../assets/test_board/main.png" alt="" @click="main">
+        </div>
         <!-- 中央图标 -->
-        <transition name="fade">
-            <img v-if="!show_ct" v-show="show_center" class="img_countdown" src="../assets/rule/start.png" alt="" @click="ctBegin">
-            <!-- <img v-else class="img_countdown" :src="countdownURL" alt=""> -->
-            <Countdown v-else :num="num"></Countdown>
-        </transition>
-        
-        <!-- helen老师 -->
-        <transition name="fade">
-            <div id="div_teacher">
-                <Teacher url="https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/intro.gif"
-                :dialog_view="!dialog_show" :dialog="dialog_item"></Teacher>
+        <transition name="fade">          
+            <!-- <Countdown v-else :num="num"></Countdown> -->
+            <div class="div_count" >
+                <img v-if="!show_ct" v-show="show_center" class="img_countdown" src="../assets/rule/start.png" alt="" @click="ctBegin">
+                <Countdown v-else :num="num"></Countdown>
             </div>
             
         </transition>
         
-        <!-- 按钮 -->
-        <!-- <img v-show="!dialog_show" id="img_follow" src="../assets/rule/following.png" alt="" @click="follow"> -->
-        <img id="img_prev" src="../assets/test_board/prev.png" alt="" @click="pre">
-        <img id="img_main" src="../assets/test_board/main.png" alt="" @click="main">
-        <!-- 背景板 -->
-        <img id="img_bg" src="../assets/rule/background.jpg" alt=""> 
+        <!-- helen老师 -->
+        <div class="div_teacher">
+            <Teacher url="https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/intro.gif"
+            :dialog_view="!dialog_show" :dialog="dialog_item"></Teacher>
+        </div>
     </div>
 </template>
 
@@ -44,7 +41,9 @@ export default {
         dialog_close: Boolean,
         ct: Boolean,
         rule_dialog: Object,
-        no: Number
+        no: Number,
+        bg_width: Number,
+        bg_height: Number
     },
     watch: {
         dialog_close(val){
@@ -77,10 +76,11 @@ export default {
             num: this.no,
             show_ct: false,
             show_center: false,
+            bgWidth: 1080,
+            bgHeight: 720
         }
     },
     mounted: function(){
-        // console.log(window.innerWidth)
         this.$emit('ruleStart', true)
     },
     methods: {
@@ -101,56 +101,50 @@ export default {
 
 <style>
     #rulebox{
-        position: absolute;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    #img_bg{
-        max-width: 100%;
+        background-image: url(../assets/public/background.png);
+        background-size: 100%;
     }
     .img_countdown{
-        position: inherit;
-        z-index: 1;
-        width: 23%;
+        position: absolute;
+        transform: translate(-50%, 50%);
+        width: 56%;
         height: auto;
         cursor: pointer;
     }
-    #img_prev{
-        position: absolute;
-        z-index: 1;
-        top: 14%;
-        left: 8%;
-        width: 3%;
+    .left_btn{
+        position: relative; 
+        top: 8%;
+        right: 40%;       
+    }
+    .img_btn{
+        width: 4%;
+        margin: 0 1%;
         height: auto;
         cursor: pointer;
     }
-    #img_main{
-        position: absolute;
-        z-index: 1;
-        top: 14%;
-        left: 12%;
-        width: 3%;
-        height: auto;
-        cursor: pointer;
-    }
-    #div_teacher{
-        position: absolute;
-        z-index: 1;
+    .div_teacher{
+        position: relative;
         width: 16%;
-        height: 70%;
-        left: 8%;
-        top: 22%;
+        height: 56%;
+        right: 36%;
+        bottom: 25%;
     }
-    @media only screen and (max-width: 1600px){
+    .div_count{
+        position: relative;
+        /* transform: translate(-50%, 50%); */
+        width: 34vw;
+        height: 34vw;
+        top: 16%;
+        /* left: 49%; */
+    }
+    /* @media only screen and (max-width: 1600px){
         #div_teacher{
             position: absolute;
             z-index: 1;
             width: 18%;
             height: 70%;
             left: 1%;
-            top: 26%;
+            top: 38%;
         }
         #img_prev{
             left:3%;
@@ -158,7 +152,7 @@ export default {
         #img_main{
             left: 7%;
         }
-    }
+    } */
     .fade-enter{
 			opacity: 0;
 		}

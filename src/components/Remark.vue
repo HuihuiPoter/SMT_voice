@@ -7,7 +7,7 @@
             <span v-for="(item, idx) in phoneWithColor" :key="idx" :style="{'color': item.color}">{{item.phone}}</span>
         </div>
         <!-- 单词图片显示 -->
-        <div class="remark_margin" id="div_word_img">
+        <div class="remark_margin word_img">
             <img class="img_word" :src="img_URL" alt="">
         </div>
         <!-- 按钮显示 -->
@@ -133,15 +133,8 @@ export default {
 
 <style>
     #remark_container{
-        position: absolute;
-        z-index: 1;
-        top: 27%;
-        width: 30%;
-    }
-    @media only screen and (max-width: 1600px){
-        #remark_container{
-            width: 35%;
-        }
+        width: 100%;
+        height: 100%;
     }
     #div_remark{
         color: #000000;
@@ -155,11 +148,10 @@ export default {
     .btn_remark{
         width: 25%;
         height: auto;
-        margin-right: 6%;
-        margin-left: 6%;
+        margin: 0 4%;
         cursor: pointer;
     }
     .remark_margin{
-        padding: 2% 0 2% 0;
+        padding: 2% 0;
     }
 </style>

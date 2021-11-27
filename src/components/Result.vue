@@ -6,7 +6,7 @@
             <img class="mainagain" src="../assets/result/btn_practiseAgain.png" alt="" @click="praticeAgain">
         </div> -->
         <div id="div_main_back">
-            <img class="mainback" src="../assets/result/back.png" alt="" @click="praticeAgain">
+            <img class="mainback" src="../assets/result/back.png" alt="" @click="turnToCourse">
             <img class="mainback" src="../assets/test_board/main.png" alt="" @click="backToMain">
         </div>
         <!-- 信息栏 -->
@@ -37,18 +37,10 @@
             <!-- 标题 -->
         <img id="img_titleblock" src="../assets/result/word_title.png" alt="">
         <!-- 时间 -->
-        <div class="time_pos">
-            <div class="half" id="div_timeTips">本次训练消耗时间</div>
-            <div class="half">
-                <img id="img_timeprog" src="../assets/result/time_progress.gif" alt="">
-                <div id="div_time" align="center">
-                <div align="center">答题时长</div>
-                <div align="center" style="color:red;">
-                    {{getWTime[0]}}分{{getWTime[1]}}秒
-                </div>
+        <div class="time_pos" align="right">
+            <div class="half_word">
+                {{getWTime[0]}}分{{getWTime[1]}}秒
             </div>
-            </div>
-           
         </div>        
         <div class="redgreen">
             <div class="large_div_block inline">
@@ -91,18 +83,10 @@
             <!-- 标题 -->
         <img id="img_titleblock" src="../assets/result/sen_title.png" alt="">
         <!-- 时间 -->
-        <div class="time_pos">
-            <div class="half" id="div_timeTips">本次训练消耗时间</div>
-            <div class="half">
-                <img id="img_timeprog" src="../assets/result/time_progress.gif" alt="">
-                <div id="div_time" align="center">
-                <div align="center">答题时长</div>
-                <div align="center" style="color:red;">
-                    {{getSTime[0]}}分{{getSTime[1]}}秒
-                </div>
+        <div class="time_pos" align="right">
+            <div class="half_sen">
+                {{getWTime[0]}}分{{getWTime[1]}}秒
             </div>
-            </div>
-           
         </div>        
         <div class="redgreen">
             <div class="large_div_block inline">
@@ -125,7 +109,14 @@
             </div>
             <div class="table">
                 <div class="table_row table_row_sen" align="center" v-for="(row, idx) in s_ex_stat_data" :key="idx + 'w_ex_row'">
-                    <div class="table_cell table_cell_sen" v-for="(item, index) in row" :key="index + 'w_ex_item'">{{item}}</div>
+                    <div class="table_cell table_cell_sen" v-for="(item, index) in row" :key="index + 'w_ex_item'">
+                        <div>
+                            {{item.Q}}
+                        </div>
+                        <div>
+                            {{item.A}}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -135,21 +126,19 @@
             </div>
             <div class="table">
                 <div class="table_row table_row_sen" align="center" v-for="(row, idx) in s_not_stat_data" :key="idx + 'w_ex_row'">
-                    <div class="table_cell table_cell_sen" v-for="(item, index) in row" :key="index + 'w_ex_item'">{{item}}</div>
+                    <div class="table_cell table_cell_sen" v-for="(item, index) in row" :key="index + 'w_ex_item'">
+                        <div>
+                            {{item.Q}}
+                        </div>
+                        <div>
+                            {{item.A}}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         </div>
-        
-        <!-- 背景板 -->
-        <!-- <div>
-            <img id="img_bg" src="../assets/result/result_bg.png" alt="">
-            <div id="div_main_again">
-                <img class="mainagain" src="../assets/result/btn_backToMain.png" alt="" @click="backToMain">
-                <img class="mainagain" src="../assets/result/btn_practiseAgain.png" alt="" @click="praticeAgain">
-            </div>
-        </div> -->
-        
+        <img id="result_done" src="../assets/result/finish.png" alt="" srcset="" @click="turnToCourse">
     </div>
 </template>
 
@@ -190,9 +179,8 @@ export default {
                 ['word', 'word'],
             ],
             sen_matrix: [
-                ['word', 'word', 'word', 'word'],
-                ['word', 'word', 'word', 'word'],
-                ['word', 'word'],
+                [{Q: 'question', A: 'answer'}, {Q: 'question', A: 'answer'}],
+                [{Q: 'question', A: 'answer'}, {Q: 'question', A: 'answer'}],
             ],
             is_good: true,
             bgWidth: 720,
@@ -242,19 +230,26 @@ export default {
         for (let item of this.sen_stat){
             if (item.remark == '优秀'){
                 this.s_excel_num++
-                this.s_ex_stat_data.push(item.content)
+                this.s_ex_stat_data.push({
+                    Q: item.Q,
+                    A: item.A
+                })
             }
             else {
                 this.s_not_excel_num++
-                this.s_not_stat_data.push(item.content)
+                this.s_not_stat_data.push({
+                    Q: item.Q,
+                    A: item.A
+                })
             }
         }
         this.w_ex_stat_data = this.reshape(this.w_ex_stat_data, 3, 4)
         this.w_not_stat_data = this.reshape(this.w_not_stat_data, 3, 4)
         this.s_ex_stat_data = this.reshape(this.s_ex_stat_data, 2, 2)
         this.s_not_stat_data = this.reshape(this.s_not_stat_data, 2, 2)
-        this.word_matrix = this.w_ex_stat_data
-        this.sen_matrix = this.s_ex_stat_data
+        // this.s_not_stat_data = this.sen_matrix
+        // this.word_matrix = this.w_ex_stat_data
+        // this.sen_matrix = this.s_ex_stat_data
     },
     methods: {
         setSize(){
@@ -264,7 +259,7 @@ export default {
             console.log('回到主界面')
             window.location.href = 'https://www.smartreelearners.com/'
         },
-        praticeAgain() {
+        turnToCourse() {
             console.log('再来一次')
             // this.$emit('resultClose')
             this.$router.replace('/course')
@@ -383,26 +378,44 @@ export default {
         position: relative;
         left: 30%;
         bottom: 6%;
+    }
+    .half_word{
+        background-image: url(../assets/result/time_progress.gif?);
+        background-size: 100%;
+        width: 11vw;
+        height: 11vw;
+        font-size: 1.1vw;
+        font-weight: bold;
+        color: red;
         display: flex;
         justify-content: center;
         align-items: center;
     }
-    #img_timeprog{  
-        width: 80%;
-        height: auto;
+    .half_word::before{
+        content: "本次单词训练消耗时间";
+        position: absolute;
+        display: inline-block;
+        color: black;
+        right: 42%;
     }
-    .half{
-        width: 50%;
-    }
-    #div_timeTips{
+    .half_sen{
+        background-image: url(../assets/result/time_progress.gif?);
+        background-size: 100%;
+        width: 11vw;
+        height: 11vw;
         font-size: 1.1vw;
         font-weight: bold;
-        /* width: 60%; */
+        color: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-    #div_time{
-        margin-top: -50%;
-        font-size: 1.1vw;
-        font-weight: bold;
+    .half_sen::before{
+        content: "本次句子训练消耗时间";
+        position: absolute;
+        display: inline-block;
+        color: black;
+        right: 42%;
     }
     .inline{
         display: inline;
@@ -418,7 +431,7 @@ export default {
     .redgreen{
         position: relative;
         width: 100%;
-        /* top: 8%; */
+        bottom: 6%;
         display: flex;
         justify-content: center;
     }
@@ -456,7 +469,7 @@ export default {
     }
     .list{
         position: relative;
-        /* top: 10%; */
+        bottom: 6%;
         width: 100%;
         height: 34%;
     }
@@ -548,9 +561,9 @@ export default {
         font-size: 2vw;
         font-weight: 500;
         background-color: white;
-        box-shadow: rgb(255, 246, 209) 0 0 1vw ;
+        /* box-shadow: rgb(255, 246, 209) 0 0 1vw ; */
         float: left;
-        border: 0.1vw solid rgb(241, 241, 242);
+        border: 0.1vw solid rgb(255, 246, 209);
         border-radius: 2.4vw;
         display: flex;
         align-items: center;
@@ -558,6 +571,13 @@ export default {
     }
     .table_cell_sen{
         width: 38%;
+        display: block;
+    }
+    #result_done{
+        position: relative;
+        top: 15.5%;
+        width: 13%;
+        cursor: pointer;
     }
 </style>
 

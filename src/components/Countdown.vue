@@ -66,16 +66,17 @@ export default {
 
 <style>
     #ct_container{
+        /* position: relative; */
+        /* transform: translate(-50%, 50%); */
         width: 100%;
         height: 100%;
-        /* display: flex;
-        justify-content: center;
-        align-items: center; */
     }
     .ct_circle{
       z-index: 1;
-      position: relative;
-      bottom: 70%;
+      position: absolute;
+      bottom: 8vw;
+      left: 8vw;
+      /* bottom: 70%; */
       /* right: 10%; */
         width: 50%;
         height: 50%;
@@ -183,8 +184,9 @@ export default {
         width: 28vw;
         height: 28vw;
         box-sizing: border-box;
-        position: relative;
-        bottom: 136%;
+        position: absolute;
+        left: 3vw;
+        bottom: 3vw;
 
     }
     .rect{

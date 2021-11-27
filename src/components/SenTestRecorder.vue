@@ -1,5 +1,5 @@
 <template>
-    <div id="div_recording">   
+    <div class="right_in" id="div_recording">   
         <!-- 显示单个答句 -->
         <div v-if="phase == 0" class="div_sentence record_margin" align="center">
             <div class="SenA">
@@ -13,7 +13,7 @@
             <div>
                 <div class="SenQ">
                     <img class="SenQImg" src="../assets/public/Q.png" alt="">
-                    {{showing_content.CN_content}}
+                    {{showing_content.question}}
                 </div>
                 <div class="SenA">
                     <img class="SenAImg" src="../assets/public/A.png" alt="">
@@ -134,38 +134,39 @@ export default {
                 // console.log(self.res_time)
                 if (self.res_time < 86)
                     self.res_time = 0
-            if (!self.recording) {
-                self.after_thinking = false
-                self.begin = 0
-                self.end = 0
-                return
-            }
-            if (!self.after_thinking) { //正式录音前思考时间           
-                if (params.vol > 20) { //计算思考时间
-                    self.end = new Date()
-                    self.thinking_time = self.end - self.begin//ms
-                    self.after_thinking = true
-                    self.begin = 0
-                    self.end = 0
-                }
-            }
-            else {   
-                if (params.vol < 20){
-                    self.end = new Date()
-                    console.log('声音太小了，说完了吗')
-                }
-                else {
-                    self.begin = new Date()
-                }
-                if (self.end - self.begin >= 1200) { //1秒没有说话则结束录音
+                if (!self.recording) {
                     self.after_thinking = false
                     self.begin = 0
                     self.end = 0
-                    self.recStop()
+                    return
+                }
+                if (!self.after_thinking) { //正式录音前思考时间           
+                    if (params.vol > 20) { //计算思考时间
+                        self.end = new Date()
+                        self.thinking_time = self.end - self.begin//ms
+                        self.after_thinking = true
+                        self.begin = 0
+                        self.end = 0
+                    }
+                }
+                else {   
+                    if (params.vol < 20){
+                        self.end = new Date()
+                        console.log('声音太小了，说完了吗')
+                    }
+                    else {
+                        self.begin = new Date()
+                    }
+                    if (self.end - self.begin >= 1200) { //1秒没有说话则结束录音
+                        self.after_thinking = false
+                        self.begin = 0
+                        self.end = 0
+                        self.recStop()
+                    }
                 }
             }
-            }
-            recorder.start().then(() => {
+            setTimeout(() => {
+                recorder.start().then(() => {
                 // console.log('recording......', new Date())
                 self.begin = new Date() // 思考时间开始
                 setTimeout(() => {
@@ -174,17 +175,18 @@ export default {
                             self.thinking_time = 4000
                         self.recStop()         
                     }         
-                }, 4000) //4秒未录完则直接结束
-            }).catch((error) => {
+                    }, 4000) //4秒未录完则直接结束
+                }).catch((error) => {
                 console.log(error)
-            })
+                })
+            }, 200)  
         },
         //结束录音
         recStop() {  
             let blob =  recorder.getWAVBlob()  //默认调用stop()
             recorder.play()
             this.$emit('recordEnd', {
-                // recording: false,
+                recording: false,
                 blob: blob,
                 thinking_time: this.thinking_time,
                 duration: recorder.duration > 4?recorder.duration - 2:recorder.duration - 1
@@ -196,11 +198,16 @@ export default {
 </script>
 
 <style>
+    .right_in{
+        animation: bounceInRight;
+        animation-duration: 1s;
+    }
     #div_recording{
         width: 100%;
         height: 100%;
     }
     .img_sen{
+        background-color: white;
         border: solid#FED001 0.5vw;
         border-radius: 1.5vw;
         width: 20vw;

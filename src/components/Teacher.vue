@@ -1,13 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-23 16:46:39
- * @LastEditTime: 2021-09-29 20:31:34
+ * @LastEditTime: 2021-10-21 22:50:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \SMT_voice\src\components\Teacher.vue
 -->
 <template>
-    <div id="div_helen">
+    <div class="fade_in" id="div_helen">
         <!-- <img v-show="dialog_show" id="img_dialog" :src="dialogURL" alt=""> -->
         <div id="dialog_container" :style="{width: dialog_item.container_width, backgroundImage: font_bgc}">
             <div class="dialog_font" v-html="dialog_item.content" :style="{color: font_color}">
@@ -54,6 +54,10 @@ export default {
 </script>
 
 <style>
+    .fade_in{
+        animation: fadeIn;
+        animation-duration: .6s;
+    }
     #div_helen{
         width: 100%;
         height: 100%;
@@ -67,11 +71,11 @@ export default {
     }
     #div_shadow{
         position: relative;
-        width: 70%;
-        height: 10%;
+        width: 12vw;
+        height: 4vw;
         background-color: rgb(201, 202, 202);
         border-radius: 50%;
-        bottom: 9%;
+        bottom: 3vw;
     }
     #dialog_space{
         position: relative;
@@ -82,18 +86,20 @@ export default {
         background-image: linear-gradient(to bottom, rgb(252, 247, 175), rgb(206, 223, 76));
         border-radius: 1vw;
         position: absolute;
-        top: 70%;
-        left: 90%;
-        height: 20%;
+        top: 25vw;
+        left: 15vw;
+        /* height: 2vw; */
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .dialog_font{
+        display: inline-block;
         font-size: 1vw;
         white-space: pre;
         text-align: left;
         font-weight: bold;
+        padding: 4% 5%;
     }
     /* @media only screen and (max-width: 1050px){
         .dialog_font{

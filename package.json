@@ -8,11 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "animate.css": "^4.1.1",
+    "axios": "^0.21.4",
     "core-js": "^3.6.5",
     "element-ui": "^2.14.0",
     "js-audio-recorder": "^1.0.6",
-    "postcss": "^8.2.8",
+    "postcss": "^8.3.9",
     "recorder-core": "^1.1.20062600",
     "vue": "^2.6.11",
     "vue-router": "^3.4.7",
@@ -43,9 +44,7 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {
-
-    }
+    "rules": {}
   },
   "browserslist": [
     "> 1%",

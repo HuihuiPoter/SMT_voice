@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-03-01 16:09:47
+ * @LastEditTime: 2021-10-15 11:13:52
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \SMT_voice\src\main.js
+ */
 import Vue from 'vue'
 import App from './App.vue'
 import router from "./router/index"
@@ -24,6 +32,7 @@ import {
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+import 'animate.css'
 
 //axios设置
 axios.defaults.withCredentials = true

@@ -29,7 +29,8 @@
   <div class="login-btn">
   <el-button type="primary" @click="submitForm()">登录</el-button>
   <el-button type="primary" @click="registerForm()">注册</el-button>
-  <el-button type="primary" @click="test()">句子样板测试</el-button>
+  <el-button type="primary" @click="test(2)">登录level2</el-button>
+  <el-button type="primary" @click="test(3)">登录level3</el-button>
   </div>
  </el-form-item>
  <p style="font-size:12px;line-height:30px;color:black;">Tips : 请输入账号密码登陆  admin  123456，可以重新注册新的账号</p>
@@ -120,13 +121,11 @@ export default {
                 }  
                 else alert("账号密码输入错误")
           })
-        // this.$store.commit('loginMain')
-        // this.$router.replace('/rule')
       },
       registerForm() {
           this.reg_visible = true
       },
-      test(){
+      test(level){
           if (this.identifyCode != this.ruleForm.code){
               alert('验证码错误')
               return
@@ -143,13 +142,15 @@ export default {
                         username: this.ruleForm.username,
                         password: this.ruleForm.password
                     })
+                    this.$store.commit('Level', {
+                        level: level
+                    })
+                    this.$router.replace('course')
                     // this.$router.replace('main/sentest')
-                    this.$router.replace('main/result')
+                    // this.$router.replace('main/result')
                 }  
                 else alert("账号密码输入错误")
           })
-        // this.$store.commit('loginMain')
-        // this.$router.replace('/rule')
       },
       randomNum (min, max) {
           return Math.floor(Math.random() * (max - min) + min)

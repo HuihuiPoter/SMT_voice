@@ -2,7 +2,7 @@
     <div class="div_select" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
         <!-- 按钮 -->
         <img id="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
-        <div id="div_level">等级/L{{level}}</div>
+        <div id="div_level">等级/L{{$store.state.level}}</div>
         <!-- 板块 -->
         <div id="div_title">{{title}}</div>
         <div id="div_lesson">
@@ -42,14 +42,91 @@ export default {
         return {
             title: 'Speaking',
             lessons: [],
-            theme: '',
             selected_theme: '',
             level: 1,
             lesson_type: 1, //speaking
-            course_id: 0
+            course_id: 0,
+            themes: [],
+            theme: ''
         }
     },
     created: function() {
+        // lv1 
+        this.themes.push({
+            lesson1: 'Greetings 1-1',
+            lesson2: 'Greetings 1-2',
+            lesson3: 'Body Parts 1-1',
+            lesson4: 'Body Parts 1-2',
+            lesson5: 'My Family Tree 1-1',
+            lesson6: 'My Family Tree 1-2',
+            lesson7: 'Numbers(1-10) 1-1',
+            lesson8: 'Numbers(1-10) 1-2',
+            lesson9: 'Colors 1-1',
+            lesson10: 'Colors 1-2',
+            lesson11: 'Food 1-1',
+            lesson12: 'Food 1-2',
+            lesson13: 'Animals 1-1',
+            lesson14: 'Animals 1-2',
+            lesson15: 'My Classroom 1-1',
+            lesson16: 'My Classroom 1-2',
+            lesson17: 'My House 1-1',
+            lesson18: 'My House 1-2',
+            lesson19: 'Sports 1-1',
+            lesson20: 'Sports 1-2',
+            lesson21: 'My Feelings 1-1',
+            lesson22: 'My Feelings 1-2',
+        })
+
+        // lv2
+        this.themes.push({
+            lesson1: 'What shape is it? 1-1',
+            lesson2: 'What shape is it? 1-2',
+            lesson3: 'What is he? 1-1',
+            lesson4: 'What is he? 1-2',
+            lesson5: 'What are you wearing? 1-1',
+            lesson6: 'What are you wearing? 1-2',
+            lesson7: 'How many cupcakes are there? 1-1',
+            lesson8: 'How many cupcakes are there? 1-2',
+            lesson9: 'Do you have a teddy bear? 1-1',
+            lesson10: 'Do you have a teddy bear? 1-2',
+            lesson11: 'Where is Johnny? 1-1',
+            lesson12: 'Where is Johnny? 1-2',
+            lesson13: "What's he like? 1-1",
+            lesson14: "What's he like? 1-2",
+            lesson15: 'What time is it? 1-1',
+            lesson16: 'What time is it? 1-2',
+            lesson17: "How's the weather? 1-1",
+            lesson18: "How's the weather? 1-2",
+            lesson19: 'What day is it? 1-1',
+            lesson20: 'What day is it? 1-2',
+            lesson21: 'What month is it? 1-1',
+            lesson22: 'What month is it? 1-2',
+        })
+        // lv3
+        this.themes.push({
+            lesson1: "What's Your Name?",
+            lesson2: 'How Many Children Are There?',
+            lesson3: "That's His Ball",
+            lesson4: 'My Bedroom',
+            lesson5: 'The Body',
+            lesson6: 'Faces',
+            lesson7: 'What Color is the Ruler?',
+            lesson8: 'My Clothes',
+            lesson9: 'Farm Animals',
+            lesson10: 'Where Are the Toys?',
+            lesson11: 'Days of the Week',
+            lesson12: 'Where Do You Live?',
+            lesson13: "In the Family",
+            lesson14: "What Time Do You Get Up?",
+            lesson15: 'Friends',
+            lesson16: 'Months of the Year',
+            lesson17: "What's the Weather Like?",
+            lesson18: "What Do You Study?",
+            lesson19: 'About Your Town',
+            lesson20: 'What Are They Doing?',
+            lesson21: 'Where Is Your Home?',
+            lesson22: 'Work',
+        })
         this.setLessons(1, 11)
     },
     methods: {
@@ -65,28 +142,28 @@ export default {
         },
         selectLesson(obj) {
             switch(obj.currentTarget.id){
-                case 'lesson1': this.theme = 'Greetings 1-1';break;
-                case 'lesson2': this.theme = 'Greetings 1-2';break;
-                case 'lesson3': this.theme = 'Body Parts 1-1';break;
-                case 'lesson4': this.theme = 'Body Parts 1-2';break;
-                case 'lesson5': this.theme = 'My Family Tree 1-1';break;
-                case 'lesson6': this.theme = 'My Family Tree 1-2';break;
-                case 'lesson7': this.theme = 'Numbers(1-10) 1-1';break;
-                case 'lesson8': this.theme = 'Numbers(1-10) 1-2';break;
-                case 'lesson9': this.theme = 'Colors 1-1';break;
-                case 'lesson10': this.theme = 'Colors 1-2';break;
-                case 'lesson11': this.theme = 'Food 1-1';break;
-                case 'lesson12': this.theme = 'Food 1-2';break;
-                case 'lesson13': this.theme = 'Animals 1-1';break;
-                case 'lesson14': this.theme = 'Animals 1-2';break;
-                case 'lesson15': this.theme = 'My Classroom 1-1';break;
-                case 'lesson16': this.theme = 'My Classroom 1-2';break;
-                case 'lesson17': this.theme = 'My House 1-1';break;
-                case 'lesson18': this.theme = 'My House 1-2';break;
-                case 'lesson19': this.theme = 'Sports 1-1';break;
-                case 'lesson20': this.theme = 'Sports 1-2';break;
-                case 'lesson21': this.theme = 'My Feelings 1-1';break;
-                case 'lesson22': this.theme = 'My Feelings 1-2';break;
+                case 'lesson1': this.theme = this.themes[this.$store.state.level - 1].lesson1;break;
+                case 'lesson2': this.theme = this.themes[this.$store.state.level - 1].lesson2;break;
+                case 'lesson3': this.theme = this.themes[this.$store.state.level - 1].lesson3;break;
+                case 'lesson4': this.theme = this.themes[this.$store.state.level - 1].lesson4;break;
+                case 'lesson5': this.theme = this.themes[this.$store.state.level - 1].lesson5;break;
+                case 'lesson6': this.theme = this.themes[this.$store.state.level - 1].lesson6;break;
+                case 'lesson7': this.theme = this.themes[this.$store.state.level - 1].lesson7;break;
+                case 'lesson8': this.theme = this.themes[this.$store.state.level - 1].lesson8;break;
+                case 'lesson9': this.theme = this.themes[this.$store.state.level - 1].lesson9;break;
+                case 'lesson10': this.theme = this.themes[this.$store.state.level - 1].lesson10;break;
+                case 'lesson11': this.theme = this.themes[this.$store.state.level - 1].lesson11;break;
+                case 'lesson12': this.theme = this.themes[this.$store.state.level - 1].lesson12;break;
+                case 'lesson13': this.theme = this.themes[this.$store.state.level - 1].lesson13;break;
+                case 'lesson14': this.theme = this.themes[this.$store.state.level - 1].lesson14;break;
+                case 'lesson15': this.theme = this.themes[this.$store.state.level - 1].lesson15;break;
+                case 'lesson16': this.theme = this.themes[this.$store.state.level - 1].lesson16;break;
+                case 'lesson17': this.theme = this.themes[this.$store.state.level - 1].lesson17;break;
+                case 'lesson18': this.theme = this.themes[this.$store.state.level - 1].lesson18;break;
+                case 'lesson19': this.theme = this.themes[this.$store.state.level - 1].lesson19;break;
+                case 'lesson20': this.theme = this.themes[this.$store.state.level - 1].lesson20;break;
+                case 'lesson21': this.theme = this.themes[this.$store.state.level - 1].lesson21;break;
+                case 'lesson22': this.theme = this.themes[this.$store.state.level - 1].lesson22;break;
             }
             if (obj.type == 'click'){
                 this.selected_theme = this.theme
@@ -255,7 +332,7 @@ export default {
         position: relative;
         height: 5%;
         top: 15%;
-        font-size: 2vw;
+        font-size: 1.8vw;
         font-weight: bold;
     }
     #img_enter{

@@ -1,16 +1,16 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-01 16:09:47
- * @LastEditTime: 2021-09-30 15:55:00
+ * @LastEditTime: 2021-11-08 17:36:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \SMT_voice\src\App.vue
 -->
 <template>
   <div id="app">
-    <transition name="fade">
+    <!-- <transition name="fade"> -->
       <router-view></router-view>
-    </transition>
+    <!-- </transition> -->
     
     <!-- <Waves></Waves> -->
   </div>
@@ -18,11 +18,47 @@
 
 <script>
 //import Wavss from './components/waves'
-
+// import DevicePixelRatio from './devicePixelRatio'
 export default {
   name: 'App',
   components: {
     //Wavss
+  },
+  created() {
+    // new DevicePixelRatio().init()
+  },
+  mounted() {
+    // window.onresize = () => {
+    //   return (() => {
+    //     this.detectZoom()
+    //   })()
+    // };
+  },
+  methods: {
+    detectZoom (){ 
+      var ratio = 0,
+      screen = window.screen,
+      ua = navigator.userAgent.toLowerCase();
+      if (window.devicePixelRatio !== undefined) {
+          ratio = window.devicePixelRatio;
+      }
+      else if (~ua.indexOf('msie')) {  
+        if (screen.deviceXDPI && screen.logicalXDPI) {
+          ratio = screen.deviceXDPI / screen.logicalXDPI;
+        }
+      }
+      else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+        ratio = window.outerWidth / window.innerWidth;
+      }
+      
+      if (ratio){
+        ratio = Math.round(ratio * 100);
+      }
+      //ratio就是获取到的百分比
+      // console.log(ratio)
+      this.onresize_height = ratio
+      // return ratio;
+    },
   }
 }
 </script>
@@ -46,9 +82,9 @@ html{
     #app{
       /* height: 100%;
       width: 100%; */
-      display: flex;  
+      /* display: flex;  
         align-items: center;
-        justify-content: center;
+        justify-content: center; */
     }
 
     .slide-fade{

@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-03-01 16:09:47
+ * @LastEditTime: 2021-11-26 14:08:10
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \SMT_voice\src\store\index.js
+ */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
@@ -12,8 +20,10 @@ const store = new Vuex.Store({
         loginState: true,
         base_color: "rgba(10, 194, 126, 1)",
         course_type: '',
+        level: 1,
         word_stat: [],
         sen_stat: [],
+        sen_QA_stat: [],
         word_time: 0,
         sen_time: 0      
     },
@@ -26,6 +36,9 @@ const store = new Vuex.Store({
         courseType(state, payload) {
             state.course_type = payload.course_type
         },
+        Level(state, payload){
+            state.level = payload.level
+        },
         wordStat(state, payload){
             state.word_stat = payload.word_stat
             state.word_time = payload.time
@@ -34,6 +47,9 @@ const store = new Vuex.Store({
             state.sen_stat = payload.sen_stat
             state.sen_time = payload.time
         },
+        senQAStat(state, payload){
+            state.sen_QA_stat = payload.senStat
+        }
     },
     plugins: [createPersistedState()]
 })

@@ -1,19 +1,17 @@
 <template>
     <div id="evaluate_container">
         <!-- 选择课程 -->
-        <transition  v-if="step === 0 && $store.state.course_type == 0" name="fade">
-            <SpeakingSelection @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></SpeakingSelection>
-        </transition>
-        <transition  v-else-if="step === 0 && $store.state.course_type == 1" name="fade">
-            <ReadingSelection @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></ReadingSelection>
-        </transition>
+        <div v-if="step === 0" class="slide_in">
+            <SpeakingSelection v-if="$store.state.course_type == 0"  @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></SpeakingSelection>
+            <ReadingSelection v-else-if="$store.state.course_type == 1" @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></ReadingSelection>
+        </div>
         <!-- 规则 -->
-        <transition v-else-if="step === 1" name="fade">
-            <RuleInform  @nextStep="nextStep" @ruleStart="ruleStart" :dialog_close="dialog_close" :ct="countdown"
+        <!-- <transition v-else-if="step === 1" name="fade"> -->
+            <RuleInform v-else-if="step === 1"  @nextStep="nextStep" @ruleStart="ruleStart" :dialog_close="dialog_close" :ct="countdown"
             :rule_dialog="dialog" :no="ct_num" :bg_width="bgWidth" :bg_height="bgHeight"></RuleInform>
-        </transition>
-        <transition v-else-if="step === 2" name="fade">
-        <div id="evaluate_box" align="center" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+        <!-- </transition> -->
+        <!-- <transition v-else-if="step === 2" name="fade"> -->
+        <div v-else-if="step === 2" class="slide_in" id="evaluate_box" align="center" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
             <!-- 按钮 -->
         <div class="left_btn">
             <img class="img_btn" src="../assets/test_board/prev.png" alt="" @click="pre">
@@ -24,31 +22,28 @@
             <ProblemLabel v-for="(item, idx) in problem_label" :key="idx + 'prog'" :state="item" :no="idx + 1"></ProblemLabel>
         </div>
         <!-- helen老师 -->
-        <transition name="fade">
-            <div class="div_teacher" id="eva_teacher">
-                <Teacher :url="helen_URL" v-show="shadow_show" :dialog_view="shadow_show" :dialog="dialog"></Teacher>
-            </div>
-        </transition>
+        <!-- <transition name="fade"> -->
+        <div class="div_teacher" id="eva_teacher">
+            <Teacher :url="helen_URL" v-show="shadow_show" :dialog_view="shadow_show" :dialog="dialog"></Teacher>
+        </div>
+        <!-- </transition> -->
         
         <!-- 录音/评价显示 -->
         <div class="div_record">
             <Recorder :content="content" :recording="recording" @recordEnd="recordEnd" v-show="recording_show" :recorder_show="recording_show"></Recorder>
         </div>
         <!-- <Recorder :content="content" :recording="recording" @recordEnd="recordEnd" v-show="recording_show" :recorder_show="recording_show"></Recorder> -->
-        <transition name="fade">
+        <!-- <transition name="fade"> -->
             <div class="div_remarkEva">
                 <Remark v-if="remark_visible" v-show="!recording" :record_pro="phone_record" :failed_times="timesOfFailed"
-                :btn_show="btn_show" @next="next" @listenAgain="listenAgain" @recordAgain="recordAgain"
+                :btn_show="btn_show" :flash_flag="flash_flag"  @next="next" @listenAgain="listenAgain" @recordAgain="recordAgain"
                 @remarkClose="remarkClose"></Remark>
             </div>  
-        </transition>
+        <!-- </transition> -->
         <!-- 背景板 -->
         <!-- <img id="img_bg" src="../assets/public/background.png" alt="">  -->
         </div>
-        </transition>
-        <!-- <transition v-else name="fade">
-            <Result :time="all_time" @resultClose="resultClose"></Result>
-        </transition> -->
+        <UpShow v-if="done" :bgHeight="bgHeight" :bgWidth="bgWidth"></UpShow>
         <audio ref="audioplay" id="au">
             <source :src="audiourl" type="audio/wav">
             <source :src="audiourl" type="audio/mpeg">
@@ -69,19 +64,19 @@ import ReadingSelection from './ReadingSelection'
 // import Result from './Result'
 import ProblemLabel from './ProblemLabel'
 import Teacher from './Teacher'
+import UpShow from './UpShow.vue'
 
 export default {
     name: 'Evaluation',
     components: {
-        // Recording,
         Remark,
         Recorder,
         RuleInform,
         SpeakingSelection,
         ReadingSelection,
-        // Result,
         ProblemLabel,
-        Teacher
+        Teacher,
+        UpShow
     },
     data() {
         return {
@@ -118,7 +113,10 @@ export default {
             problem_label: [],
             ct_num: 5,
             bgWidth: 1080,
-            bgHeight: 720
+            bgHeight: 720,
+            audio_name: '', //几个录音文件的名字
+            flash_flag: true, //标志按钮是否闪烁
+            done: false //标志是否显示combo
         }
     },
     mounted: function(){
@@ -177,11 +175,14 @@ export default {
         },
         setSize(){
             this.bgHeight = 2251 / 4001 * this.bgWidth
+            // let minus = this.bgHeight - window.innerHeight
+            // if (minus > 0)
+            //     this.bgHeight = this.bgHeight * (this.bgHeight - minus) / this.bgHeight
         },
         //请求初始数据
         requestData(course_id, lesson_type) {
-            let url = "https://www.smartreelearners.com:9000/api/pro_word/?course_id=" + course_id + "&lesson_type=" + lesson_type
-            //let url = "http://192.168.137.1:8000/api/pro_word/?course_id=1"
+            // console.log(this.$store.state.level)
+            let url = "https://www.smartreelearners.com:9000/api/pro_word/?course_id=" + course_id + "&lesson_type=" + lesson_type + "&level=" + this.$store.state.level
             let self = this
             axios.get(url).then(function (responce) {
                 console.log('responce', responce)
@@ -246,19 +247,7 @@ export default {
             this.thinking_time = obj.thinking_time
             this.recording = obj.recording
             this.blob = obj.blob
-            this.duration = obj.duration
-            // this.record.push({
-            //     content: this.word_list[this.idx].word_content,
-            //     thinking_time: this.thinking_time
-            // })
-            // const self = this
-            // this.audiourl = window.URL.createObjectURL(this.blob)
-            // this.$refs.audioplay.load()
-            // this.$refs.audioplay.oncanplay = function() { 
-            //     self.$refs.audioplay.play()
-            // }
-            // this.$refs.audioplay.onended = function() {
-            // }      
+            this.duration = obj.duration  
         },
         listenAgain() {
             this.btnAgainClick()
@@ -268,6 +257,7 @@ export default {
             if(this.timesOfFailed < 1){
                 this.timesOfFailed++
             }  
+            this.flash_flag = true
             this.prompt()  
         },
         //下一题跳转
@@ -286,19 +276,15 @@ export default {
                 this.prompt()
             }
             else {
-                this.$message({
-                    message: '测试完成',
-                    type: 'success'
-                })
-                // this.audioPlay('endaudio.wav')
                 this.all_time = new Date() - this.all_time
-                // this.result_visible = true
                 this.$store.commit('wordStat', {
                     word_stat: this.stat_data,
                     time: this.all_time
                 })
-                // this.step = 3
-                this.$router.replace('/main/sentest')
+                this.done = true
+                this.audioPlay_1('gooddi.mp3', () => {
+                    this.$router.replace('/main/sentest')
+                }) 
             }
         },
          //答题提示
@@ -349,8 +335,11 @@ export default {
             }
             // console.log(this.word_list)
         },
-        audioPlay_1(content, callback) {           
-            this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
+        audioPlay_1(content, callback, ispath = false) { 
+            if (ispath)
+                this.audiourl = content
+            else          
+                this.audiourl = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/' + content
             this.$refs.audioplay.load()
             const self = this  
             this.$refs.audioplay.oncanplay = function() {
@@ -396,11 +385,11 @@ export default {
                 }
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/happy.gif'
                 this.shadow_show = true
-                this.audioPlay_1(goodaudios[audio_idx] + '.wav', () => {
-                    //this.btn_next_show = true
-                    self.btn_show = true
-                    // self.dialogURL = ''
-                })
+                this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/gooddi.mp3", ()=> {
+                    this.audioPlay_1(goodaudios[audio_idx] + '.wav', () => {
+                        self.btn_show = true
+                    })
+                }, true)
             }
             else if (this.level == 1) {
                 let normalaudios = ['ok']
@@ -411,11 +400,11 @@ export default {
                 }
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/encourage.gif'
                 this.shadow_show = true
-                this.audioPlay_1(normalaudios[audio_idx] + '.wav', () => {
-                    //this.prompt()
-                    self.btn_show = true
-                    // self.dialogURL = ''
-                })
+                this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/normaldi.mp3", ()=> {
+                    this.audioPlay_1(normalaudios[audio_idx] + '.wav', () => {
+                        self.btn_show = true
+                    })
+                }, true)
             }
             else {
                 let badaudios = ['oops']
@@ -426,11 +415,11 @@ export default {
                 }                
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/sad.gif'
                 this.shadow_show = true
-                this.audioPlay_1(badaudios[audio_idx] + '.wav', () => {
-                    //this.btn_again_show = true
-                    self.btn_show = true
-                    // self.dialogURL = ''
-                })
+                this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/baddi.mp3", ()=> {
+                    this.audioPlay_1(badaudios[audio_idx] + '.wav', () => {
+                        self.btn_show = true
+                    })
+                }, true)
             }
         },
         //规则录音
@@ -498,8 +487,10 @@ export default {
                     }, 500)
                 }
                 else self.btn_next_show = true
-                if (self.audio_times == 3)
+                if (self.audio_times == 3){
                     self.img_show = false
+                    self.flash_flag = false
+                }
             }
             this.$refs.audioplay.oncanplay = function() {
                 setTimeout(() => {
@@ -533,8 +524,7 @@ export default {
             this._init_()            
         },
         pre() {
-            // console.log('返回上一页')
-            this.step = 0
+            location.reload()
         },
         main() {
             window.location.href = 'https://www.smartreelearners.com/'
@@ -544,10 +534,8 @@ export default {
 </script>
 
 <style>
-    #evaluate_container{
-    }
     #evaluate_box{
-        background-image: url(../assets/public/background.png);
+        background-image: url(../assets/public/background.jpg);
         background-size: 100%;
     }
     #div_prog{
@@ -559,32 +547,24 @@ export default {
         justify-content: center;
         align-items: center;
     }
-    #eva_teacher{
+    .eva_teacher{
+        position: relative;
+        width: 16%;
+        height: 56%;
+        right: 36%;
         top: 30%;
     }
     .div_record{
-        position: relative;
+        position: absolute;
         width: 50%;
-        height: 50%;
-        bottom: 30%;
+        height: 26vw;
+        top: 20vw;
+        left: 25%;
     }
     .div_remarkEva{
-        position: relative;
-        width: 40%;
-        bottom: 85%;
+        position: absolute;
+        top: 20vw;
+        left: 25%;
+        width: 50%;
     }
-    .fade-enter{
-			opacity: 0;
-		}
-		.fade-enter-active{
-			transition: opacity 0.6s;
-            -webkit-transition: opacity 0.6s;
-		}
-		.fade-leave-to{
-			opacity: 0;
-		}
-		.fade-leave-active{
-			transition: opacity 0.6s;
-            -webkit-transition: opacity 0.6s;
-		}
 </style>

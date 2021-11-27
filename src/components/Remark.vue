@@ -1,5 +1,5 @@
 <template>
-    <div id="remark_container" align="center">
+    <div class="right_in" id="remark_container" align="center">
         <div class="remark_margin" id="div_remark" align="center">
             评价：{{remark}}
         </div>
@@ -7,7 +7,7 @@
             <span v-for="(item, idx) in phoneWithColor" :key="idx" :style="{'color': item.color}">{{item.phone}}</span>
         </div>
         <!-- 单词图片显示 -->
-        <div class="remark_margin word_img">
+        <div class="remark_margin">
             <img class="img_word" :src="img_URL" alt="">
         </div>
         <!-- 按钮显示 -->
@@ -23,8 +23,8 @@
         </div>
         <div class="remark_margin" v-show="computedLevel === 2 && is_show">
             <!-- 不合格 -->
-            <img id="btn_listenagain" class="btn_remark" src="../assets/test_board/btn_listenagain.png" alt="" @click="listenAgain">
-            <img id="btn_recordagain" class="btn_remark" src="../assets/test_board/btn_recordagain.png" alt="" @click="recordAgain">
+            <img id="btn_listenagain" :class="{btn_remark: true, flash: timesOfFailed == 0 && flash_flag}" src="../assets/test_board/btn_listenagain.png" alt="" @click="listenAgain">
+            <img id="btn_recordagain" :class="{btn_remark: true, flash: timesOfFailed == 0 && !flash_flag}" src="../assets/test_board/btn_recordagain.png" alt="" @click="recordAgain">
             <img v-if="timesOfFailed == 1" id="btn_next_failed" class="btn_remark" src="../assets/test_board/btn_next.png" alt="" @click="next">
         </div>
     </div>
@@ -38,7 +38,8 @@ export default {
     props: {
         record_pro: Object,
         btn_show: Boolean,
-        failed_times: Number
+        failed_times: Number,
+        flash_flag: Boolean
     },
     data() {
         return {
@@ -71,9 +72,10 @@ export default {
     computed: {
         phoneWithColor() {
             let phone_record = this.record.phone_record
+            let total_score = this.record.pron_total_score
             for (let item of phone_record) {
                 let color
-                if (item.score >= 85)
+                if (item.score >= 85 || total_score >= 85)
                     color = 'green'
                 else color = 'red'
                 Vue.set(item, 'color', color)
@@ -132,9 +134,32 @@ export default {
 </script>
 
 <style>
+    .right_in{
+        animation: bounceInRight;
+        animation-duration: 1s;
+    }
     #remark_container{
         width: 100%;
         height: 100%;
+    }
+    .flash{
+        animation-name: flash;
+        animation-iteration-count: infinite;
+        animation-duration: 2s;
+        animation-fill-mode: both;
+    }
+    @keyframes flash{
+        0%,
+        100%,
+        50%{
+            opacity: 1;
+            /* transform: scale(1); */
+        }
+        25%,
+        75%{
+            opacity: 0.4;
+            /* transform: scale(1.2); */
+        }
     }
     #div_remark{
         color: #000000;
@@ -142,11 +167,15 @@ export default {
         font-weight: bold;
     }
     .img_word{
-        width: 40%;
-        height: auto;
+        background-color: white;
+        border: solid#FED001 0.5vw;
+        border-radius: 1.5vw;
+        width: 20vw;
+        height: 10vw;
+        overflow: hidden;
     }
     .btn_remark{
-        width: 25%;
+        width: 20%;
         height: auto;
         margin: 0 4%;
         cursor: pointer;

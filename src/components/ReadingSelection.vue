@@ -2,7 +2,7 @@
     <div class="div_select" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
         <!-- 按钮 -->
         <img id="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
-        <div id="div_level">等级/L{{level}}</div>
+        <div id="div_level">等级/L{{$store.state.level}}</div>
         <!-- 板块 -->
         <div id="div_title">{{title}}</div>
         <div id="div_lesson">
@@ -43,6 +43,7 @@ export default {
             title: 'Reading',
             lessons: [],
             theme: '',
+            themes: [],
             selected_theme: '',
             level: 1,
             lesson_type: 2, //reading
@@ -50,6 +51,39 @@ export default {
         }
     },
     created: function() {
+        // lv1
+        this.themes.push({
+            lesson1: 'I Love My Family',
+            lesson2: 'Look at My Face',
+            lesson3: "Let's Make a Tree",
+            lesson4: 'My Dog Pluto',
+            lesson5: 'I See a Rainbow',
+            lesson6: 'In the Garden',
+            lesson7: "I'm Ready for School",
+            lesson8: 'How Do I Look?'
+        })
+        // lv2
+        this.themes.push({
+            lesson1: 'Colors of Fruits',
+            lesson2: 'I Am Happy',
+            lesson3: "The Farmer's Truck",
+            lesson4: 'Going to the Party',
+            lesson5: 'Where Is It?',
+            lesson6: 'The Concert in the Woods',
+            lesson7: "The Four Seasons",
+            lesson8: 'On My Birthday'
+        })
+        // lv3
+        this.themes.push({
+            lesson1: 'In Spring',
+            lesson2: "Stanley's Drawing",
+            lesson3: "On the Way to School",
+            lesson4: 'Who Plays with Me?',
+            lesson5: 'Always Together',
+            lesson6: 'At the Playground',
+            lesson7: "My First Bike",
+            lesson8: 'Be My Friend!'
+        })
         this.setLessons(1, 8)
     },
     methods: {
@@ -65,14 +99,14 @@ export default {
         },
         selectLesson(obj) {
             switch(obj.currentTarget.id){
-                case 'lesson1': this.theme = 'I Love My Family';break;
-                case 'lesson2': this.theme = 'Look at My Face';break;
-                case 'lesson3': this.theme = "Let's Make a Tree";break;
-                case 'lesson4': this.theme = 'My Dog Pluto';break;
-                case 'lesson5': this.theme = 'I See a Rainbow';break;
-                case 'lesson6': this.theme = 'In the Garden';break;
-                case 'lesson7': this.theme = "I'm Ready for School";break;
-                case 'lesson8': this.theme = 'How Do I Look?';break;
+                case 'lesson1': this.theme = this.themes[this.$store.state.level - 1].lesson1;break;
+                case 'lesson2': this.theme = this.themes[this.$store.state.level - 1].lesson2;break;
+                case 'lesson3': this.theme = this.themes[this.$store.state.level - 1].lesson3;break;
+                case 'lesson4': this.theme = this.themes[this.$store.state.level - 1].lesson4;break;
+                case 'lesson5': this.theme = this.themes[this.$store.state.level - 1].lesson5;break;
+                case 'lesson6': this.theme = this.themes[this.$store.state.level - 1].lesson6;break;
+                case 'lesson7': this.theme = this.themes[this.$store.state.level - 1].lesson7;break;
+                case 'lesson8': this.theme = this.themes[this.$store.state.level - 1].lesson8;break;
             }
             if (obj.type == 'click'){
                 this.selected_theme = this.theme

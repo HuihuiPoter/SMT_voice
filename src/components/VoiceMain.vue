@@ -4,7 +4,7 @@
             <div id="div_bi">
             <button id="btn_go" type="success" @click="audioRule" v-if="btn_hi_show">Hello</button>
             <button id="btn_go" type="success" @click="hideThis" v-if="btn_show">GO</button>
-            <img id="img_helen" src="../assets/Helen.png" alt="Teacher Helen" srcset="">  
+            <!-- <img id="img_helen" src="../assets/Helen.png" alt="Teacher Helen" srcset="">   -->
             <audio ref="audioplay">
                 <source :src="audiourl" type="audio/wav">
                 <source :src="audiourl" type="audio/mpeg">
@@ -31,7 +31,7 @@
                     </el-tooltip>
                     <!-- <div id="remark">[没有音标]</div>   -->
                     <div v-show="img_show">
-                        <img :src="word_image_url" alt="Word Image" srcset="" height="200" width="200">
+                        <!-- <img :src="word_image_url" alt="Word Image" srcset="" height="200" width="200"> -->
                     </div>
                     <div id="remark" v-if="btn_again_show">再听一次：
                         <el-button type="primary" icon="el-icon-phone-outline" circle @click="btnAgainClick"></el-button>
@@ -51,7 +51,7 @@
             </el-col>
             <el-col :span="5" :offset="3">
                 <div>
-                    <img src="../assets/Helen.png" alt="Teacher Helen" srcset="" height="220" width="100">
+                    <!-- <img src="../assets/Helen.png" alt="Teacher Helen" srcset="" height="220" width="100"> -->
                 </div>
                 <Remark v-if='remark_visible' :record="RecordofRemark"
                     @remarkClose="remarkClose">

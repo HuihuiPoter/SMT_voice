@@ -1,10 +1,10 @@
 <template>
-    <div id="div_recording">
+    <div class="right_in" id="div_recording">
         <!-- 显示单词 -->
         <div v-if="showing_content.picture_show == 0" class="div_word record_margin" align="center">
             {{showing_content.word_content}}
         </div>
-        <div class="record_margin word_img" v-else-if="showing_content.picture_show == 1">
+        <div class="record_margin" v-else-if="showing_content.picture_show == 1">
             <img class="img_word" :src="showing_content.picture_path" alt="">
         </div>
         <div v-else class="div_word record_margin">
@@ -70,13 +70,11 @@ export default {
             this.res_time = 4000
         },
         content(val) {
-        //    console.log(val)
            this.showing_content = val
        }
     },
     computed: {
         showPhone() {
-            // console.log(item.phone)
             return function(item) {
                 if (item.is_miss == 0)
                     return item.phone
@@ -88,43 +86,45 @@ export default {
         //开始录音
         recStart() {
             const self = this
+            // console.log(this.res_time)
             recorder.onprogress = function(params) {
                 self.res_time = self.res_time - 86
-                // console.log(self.res_time)
+                console.log(params.vol * 100)
                 if (self.res_time < 86)
                     self.res_time = 0
-            if (!self.recording) {
-                self.after_thinking = false
-                self.begin = 0
-                self.end = 0
-                return
-            }
-            if (!self.after_thinking) { //正式录音前思考时间           
-                if (params.vol > 20) { //计算思考时间
-                    self.end = new Date()
-                    self.thinking_time = self.end - self.begin//ms
-                    self.after_thinking = true
-                    self.begin = 0
-                    self.end = 0
-                }
-            }
-            else {   
-                if (params.vol < 20){
-                    self.end = new Date()
-                    console.log('声音太小了，说完了吗')
-                }
-                else {
-                    self.begin = new Date()
-                }
-                if (self.end - self.begin >= 1200) { //1秒没有说话则结束录音
+                if (!self.recording) {
                     self.after_thinking = false
                     self.begin = 0
                     self.end = 0
-                    self.recStop()
+                    return
+                }
+                if (!self.after_thinking) { //正式录音前思考时间           
+                    if (params.vol * 100 > 100) { //计算思考时间
+                        self.end = new Date()
+                        self.thinking_time = self.end - self.begin//ms
+                        self.after_thinking = true
+                        self.begin = 0
+                        self.end = 0
+                    }
+                }
+                else {   
+                    if (params.vol * 100 < 100){
+                        self.end = new Date()
+                        console.log('声音太小了，说完了吗')
+                    }
+                    else {
+                        self.begin = new Date()
+                    }
+                    if (self.end - self.begin >= 1200) { //1秒没有说话则结束录音
+                        self.after_thinking = false
+                        self.begin = 0
+                        self.end = 0
+                        self.recStop()
+                    }
                 }
             }
-            }
-            recorder.start().then(() => {
+            setTimeout(() => {
+                recorder.start().then(() => {
                 // console.log('recording......', new Date())
                 self.begin = new Date() // 思考时间开始
                 setTimeout(() => {
@@ -133,10 +133,11 @@ export default {
                             self.thinking_time = 4000
                         self.recStop()         
                     }         
-                }, 4000) //4秒未录完则直接结束
-            }).catch((error) => {
+                    }, 4000) //4秒未录完则直接结束
+                }).catch((error) => {
                 console.log(error)
-            })
+                })
+            }, 200)  //延迟开启录音          
         },
         //结束录音
         recStop() {  
@@ -155,21 +156,18 @@ export default {
 </script>
 
 <style>
+    .right_in{
+        animation: bounceInRight;
+        animation-duration: 1s;
+    }
     #div_recording{
         width: 100%;
         height: 100%;
     }
     .div_word{
         color: #5A5657;
-        font-size: 5vw;
+        font-size: 4vw;
         font-weight: bold;
-    }
-    .word_img{
-        border: solid#FED001 0.5vw;
-        border-radius: 1.5vw;
-        width: 20vw;
-        height: 10vw;
-        overflow: hidden;
     }
     #img_voice{
         width: 20%;

@@ -1,19 +1,15 @@
 <template>
-    <div id="rulebox" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
+    <div class="slide_in" id="rulebox" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
         <div class="left_btn">
             <img class="img_btn" src="../assets/test_board/prev.png" alt="" @click="pre">
             <img class="img_btn" src="../assets/test_board/main.png" alt="" @click="main">
         </div>
-        <!-- 中央图标 -->
-        <transition name="fade">          
+        <!-- 中央图标 -->        
             <!-- <Countdown v-else :num="num"></Countdown> -->
-            <div class="div_count" >
-                <img v-if="!show_ct" v-show="show_center" class="img_countdown" src="../assets/rule/start.png" alt="" @click="ctBegin">
-                <Countdown v-else :num="num"></Countdown>
-            </div>
-            
-        </transition>
-        
+        <div class="div_count">
+            <img v-if="!show_ct" v-show="ct" class="img_countdown" src="../assets/rule/start.png" alt="" @click="ctBegin">
+            <Countdown v-else  :num="num"></Countdown>
+        </div>
         <!-- helen老师 -->
         <div class="div_teacher">
             <Teacher url="https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/intro.gif"
@@ -49,11 +45,6 @@ export default {
         dialog_close(val){
             this.dialog_show = val
         },
-        ct(val) {
-            if (val){
-                this.show_center = true
-            }
-        },
         rule_dialog(val) {
             this.dialog_item = val
         },
@@ -75,9 +66,6 @@ export default {
             dialog_show: this.dialog_close,
             num: this.no,
             show_ct: false,
-            show_center: false,
-            bgWidth: 1080,
-            bgHeight: 720
         }
     },
     mounted: function(){
@@ -86,7 +74,8 @@ export default {
     methods: {
         pre() {
             // console.log('返回上一页')
-            this.$emit('nextStep', 0)
+            // this.$emit('nextStep', 0)
+            this.$router.replace('/course')
         },
         main() {
             window.location.href = 'https://www.smartreelearners.com/'
@@ -100,6 +89,10 @@ export default {
 </script>
 
 <style>
+    .slide_in{
+        animation: pulse;
+        animation-duration: 1s;
+    }
     #rulebox{
         background-image: url(../assets/public/background.png);
         background-size: 100%;
@@ -123,19 +116,21 @@ export default {
         cursor: pointer;
     }
     .div_teacher{
-        position: relative;
+        position: absolute;
         width: 16%;
-        height: 56%;
-        right: 36%;
-        bottom: 25%;
+        /* height: 56vw; */
+        /* right: 36%; */
+        top: 25vw;
+        left: 5%;
     }
     .div_count{
-        position: relative;
+        position: absolute;
         /* transform: translate(-50%, 50%); */
+        /* margin-left: 34%; */
         width: 34vw;
         height: 34vw;
-        top: 16%;
-        /* left: 49%; */
+        top: 14vw;
+        left: 33%;
     }
     /* @media only screen and (max-width: 1600px){
         #div_teacher{

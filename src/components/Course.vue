@@ -1,13 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-23 14:29:29
- * @LastEditTime: 2021-09-29 20:07:36
+ * @LastEditTime: 2021-11-08 17:57:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \SMT_voice\src\components\Course.vue
 -->
 <template>
-    <div id="course_container" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+    <div class="slide_in" id="course_container" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
         <div class="div_c_back">
             <img class="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
         </div>
@@ -46,6 +46,9 @@ export default {
         setSize(){
             // 通过浏览器宽度(图片宽度)计算高度
             this.bgHeight = 4501 / 8001 * this.bgWidth
+            // let minus = this.bgHeight - window.innerHeight
+            // if (minus > 0)
+            //     this.bgHeight = this.bgHeight * (this.bgHeight - minus) / this.bgHeight
         },
         back() {
             window.location.href = 'https://www.smartreelearners.com/'
@@ -71,13 +74,17 @@ export default {
 </script>
 
 <style>
+    .slide_in{
+        animation: pulse;
+        animation-duration: 1s;
+    }
     #course_container{
         background-image: url(../assets/course/background.png);
         background-size: 100%;
     }
     .div_c_back{
         position: relative;
-        margin: 6%;
+        padding: 6%;
     }
     .img_back{ 
         width: 5%;

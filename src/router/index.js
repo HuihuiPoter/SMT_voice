@@ -2,16 +2,9 @@ import Vue from 'vue'
 import VueRouter from "vue-router"
 
 const Login = () => import('../components/Login/login')
-const Show = () => import('../components/Show')
-const Word = () => import('../components/Word')
-const Sentence = () => import('../components/Sentence')
-const Sentencemiss = () => import('../components/Sentencemiss')
-const Senxunfei = () => import('../components/Senxunfei')
-const Spelling = () => import('../components/Spelling/Spelling')
 const Main = () => import('../components/Main')
 const RuleInform = () => import('../components/RuleInform')
 const Countdown = () => import('../components/Countdown')
-const VoiceMain = () => import('../components/VoiceMain')
 
 // const newResult = () => import('../components/newResult')
 const Evaluation = () => import('../components/Evaluation')
@@ -34,30 +27,6 @@ const routes = [
         component: Login
     },
     {
-        path: "/show",
-        component: Show
-    },
-    {
-        path: "/word",
-        component: Word
-    },
-    {
-        path: "/sentence",
-        component: Sentence
-    },
-    {
-        path: "/sentence_miss",
-        component: Sentencemiss
-    },
-    {
-        path: "/sen_xunfei",
-        component: Senxunfei
-    },
-    {
-        path: "/spelling",
-        component: Spelling
-    },
-    {
         path: "/countdown",
         component: Countdown
     },
@@ -74,30 +43,6 @@ const routes = [
                 redirect: 'show'
             },
             {
-                path: 'show',
-                component: Show 
-            },
-            {
-                path: 'word',
-                component: Word
-            },
-            {
-                path: 'sen_xunfei',
-                component: Senxunfei 
-            },
-            {
-                path: 'sentence_miss',
-                component: Sentencemiss 
-            },
-            {
-                path: 'spelling',
-                component: Spelling 
-            },
-            {
-                path: 'voice_main',
-                component: VoiceMain
-            },
-            {
                 path: "rule",
                 component: RuleInform
             },
@@ -112,7 +57,6 @@ const routes = [
             },
             {
                 path: "sentest",
-                // name: "evaluate",
                 component: SenTest
             }
         ]

@@ -55,8 +55,8 @@ export default {
         position: relative;
         margin-left: 0.3%;
         margin-right: 0.3%;
-        width: 3vw;
-        height: 3vw;
+        width: 60px;
+        height: 60px;
     }
     @media only screen and (max-width: 1520px){
      #prog_container{
@@ -67,10 +67,10 @@ export default {
     .number_false{
         position: relative;
         z-index: 2;
-        border: 0.1vw solid #257CE1;
+        border: 1px solid #257CE1;
         color: #257CE1;
         font-weight: bold;
-        font-size: 1.3vw;
+        font-size: 25px;
         width: 80%;
         height: 80%;
         background-color: #FFFFFF;
@@ -82,10 +82,10 @@ export default {
     .number_true{
         position: relative;
         z-index: 2;
-        border: 0.1vw solid #FFFFFF;
+        border: 1px solid #FFFFFF;
         color: #FFFFFF;
         font-weight: bold;
-        font-size: 1.3vw;
+        font-size: 25px;
         width: 80%;
         height: 80%;
         background-color: #257CE1;

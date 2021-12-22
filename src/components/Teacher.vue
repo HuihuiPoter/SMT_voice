@@ -40,7 +40,11 @@ export default {
             this.helen_url = val
         },
         dialog_view(val) {
-            if (val == false){
+            if (val) {
+                this.font_bgc = "linear-gradient(to bottom, rgb(252, 247, 175), rgb(206, 223, 76))"
+                this.font_color = 'black'
+            }
+            else{
                 this.font_color = 'transparent'
                 this.font_bgc = 'none'
             }
@@ -71,11 +75,11 @@ export default {
     }
     #div_shadow{
         position: relative;
-        width: 12vw;
-        height: 4vw;
+        width: 180px;
+        height: 60px;
         background-color: rgb(201, 202, 202);
         border-radius: 50%;
-        bottom: 3vw;
+        bottom: 50px;
     }
     #dialog_space{
         position: relative;
@@ -84,31 +88,21 @@ export default {
     }
     #dialog_container{
         background-image: linear-gradient(to bottom, rgb(252, 247, 175), rgb(206, 223, 76));
-        border-radius: 1vw;
+        border-radius: 20px;
         position: absolute;
-        top: 25vw;
-        left: 15vw;
-        /* height: 2vw; */
+        top: 450px;
+        left: 260px;
+        /* border: solid black 1px; */
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .dialog_font{
         display: inline-block;
-        font-size: 1vw;
+        font-size: 20px;
         white-space: pre;
         text-align: left;
         font-weight: bold;
         padding: 4% 5%;
     }
-    /* @media only screen and (max-width: 1050px){
-        .dialog_font{
-            transform: scale(0.9);
-        }
-    }
-    @media only screen and (max-width: 800px){
-        .dialog_font{
-            transform: scale(0.7);
-        }
-    } */
 </style>

@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-03-01 16:09:47
- * @LastEditTime: 2021-11-26 14:08:10
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \SMT_voice\src\store\index.js
- */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'

@@ -7,7 +7,7 @@
  * @FilePath: \SMT_voice\src\components\Course.vue
 -->
 <template>
-    <div class="slide_in" id="course_container" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+    <div class="slide_in" id="course_container" :style="{transform: bgratio}">
         <div class="div_c_back">
             <img class="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
         </div>
@@ -28,18 +28,21 @@ export default {
                 speaking: 0,
                 reading: 1,  
             },
-            bgWidth: 1080,
-            bgHeight: 720
+            bgWidth: 1920,
+            bgHeight: 1080,
+            bgratio: "scale(1)"
         }
     },
     mounted: function() {
         // 首次加载时,需要调用一次
-        this.bgWidth = window.innerWidth;
-        this.setSize();
+        // 1920 * 927
+        this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
+        // this.setSize();
         // 窗口大小发生改变时,调用一次
         window.onresize = () => {
-            this.bgWidth = window.innerWidth
-            this.setSize();
+            // this.bgWidth = window.innerWidth
+            // this.setSize();
+            this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
         }
     },
     methods: {
@@ -81,6 +84,9 @@ export default {
     #course_container{
         background-image: url(../assets/course/background.png);
         background-size: 100%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: left top;
     }
     .div_c_back{
         position: relative;
@@ -101,7 +107,7 @@ export default {
     }
     .shape{
         margin: 0 4%;
-        width: 25%;
+        width: 22%;
         cursor: pointer;
     }
 </style>

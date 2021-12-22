@@ -27,8 +27,8 @@ export default {
     .dialog_container{
         /* background-image: linear-gradient(to bottom, rgb(252, 247, 175), rgb(206, 223, 76)); */
         background-color: white;
-        border-radius: 3vw;
-        font-size: 1.6vw;
+        border-radius: 50px;
+        font-size: 25px;
         padding: 2%;
         display: inline-block;
     }

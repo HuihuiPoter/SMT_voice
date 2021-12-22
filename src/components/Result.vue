@@ -1,10 +1,6 @@
 <template>
-    <div id="result_box" align="center" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+    <div id="result_box" align="center" :style="{transform: bgratio}">
         <!-- 按钮 -->
-        <!-- <div id="div_main_again">
-            <img class="mainagain" src="../assets/result/btn_backToMain.png" alt="" @click="backToMain">
-            <img class="mainagain" src="../assets/result/btn_practiseAgain.png" alt="" @click="praticeAgain">
-        </div> -->
         <div id="div_main_back">
             <img class="mainback" src="../assets/result/back.png" alt="" @click="turnToCourse">
             <img class="mainback" src="../assets/test_board/main.png" alt="" @click="backToMain">
@@ -24,7 +20,7 @@
             <div class="largeDiv_info"> -->
                 <div class="div_info">
                     <img class="icon_info" src="../assets/result/level.png" alt="">
-                    <span class="font_info">级别: LV1</span>
+                    <span class="font_info">级别: LV {{$store.state.level}}</span>
                 </div>
                 <div class="div_info">
                     <img class="icon_info" src="../assets/result/lesson.png" alt="">
@@ -183,8 +179,9 @@ export default {
                 [{Q: 'question', A: 'answer'}, {Q: 'question', A: 'answer'}],
             ],
             is_good: true,
-            bgWidth: 720,
-            bgHeight: 1080
+            bgWidth: 1920,
+            bgHeight: 2720,
+            bgratio: "scale(1)"
         }
     },
     computed: {
@@ -206,11 +203,13 @@ export default {
         }
     },
     mounted: function() {
-        this.bgWidth = window.innerWidth;
-        this.setSize();
+        // this.bgWidth = window.innerWidth;
+        // this.setSize();
+        this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
         window.onresize = () => {
-            this.bgWidth = window.innerWidth
-            this.setSize();
+            // this.bgWidth = window.innerWidth
+            // this.setSize();
+            this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
         }
         // console.log(this.stat_data)
         this.word_stat = this.$store.state.word_stat
@@ -302,19 +301,9 @@ export default {
     #result_box{
         background-image: url(../assets/result/result_bg.png);
         background-size: 100%;
-    }
-    #div_main_again{
-        position: absolute;
-        z-index: 1;
-        top: 300%;
-        left: 24%;
-        width: 50%;
-    }
-    .mainagain{
-        width: 28%;
-        height: auto;
-        cursor: pointer;
-        margin: 0 6% 0 6%;
+        width: 1920px;
+        height: 2720px;
+        transform-origin: left top;
     }
     #div_main_back{
         position: relative;
@@ -334,11 +323,6 @@ export default {
         display: flex;
         top: 8%;
     }
-    /* .largeDiv_info{
-        display: flex;
-        width: 100%;
-        margin: 5% 0;
-    } */
     .div_info{
         /* width: 25%; */
         display: flex;
@@ -350,7 +334,7 @@ export default {
         width: 14%;
     }
     .font_info{
-        font-size: 2vw;
+        font-size: 40px;
     }
     .word_result{
         position: relative;
@@ -382,9 +366,9 @@ export default {
     .half_word{
         background-image: url(../assets/result/time_progress.gif?);
         background-size: 100%;
-        width: 11vw;
-        height: 11vw;
-        font-size: 1.1vw;
+        width: 180px;
+        height: 180px;
+        font-size: 22px;
         font-weight: bold;
         color: red;
         display: flex;
@@ -401,9 +385,9 @@ export default {
     .half_sen{
         background-image: url(../assets/result/time_progress.gif?);
         background-size: 100%;
-        width: 11vw;
-        height: 11vw;
-        font-size: 1.1vw;
+        width: 180px;
+        height: 180px;
+        font-size: 22px;
         font-weight: bold;
         color: red;
         display: flex;
@@ -440,30 +424,30 @@ export default {
         height: auto;
     }
     .div_block{
-        letter-spacing: 0.3vw;
+        letter-spacing: 5px;
         padding: 2% 4%;
-        font-size: 1.4vw;
+        font-size: 24px;
         font-weight: bold;
-        border:1px solid black;
-        border-radius: 2vw;
+        border:2px solid black;
+        border-radius: 50px;
         display: inline-block;
     }
     #div_exnum{
-        font-size: 4vw;
+        font-size: 60px;
         font-weight: bold;
     }
     #div_exTi{
-        font-size: 1.6vw;
+        font-size: 25px;
         font-weight: bold;
         margin-top: 5%;
     }
 
     #div_notnum{
-        font-size: 4vw;
+        font-size: 60px;
         font-weight: bold;
     }
     #div_notTi{
-        font-size: 1.6vw;
+        font-size: 25px;
         font-weight: bold;
         margin-top: 5%;
     }
@@ -485,7 +469,7 @@ export default {
     }
     #word_excel::after{
         content: '优秀单词';
-        font-size: 1.8vw;
+        font-size: 36px;
         color: white;
         position: relative;
         bottom: 96%;
@@ -493,7 +477,7 @@ export default {
     }
     #word_fail::after{
         content: '需巩固单词';
-        font-size: 1.8vw;
+        font-size: 36px;
         color: white;
         position: relative;
         bottom: 96%;
@@ -501,7 +485,7 @@ export default {
     }
     #sen_excel::after{
         content: '优秀句子';
-        font-size: 1.8vw;
+        font-size: 36px;
         color: white;
         position: relative;
         bottom: 96%;
@@ -509,7 +493,7 @@ export default {
     }
     #sen_fail::after{
         content: '需巩固句子';
-        font-size: 1.8vw;
+        font-size: 36px;
         color: white;
         position: relative;
         bottom: 96%;
@@ -518,12 +502,11 @@ export default {
     .flag{
         width: 100%;
     }
-    .shape_title{
+    /* .shape_title{
         width: 50%;
         height: 100%;
         border-radius: 0 0 10px 10px;
         background-color: rgb(200, 201, 202);
-        /* display: inline; */
         float: left;
         font-size: 2vw;
         color: #ffffff;
@@ -532,7 +515,7 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
-    }
+    } */
     .red{
         background-color: rgb(255, 183, 28);
     }
@@ -558,13 +541,12 @@ export default {
         margin: 0 2%;
         height: 100%;
         width: 14%;
-        font-size: 2vw;
+        font-size: 32px;
         font-weight: 500;
         background-color: white;
-        /* box-shadow: rgb(255, 246, 209) 0 0 1vw ; */
         float: left;
-        border: 0.1vw solid rgb(255, 246, 209);
-        border-radius: 2.4vw;
+        border: 2px solid rgb(255, 246, 209);
+        border-radius: 24px;
         display: flex;
         align-items: center;
         justify-content: center;

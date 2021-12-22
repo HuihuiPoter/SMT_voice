@@ -7,7 +7,7 @@
  * @FilePath: \SMT_voice\src\components\UpShow.vue
 -->
 <template>
-    <div class="done" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+    <div class="done" :style="{transform: bg_ratio}">
             <div class="done_text" align="center">
                 <img style="width: 60%" src="../assets/public/well_done.png" alt="" srcset="">
             </div>
@@ -23,8 +23,7 @@
 export default {
     name: 'UpShow',
     props: {
-        bgWidth: Number,
-        bgHeight: Number
+        bg_ratio: String
     },
     data() {
         return {
@@ -43,7 +42,9 @@ export default {
         top: 0;
         left: 0;
         z-index: 999;
-        width: 100%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: left top;
         background-color: rgb(52, 50, 49);
         opacity: 0.8;
     }

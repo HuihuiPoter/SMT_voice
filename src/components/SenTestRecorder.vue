@@ -6,7 +6,9 @@
                 <img class="SenAImg" src="../assets/public/A.png" alt="">
                 {{showing_content.sentence_content}}
             </div>
-            <img class="img_sen" :src="showing_content.picture_path" alt="">
+            <div class="img_sen_div">
+                <img class="img_sen" :src="showing_content.picture_path" alt="">
+            </div>     
         </div>
         <!-- 看问题回答 -->
         <div class="div_sentence record_margin" v-if="phase == 1">
@@ -20,7 +22,9 @@
                     _______________
                 </div>
             </div>
-            <img class="img_sen" :src="showing_content.picture_path" alt="">
+            <div class="img_sen_div">
+                <img class="img_sen" :src="showing_content.picture_path" alt="">
+            </div>
         </div>
         <!-- 看答句问问题 -->
         <div v-if="phase == 2" class="div_sentence record_margin" align="center">
@@ -34,7 +38,9 @@
                     {{showing_content.sentence_content}}
                 </div>
             </div>
-            <img class="img_sen" :src="showing_content.picture_path" alt="">
+            <div class="img_sen_div">
+                <img class="img_sen" :src="showing_content.picture_path" alt="">
+            </div>
         </div>
         <!-- <div v-else class="div_word record_margin">
             <span v-for="(item, idx) in showing_content.miss_idx" :key="idx + 'phone'">{{showPhone(item)}}</span>
@@ -44,7 +50,7 @@
             <img id="img_voice" src="../assets/test_board/voice.gif" alt="">
         </div>
         <div class="progress_bg">
-            <div class="progress" :style="{'width': res_time * 100/ all_time + '%'}"></div>
+            <div class="progress" :style="{'width': res_time * 100 / 4000 + '%'}"></div>
         </div>
     </div> 
 </template>
@@ -81,11 +87,9 @@ export default {
         return {
             blob: null,
             thinking_time: 0,//思考时间
-            result: '',
             begin: 0,
             end: 0,
-            after_thinking: false, //判断是否为思考时间
-            all_time: 4000,
+            think_done: false, //判断是否为思考时间
             res_time: 4000,
             showing_content: this.content,
         }
@@ -129,60 +133,46 @@ export default {
         //开始录音
         recStart() {
             const self = this
+            let vol_200 = [0, 0, 0] // 300ms内的3次取样音量大小
+            let vol_i = 0
             recorder.onprogress = function(params) {
                 self.res_time = self.res_time - 86
-                // console.log(self.res_time)
-                if (self.res_time < 86)
+                if (self.res_time < 86){
                     self.res_time = 0
-                if (!self.recording) {
-                    self.after_thinking = false
-                    self.begin = 0
-                    self.end = 0
-                    return
+                    self.recStop()
+                }            
+                vol_200[vol_i] = params.vol * 100
+                vol_i = (vol_i + 1) % 3
+                // 达到一定音量时开始正式判断录音
+                if (!self.think_done) {  
+                    self.end = new Date()  
+                    self.thinking_time = self.end - self.begin //ms        
+                    if (Math.max(...vol_200) > 100) { 
+                        self.think_done = true
+                        self.begin = self.end
+                    }                    
                 }
-                if (!self.after_thinking) { //正式录音前思考时间           
-                    if (params.vol > 20) { //计算思考时间
-                        self.end = new Date()
-                        self.thinking_time = self.end - self.begin//ms
-                        self.after_thinking = true
-                        self.begin = 0
-                        self.end = 0
-                    }
-                }
-                else {   
-                    if (params.vol < 20){
-                        self.end = new Date()
-                        console.log('声音太小了，说完了吗')
-                    }
-                    else {
+                // 正式录音处理，begin - end用来计算没有说话的时间是否超过1s
+                else { 
+                    if (Math.max(...vol_200) > 100) {
                         self.begin = new Date()
                     }
-                    if (self.end - self.begin >= 1200) { //1秒没有说话则结束录音
-                        self.after_thinking = false
-                        self.begin = 0
-                        self.end = 0
+                    else {
+                        self.end = new Date()
+                    }
+                    if (self.end - self.begin >= 1200 && Math.max(...vol_200) <= 100) { //1秒没有说话则结束录音              
                         self.recStop()
                     }
                 }
             }
             setTimeout(() => {
-                recorder.start().then(() => {
-                // console.log('recording......', new Date())
                 self.begin = new Date() // 思考时间开始
-                setTimeout(() => {
-                    if (self.recording){
-                        if (self.thinking_time === 0)
-                            self.thinking_time = 4000
-                        self.recStop()         
-                    }         
-                    }, 4000) //4秒未录完则直接结束
-                }).catch((error) => {
-                console.log(error)
-                })
-            }, 200)  
+                recorder.start()
+            }, 200)  //延迟开启录音          
         },
         //结束录音
         recStop() {  
+            this.think_done = false
             let blob =  recorder.getWAVBlob()  //默认调用stop()
             recorder.play()
             this.$emit('recordEnd', {
@@ -206,13 +196,17 @@ export default {
         width: 100%;
         height: 100%;
     }
-    .img_sen{
+    .img_sen_div{
         background-color: white;
-        border: solid#FED001 0.5vw;
-        border-radius: 1.5vw;
-        width: 20vw;
-        height: 10vw;
+        border: solid#FED001 5px;
+        border-radius: 20px;
+        width: 300px;
+        height: 200px;
         overflow: hidden;
+    }
+    .img_sen{
+        max-width: 100%;
+        max-height: 100%;
     }
     #img_voice{
         width: 20%;
@@ -224,7 +218,7 @@ export default {
     }
     .progress_bg{
         background-color: #EFEFEF;
-        border-radius: 10vw;
+        border-radius: 100px;
         width: 20%;
         height: 3%;
     }

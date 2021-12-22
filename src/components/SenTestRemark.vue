@@ -10,7 +10,9 @@
                 <img class="SenAImg" src="../assets/public/A.png" alt="">
                 <span v-for="(item, idx) in wordsWithColor" :key="idx" :style="{'color': item.color, 'white-space': 'pre'}">{{item.word}}&nbsp;</span>
             </div>
-            <img class="img_sen" :src="img_URL" alt="">
+            <div class="img_sen_div">
+                <img class="img_sen" :src="img_URL" alt="">
+            </div>
         </div>
         <!-- 评测答句 -->
         <div v-if="phase == 1" class="div_sentence remark_margin" id="div_word_img">
@@ -38,7 +40,9 @@
                     {{record.question}}
                 </div>
             </div>
-            <img class="img_sen" :src="img_URL" alt="">
+            <div class="img_sen_div">
+                <img class="img_sen" :src="img_URL" alt="">
+            </div>   
         </div>
         <!-- 按钮显示 -->
         <div class="remark_margin" v-show="computedLevel === 0 && is_show">
@@ -111,7 +115,7 @@ export default {
             let words_record = this.record.words_record
             for (let item of words_record) {
                 let color
-                if (item.score >= 4.5)
+                if (item.score >= 4.5 || this.record.pron_total_score >= 4.5)
                     color = 'green'
                 else color = 'red'
                 Vue.set(item, 'color', color)
@@ -187,7 +191,7 @@ export default {
             }
             else if (this.computedLevel == 1) {
                 this.dialog = {
-                        content: `It is ok!读得不错，但是要注意红色部分的发音哦。加油!再试一次看看!`,
+                    content: `It is ok!读得不错，但是要注意红色部分的发音哦。加油!再试一次看看!`,
                 }
                 audio_name = 'ok'
             }
@@ -262,7 +266,7 @@ export default {
     }
     .div_sentence{
         color: #5A5657;
-        font-size: 2vw;
+        font-size: 40px;
         font-weight: bold;
         width: 100%;
         display: flex;

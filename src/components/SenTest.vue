@@ -3,10 +3,10 @@
         <!-- 规则 -->
         <!-- <transition v-if="step === 1" name="fade"> -->
             <RuleInform v-if="step === 1" @nextStep="nextStep" @ruleStart="ruleStart" :dialog_close="dialog_close" :ct="countdown"
-            :rule_dialog="dialog" :no="ct_num" :bg_width="bgWidth" :bg_height="bgHeight"></RuleInform>
+            :rule_dialog="dialog" :no="ct_num" :bg_ratio="bgratio"></RuleInform>
         <!-- </transition> -->
         <!-- <transition v-else-if="step === 2" name="fade"> -->
-        <div v-else-if="step === 2" class="slide_in" id="evaluate_box"  align="center" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+        <div v-else-if="step === 2" class="slide_in" id="evaluate_box"  align="center" :style="{transform: bgratio}">
             <!-- 按钮 -->
         <div class="left_btn">
             <img class="img_btn" src="../assets/test_board/prev.png" alt="" @click="pre">
@@ -19,7 +19,7 @@
         <!-- helen老师 -->
         <!-- <transition name="fade" > -->
             <div class="eva_teacher">
-                <Teacher :url="helen_URL" v-show="shadow_show" :dialog_view="shadow_show" :dialog="dialog"></Teacher>
+                <Teacher :url="helen_URL" v-show="teacher_show" :dialog_view="teacher_show" :dialog="dialog"></Teacher>
             </div>
         <!-- </transition> -->
         <div class="div_record" v-if="recording_show">
@@ -35,7 +35,7 @@
         <!-- 背景板 -->
         <!-- <img id="img_bg" src="../assets/public/background.png" alt="">  -->
         </div>
-        <UpShow v-if="done" :bgHeight="bgHeight" :bgWidth="bgWidth"></UpShow>
+        <UpShow v-if="done" :bg_ratio="bgratio"></UpShow>
         <audio ref="audioplay" id="au">
             <source :src="audiourl" type="audio/wav">
             <source :src="audiourl" type="audio/mpeg">
@@ -92,7 +92,7 @@ export default {
             percentage: 0,
             level: 0,
             read_again: false,
-            shadow_show: false,
+            teacher_show: false,
             audio_stack: [],
             dialog_close: false,
             countdown: false,
@@ -104,8 +104,9 @@ export default {
             problem_label: [],
             ct_num: 5,
             phase: 0,
-            bgWidth: 1080,
-            bgHeight: 720,
+            bgWidth: 1920,
+            bgHeight: 1080,
+            bgratio: "scale(1)",
             audio_name: '', //几个录音文件的名字
             flash_flag: true, //标志按钮是否闪烁
             done: false //标志是否显示combo
@@ -115,11 +116,13 @@ export default {
         // console.log(this.$route.params.type)
         this.requestData(1, 1)
         this.all_time = new Date()
-        this.bgWidth = window.innerWidth;
-        this.setSize();
+        // this.bgWidth = window.innerWidth;
+        // this.setSize();
+        this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
         window.onresize = () => {
-            this.bgWidth = window.innerWidth
-            this.setSize();
+            // this.bgWidth = window.innerWidth
+            // this.setSize();
+            this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
         }
     },
     watch: {
@@ -184,7 +187,7 @@ export default {
         //请求初始数据
         requestData(course_id, lesson_type) {
             console.log(lesson_type)
-            let url = "https://www.smartreelearners.com:9000/api/pro_sen?course_id=" + course_id + "&level=" + this.$store.state.level
+            let url = "https://www.smartreelearners.com:9000/api/pro_sen?course_id=" + course_id + "&level=1"
             let self = this
             axios.get(url).then(function (responce) {
                 console.log('responce', responce)
@@ -309,7 +312,7 @@ export default {
             //const self = this
             this.remark_visible = false  
             this.btn_show = false
-            this.shadow_show = false
+            this.teacher_show = false
             this.recording_show = true
             this.audioPlay_1('starttips.mp3', () => {//提示音后打开录音组件
                 this.recording = true
@@ -368,36 +371,36 @@ export default {
         audioRemark() {
             const self = this
             if (this.level == 0) {
-                let goodaudios = this.audio_name
+                // let goodaudios = this.audio_name
                 this.dialog = {}
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/happy.gif'
-                this.shadow_show = true
+                this.teacher_show = true
                 this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/gooddi.mp3", ()=> {
-                    this.audioPlay_1(goodaudios + '.wav', () => {
-                        self.btn_show = true
-                    })
+                    // this.audioPlay_1(goodaudios + '.wav', () => {
+                    self.btn_show = true
+                    // })
                 }, true) 
             }
             else if (this.level == 1) {
-                let normalaudios = this.audio_name
+                // let normalaudios = this.audio_name
                 this.dialog = {}
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/encourage.gif'
-                this.shadow_show = true
+                this.teacher_show = true
                 this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/normaldi.mp3", ()=> {
-                    this.audioPlay_1(normalaudios + '.wav', () => {
-                        self.btn_show = true
-                    })
+                    // this.audioPlay_1(normalaudios + '.wav', () => {
+                    self.btn_show = true
+                    // })
                 }, true)  
             }
             else {
-                let badaudios = this.audio_name 
+                // let badaudios = this.audio_name 
                 this.dialog = {}       
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/sad.gif'
-                this.shadow_show = true
+                this.teacher_show = true
                 this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/baddi.mp3", ()=> {
-                    this.audioPlay_1(badaudios + '.wav', () => {
-                        self.btn_show = true
-                    })
+                    // this.audioPlay_1(badaudios + '.wav', () => {
+                    self.btn_show = true
+                    // })
                 }, true)
             }
         },
@@ -520,12 +523,15 @@ export default {
     #evaluate_box{
         background-image: url(../assets/public/background.jpg);
         background-size: 100%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: left top;
     }
     #div_prog{
         position: relative;
         width: 80%;
-        height: 3vw;
-        top: 20%;
+        height: 60px;
+        top: 200px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -540,13 +546,14 @@ export default {
     .div_record{
         position: absolute;
         width: 50%;
-        height: 26vw;
-        top: 20vw;
+        /* border: 1px black solid; */
+        height: 400px;
+        top: 400px;
         left: 25%;
     }
     .div_remarkEva{
         position: absolute;
-        top: 20vw;
+        top: 380px;
         left: 25%;
         width: 50%;
     }

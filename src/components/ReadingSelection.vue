@@ -1,5 +1,5 @@
 <template>
-    <div class="div_select" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
+    <div class="div_select" align="center" :style="{transform: bg_ratio}">
         <!-- 按钮 -->
         <img id="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
         <div id="div_level">等级/L{{$store.state.level}}</div>
@@ -35,8 +35,7 @@
 export default {
     name: 'ReadingSelection',
     props: {
-        bg_width: Number,
-        bg_height: Number
+        bg_ratio: String
     },
     data() {
         return {
@@ -98,6 +97,7 @@ export default {
             }
         },
         selectLesson(obj) {
+            // console.log(this.$store.state.level)
             switch(obj.currentTarget.id){
                 case 'lesson1': this.theme = this.themes[this.$store.state.level - 1].lesson1;break;
                 case 'lesson2': this.theme = this.themes[this.$store.state.level - 1].lesson2;break;

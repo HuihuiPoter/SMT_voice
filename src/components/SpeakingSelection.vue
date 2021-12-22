@@ -1,5 +1,5 @@
 <template>
-    <div class="div_select" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
+    <div class="div_select" align="center" :style="{transform: bg_ratio}">
         <!-- 按钮 -->
         <img id="img_back" src="../assets/select_lesson/back.png" alt="" @click="back">
         <div id="div_level">等级/L{{$store.state.level}}</div>
@@ -35,8 +35,7 @@
 export default {
     name: 'SpeakingSelection',
     props: {
-        bg_width: Number,
-        bg_height: Number
+        bg_ratio: String
     },
     data() {
         return {
@@ -210,6 +209,9 @@ export default {
     .div_select{
         background-image: url(../assets/select_lesson/select_board.jpg);
         background-size: 100%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: left top;
     }
     #img_back{
         position: relative;
@@ -221,7 +223,7 @@ export default {
     }
     #div_level{
         position: relative;
-        font-size: 1.5vw;
+        font-size: 25px;
         width: 10%;
         height: 6%;
         left: 40%;
@@ -235,8 +237,8 @@ export default {
     }
     #div_title{
         position: relative;
-        top: 19%;
-        font-size: 2vw;
+        top: 20%;
+        font-size: 35px;
         width: 10%;
         height: 6%;
         color: #ffffff;
@@ -268,10 +270,10 @@ export default {
     }
     #more_right{
         position: relative;
-        top: 14%;
-        left: 46.5%;
-        width: 6vw;
-        height: 6vw;
+        top: 14.8%;
+        left: 46.6%;
+        width: 100px;
+        height: 100px;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -299,10 +301,10 @@ export default {
     }
     #more_left{
         position: relative;
-        width: 6vw;
-        height: 6vw;
-        top: 3.5%;
-        right: 46.7%;
+        width: 100px;
+        height: 100px;
+        top: 5.5%;
+        right: 46.8%;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -331,13 +333,13 @@ export default {
     #div_theme{
         position: relative;
         height: 5%;
-        top: 15%;
-        font-size: 1.8vw;
+        top: 18%;
+        font-size: 30px;
         font-weight: bold;
     }
     #img_enter{
         position: relative;
-        top: 26%;
+        top: 30%;
         width: 12%;
         height: auto;
         cursor: pointer;

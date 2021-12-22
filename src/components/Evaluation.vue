@@ -2,16 +2,16 @@
     <div id="evaluate_container">
         <!-- 选择课程 -->
         <div v-if="step === 0" class="slide_in">
-            <SpeakingSelection v-if="$store.state.course_type == 0"  @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></SpeakingSelection>
-            <ReadingSelection v-else-if="$store.state.course_type == 1" @nextStep="nextStep" @setParam="setParam" :bg_width="bgWidth" :bg_height="bgHeight"></ReadingSelection>
+            <SpeakingSelection v-if="$store.state.course_type == 0"  @nextStep="nextStep" @setParam="setParam" :bg_ratio="bgratio"></SpeakingSelection>
+            <ReadingSelection v-else-if="$store.state.course_type == 1" @nextStep="nextStep" @setParam="setParam" :bg_ratio="bgratio"></ReadingSelection>
         </div>
         <!-- 规则 -->
         <!-- <transition v-else-if="step === 1" name="fade"> -->
             <RuleInform v-else-if="step === 1"  @nextStep="nextStep" @ruleStart="ruleStart" :dialog_close="dialog_close" :ct="countdown"
-            :rule_dialog="dialog" :no="ct_num" :bg_width="bgWidth" :bg_height="bgHeight"></RuleInform>
+            :rule_dialog="dialog" :no="ct_num" :bg_ratio="bgratio"></RuleInform>
         <!-- </transition> -->
         <!-- <transition v-else-if="step === 2" name="fade"> -->
-        <div v-else-if="step === 2" class="slide_in" id="evaluate_box" align="center" :style="{width: bgWidth + 'px', height: bgHeight + 'px'}">
+        <div v-else-if="step === 2" class="slide_in" id="evaluate_box" align="center" :style="{transform: bgratio}">
             <!-- 按钮 -->
         <div class="left_btn">
             <img class="img_btn" src="../assets/test_board/prev.png" alt="" @click="pre">
@@ -24,7 +24,7 @@
         <!-- helen老师 -->
         <!-- <transition name="fade"> -->
         <div class="div_teacher" id="eva_teacher">
-            <Teacher :url="helen_URL" v-show="shadow_show" :dialog_view="shadow_show" :dialog="dialog"></Teacher>
+            <Teacher :url="helen_URL" v-show="teacher_show" :dialog_view="teacher_show" :dialog="dialog"></Teacher>
         </div>
         <!-- </transition> -->
         
@@ -43,7 +43,7 @@
         <!-- 背景板 -->
         <!-- <img id="img_bg" src="../assets/public/background.png" alt="">  -->
         </div>
-        <UpShow v-if="done" :bgHeight="bgHeight" :bgWidth="bgWidth"></UpShow>
+        <UpShow v-if="done" :bg_ratio="bgratio"></UpShow>
         <audio ref="audioplay" id="au">
             <source :src="audiourl" type="audio/wav">
             <source :src="audiourl" type="audio/mpeg">
@@ -101,7 +101,7 @@ export default {
             percentage: 0,
             level: 0,
             read_again: false,
-            shadow_show: false,
+            teacher_show: false,
             audio_stack: [],
             dialog_close: false,
             countdown: false,
@@ -112,8 +112,9 @@ export default {
             prog_show: false,
             problem_label: [],
             ct_num: 5,
-            bgWidth: 1080,
-            bgHeight: 720,
+            bgWidth: 1920,
+            bgHeight: 1080,
+            bgratio: "scale(1)",
             audio_name: '', //几个录音文件的名字
             flash_flag: true, //标志按钮是否闪烁
             done: false //标志是否显示combo
@@ -122,11 +123,13 @@ export default {
     mounted: function(){
         // console.log(this.$route.params.type)
         this.all_time = new Date()
-        this.bgWidth = window.innerWidth;
-        this.setSize();
+        // this.bgWidth = window.innerWidth;
+        // this.setSize();
+        this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
         window.onresize = () => {
-            this.bgWidth = window.innerWidth
-            this.setSize();
+            // this.bgWidth = window.innerWidth
+            // this.setSize();
+            this.bgratio = "scale(" + window.innerWidth / this.bgWidth + ")"
         }
     },
     watch: {
@@ -292,9 +295,10 @@ export default {
             //const self = this
             this.remark_visible = false  
             this.btn_show = false
-            this.shadow_show = false
+            this.teacher_show = false
             this.recording_show = true
-            this.audioPlay_1('starttips.mp3', () => {//提示音后打开录音组件
+            //提示音后打开录音组件
+            this.audioPlay_1('starttips.mp3', () => {
                 this.recording = true
             })                
         },
@@ -325,7 +329,8 @@ export default {
             // }
             // console.log(this.problem_label)
             // console.log(this.word_list)
-            if (this.level === 2 && this.content.round === 1 && this.content.word_content != this.word_list[this.len - 1].word_content){//记录不及格的单词再次训练
+            //记录不及格的单词再次训练，第二轮再不及格则不记录
+            if (this.level === 2 && this.content.round === 1 && this.content.word_content != this.word_list[this.len - 1].word_content){
                 this.word_list.push(this.word_list[this.idx])
                 this.word_list.splice(this.idx, 1)
                 this.idx--
@@ -384,41 +389,41 @@ export default {
                     break;
                 }
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/happy.gif'
-                this.shadow_show = true
+                this.teacher_show = true
                 this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/gooddi.mp3", ()=> {
-                    this.audioPlay_1(goodaudios[audio_idx] + '.wav', () => {
-                        self.btn_show = true
-                    })
+                    // this.audioPlay_1(goodaudios[audio_idx] + '.wav', () => {
+                    self.btn_show = true
+                    // })
                 }, true)
             }
             else if (this.level == 1) {
-                let normalaudios = ['ok']
-                let audio_idx = Math.floor(Math.random() * 1)
+                // let normalaudios = ['ok']
+                // let audio_idx = Math.floor(Math.random() * 1)
                 this.dialog = {
                         content: `It is ok!读得不错，<br><br>但是要注意红色部分的发音哦。加油!再试一次看看!`,
                         container_width: '150%'
                 }
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/encourage.gif'
-                this.shadow_show = true
+                this.teacher_show = true
                 this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/normaldi.mp3", ()=> {
-                    this.audioPlay_1(normalaudios[audio_idx] + '.wav', () => {
-                        self.btn_show = true
-                    })
+                    // this.audioPlay_1(normalaudios[audio_idx] + '.wav', () => {
+                    self.btn_show = true
+                    // })
                 }, true)
             }
             else {
-                let badaudios = ['oops']
-                let audio_idx = Math.floor(Math.random() * 1)
+                // let badaudios = ['oops']
+                // let audio_idx = Math.floor(Math.random() * 1)
                 this.dialog = {
                     content: `Oops!仔细听一下老师是怎么读的...<br><br>加油!再试一次看看吧!`,
                     container_width: '110%'
                 }                
                 this.helen_URL = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/sad.gif'
-                this.shadow_show = true
+                this.teacher_show = true
                 this.audioPlay_1("https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/audio/baddi.mp3", ()=> {
-                    this.audioPlay_1(badaudios[audio_idx] + '.wav', () => {
-                        self.btn_show = true
-                    })
+                    // this.audioPlay_1(badaudios[audio_idx] + '.wav', () => {
+                    self.btn_show = true
+                    // })
                 }, true)
             }
         },
@@ -537,12 +542,15 @@ export default {
     #evaluate_box{
         background-image: url(../assets/public/background.jpg);
         background-size: 100%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: left top;
     }
     #div_prog{
         position: relative;
         width: 80%;
-        height: 3vw;
-        top: 20%;
+        height: 60px;
+        top: 200px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -557,13 +565,14 @@ export default {
     .div_record{
         position: absolute;
         width: 50%;
-        height: 26vw;
-        top: 20vw;
+        /* border: 1px black solid; */
+        height: 400px;
+        top: 360px;
         left: 25%;
     }
     .div_remarkEva{
         position: absolute;
-        top: 20vw;
+        top: 380px;
         left: 25%;
         width: 50%;
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="slide_in" id="rulebox" align="center" :style="{width: bg_width + 'px', height: bg_height + 'px'}">
+    <div class="slide_in" id="rulebox" align="center" :style="{transform: bg_ratio}">
         <div class="left_btn">
             <img class="img_btn" src="../assets/test_board/prev.png" alt="" @click="pre">
             <img class="img_btn" src="../assets/test_board/main.png" alt="" @click="main">
@@ -8,7 +8,8 @@
             <!-- <Countdown v-else :num="num"></Countdown> -->
         <div class="div_count">
             <img v-if="!show_ct" v-show="ct" class="img_countdown" src="../assets/rule/start.png" alt="" @click="ctBegin">
-            <Countdown v-else  :num="num"></Countdown>
+            <Countdown v-else :num="num"></Countdown>
+            <!-- <Countdown :num="num"></Countdown> -->
         </div>
         <!-- helen老师 -->
         <div class="div_teacher">
@@ -19,11 +20,11 @@
 </template>
 
 <script>
-import img_three from '../assets/rule/three.png'
-import img_two from '../assets/rule/two.png'
-import img_one from '../assets/rule/one.png'
-import img_ready from '../assets/rule/ready.png'
-import img_go from '../assets/rule/go.png'
+// import img_three from '../assets/rule/three.png'
+// import img_two from '../assets/rule/two.png'
+// import img_one from '../assets/rule/one.png'
+// import img_ready from '../assets/rule/ready.png'
+// import img_go from '../assets/rule/go.png'
 //import img_dialog_intro from '../assets/rule/intro.png'
 import Teacher from './Teacher'
 import Countdown from './Countdown'
@@ -38,8 +39,7 @@ export default {
         ct: Boolean,
         rule_dialog: Object,
         no: Number,
-        bg_width: Number,
-        bg_height: Number
+        bg_ratio: String
     },
     watch: {
         dialog_close(val){
@@ -51,7 +51,7 @@ export default {
         no(val) {
             // console.log(val)
             this.num = val
-            this.countdownURL = this.countdownURLs[val]
+            // this.countdownURL = this.countdownURLs[val]
             if (val < 0){
                 this.$emit('nextStep', 2)
                 return
@@ -60,8 +60,8 @@ export default {
     },
     data() {
         return {
-            countdownURL: '',
-            countdownURLs: [img_go, img_ready, img_one, img_two, img_three],
+            // countdownURL: '',
+            // countdownURLs: [img_go, img_ready, img_one, img_two, img_three],
             dialog_item: this.rule_dialog,
             dialog_show: this.dialog_close,
             num: this.no,
@@ -94,20 +94,25 @@ export default {
         animation-duration: 1s;
     }
     #rulebox{
-        background-image: url(../assets/public/background.png);
+        background-image: url(../assets/public/background.jpg);
         background-size: 100%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: left top;
     }
     .img_countdown{
         position: absolute;
-        transform: translate(-50%, 50%);
-        width: 56%;
+        /* transform: translate(-50%, 50%); */
+        top: 0;
+        left: 0;
+        width: 100%;
         height: auto;
         cursor: pointer;
     }
     .left_btn{
         position: relative; 
-        top: 8%;
-        right: 40%;       
+        top: 5%;
+        right: 42%;       
     }
     .img_btn{
         width: 4%;
@@ -120,34 +125,16 @@ export default {
         width: 16%;
         /* height: 56vw; */
         /* right: 36%; */
-        top: 25vw;
+        top: 470px;
         left: 5%;
     }
     .div_count{
         position: absolute;
-        /* transform: translate(-50%, 50%); */
-        /* margin-left: 34%; */
-        width: 34vw;
-        height: 34vw;
-        top: 14vw;
-        left: 33%;
+        width: 500px;
+        height: 500px;
+        top: 325px;
+        left: 37%;
     }
-    /* @media only screen and (max-width: 1600px){
-        #div_teacher{
-            position: absolute;
-            z-index: 1;
-            width: 18%;
-            height: 70%;
-            left: 1%;
-            top: 38%;
-        }
-        #img_prev{
-            left:3%;
-        }
-        #img_main{
-            left: 7%;
-        }
-    } */
     .fade-enter{
 			opacity: 0;
 		}

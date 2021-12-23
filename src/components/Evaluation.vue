@@ -18,8 +18,8 @@
             <img class="img_btn" src="../assets/test_board/main.png" alt="" @click="main">
         </div>
         <!-- 进度条 -->
-        <div id="div_prog" align="center" v-if="prog_show">
-            <ProblemLabel v-for="(item, idx) in problem_label" :key="idx + 'prog'" :state="item" :no="idx + 1"></ProblemLabel>
+        <div id="div_prog" align="center" ref="prog">
+            <ProblemLabel v-for="(item, index) in problem_label" :key="index + 'prog'" :state="item" :no="index + 1" :focus_num="content.serial_no + 1"></ProblemLabel>
         </div>
         <!-- helen老师 -->
         <!-- <transition name="fade"> -->
@@ -109,7 +109,6 @@ export default {
             result_visible: false,
             stat_data: [],
             timesOfFailed: 0,
-            prog_show: false,
             problem_label: [],
             ct_num: 5,
             bgWidth: 1920,
@@ -188,9 +187,10 @@ export default {
             let url = "https://www.smartreelearners.com:9000/api/pro_word/?course_id=" + course_id + "&lesson_type=" + lesson_type + "&level=" + this.$store.state.level
             let self = this
             axios.get(url).then(function (responce) {
-                console.log('responce', responce)
+                // console.log('responce', responce)
                 if (responce.status == 200) {
-                    self.word_list = responce.data.data
+                    self.word_list = responce.data.data.slice(0, 2)
+                    self.display_word(self.word_list)
                     self.len = self.word_list.length
                     let i = 0
                     for (let item of self.word_list) {
@@ -200,8 +200,7 @@ export default {
                     self.recording_show = true
                     self.content = self.word_list[self.idx]
                     self.problem_label = new Array(self.len).fill(0)
-                    self.prog_show = true
-                    // console.log(self.word_list)
+                    // self.display_word(self.word_list)
                 }
                 else {
                     alert('网络有问题哦，请重试')
@@ -338,7 +337,7 @@ export default {
                 //console.log(this.word_list[this.len - 1])
                 Vue.set(this.word_list[this.len - 1], 'round', 2)
             }
-            // console.log(this.word_list)
+            // this.display_word(this.word_list)
         },
         audioPlay_1(content, callback, ispath = false) { 
             if (ispath)
@@ -437,7 +436,7 @@ export default {
             this.audioPlay_1('welcomeaudio.wav', () => {
                 // this.rule_dialog = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/ready.png'
                 this.dialog = {
-                    content: `Are you Ready?<br><br>准备好了吗？准备好了就点击开始按钮吧。`,
+                    content: `Are you ready?<br><br>准备好了吗？准备好了就点击开始按钮吧。`,
                     container_width: '130%'
                 }
                 this.audioPlay_1('readywav.wav', () => {
@@ -530,6 +529,13 @@ export default {
         },
         pre() {
             location.reload()
+        },
+        // 测试
+        display_word(word_list){
+            let word_arr = []
+            for (let cot of word_list)
+                word_arr.push(cot.word_content)
+            console.log(word_arr)
         },
         main() {
             window.location.href = 'https://www.smartreelearners.com/'

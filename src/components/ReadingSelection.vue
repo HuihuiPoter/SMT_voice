@@ -111,6 +111,9 @@ export default {
             if (obj.type == 'click'){
                 this.selected_theme = this.theme
                 this.course_id = parseInt(obj.currentTarget.id.replace(/[^0-9]/ig,""))
+                this.$store.commit('Lesson', {
+                        lesson: this.course_id
+                    })
             }     
             else if (obj.type == 'mouseleave')
                 this.theme = this.selected_theme

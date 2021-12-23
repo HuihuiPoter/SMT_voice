@@ -14,7 +14,7 @@
                 </div>
                 <div class="div_info">
                     <img class="icon_info" src="../assets/result/time.png" alt="">
-                    <span class="font_info">训练总时长: 1h</span>
+                    <span class="font_info">训练总时长: {{getWTime[0] + getSTime[0]}}min</span>
                 </div>
             <!-- </div>
             <div class="largeDiv_info"> -->
@@ -24,7 +24,7 @@
                 </div>
                 <div class="div_info">
                     <img class="icon_info" src="../assets/result/lesson.png" alt="">
-                    <span class="font_info">课次: lesson1 week1</span>
+                    <span class="font_info">课次: lesson {{$store.state.lesson}} week 1</span>
                 </div>
             <!-- </div> -->
         </div>
@@ -81,7 +81,7 @@
         <!-- 时间 -->
         <div class="time_pos" align="right">
             <div class="half_sen">
-                {{getWTime[0]}}分{{getWTime[1]}}秒
+                {{getSTime[0]}}分{{getSTime[1]}}秒
             </div>
         </div>        
         <div class="redgreen">

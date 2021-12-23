@@ -163,27 +163,27 @@ export default {
                 let audio_idx = Math.floor(Math.random() * 5)
                 switch(goodaudios[audio_idx]){
                     case 'excellent': this.dialog = {
-                        content: `Excellent!你非常棒哦!`,
+                        content: `Excellent! 你非常棒哦!`,
                     };                        
                     audio_name = 'excellent';
                     break;
                     case 'wonderful': this.dialog = {
-                        content: `Wonderful!你非常棒哦!`,
+                        content: `Wonderful! 你非常棒哦!`,
                     };
                     audio_name = 'wonderful';
                     break;
                     case 'bravo': this.dialog = {
-                        content: `Bravo!你非常棒哦!`,
+                        content: `Bravo! 你非常棒哦!`,
                     };
                     audio_name = 'bravo';
                     break;
                     case 'great': this.dialog = {
-                        content: `Great!你非常棒哦!`,
+                        content: `Great! 你非常棒哦!`,
                     };
                     audio_name = 'great';
                     break;
                     case 'fantastic': this.dialog = {
-                        content: `Fantastic!你非常棒哦!`,
+                        content: `Fantastic! 你非常棒哦!`,
                     };
                     audio_name = 'fantastic';
                     break;
@@ -191,13 +191,13 @@ export default {
             }
             else if (this.computedLevel == 1) {
                 this.dialog = {
-                    content: `It is ok!读得不错，但是要注意红色部分的发音哦。加油!再试一次看看!`,
+                    content: `It is ok! 读得不错，但是要注意红色部分的发音哦。加油!再试一次看看!`,
                 }
                 audio_name = 'ok'
             }
             else {
                 this.dialog = {
-                    content: `Oops!仔细听一下老师是怎么读的...加油!再试一次看看吧!`,
+                    content: `Oops! 仔细听一下老师是怎么读的...加油!再试一次看看吧!`,
                 } 
                 audio_name = 'oops'            
             }

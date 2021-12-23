@@ -13,6 +13,7 @@ const store = new Vuex.Store({
         base_color: "rgba(10, 194, 126, 1)",
         course_type: '',
         level: 1,
+        lesson: 1,
         word_stat: [],
         sen_stat: [],
         sen_QA_stat: [],
@@ -30,6 +31,9 @@ const store = new Vuex.Store({
         },
         Level(state, payload){
             state.level = payload.level
+        },
+        Lesson(state, payload){
+            state.lesson = payload.lesson
         },
         wordStat(state, payload){
             state.word_stat = payload.word_stat

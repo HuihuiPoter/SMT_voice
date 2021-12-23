@@ -167,6 +167,9 @@ export default {
             if (obj.type == 'click'){
                 this.selected_theme = this.theme
                 this.course_id = parseInt(obj.currentTarget.id.replace(/[^0-9]/ig,""))
+                this.$store.commit('Lesson', {
+                        lesson: this.course_id
+                    })
             }     
             else if (obj.type == 'mouseleave')
                 this.theme = this.selected_theme
@@ -215,7 +218,7 @@ export default {
     }
     #img_back{
         position: relative;
-        top: 8%;
+        top: 90px;
         right: 40%;
         width: 4%;
         height: auto;
@@ -339,7 +342,7 @@ export default {
     }
     #img_enter{
         position: relative;
-        top: 30%;
+        top: 300px;
         width: 12%;
         height: auto;
         cursor: pointer;

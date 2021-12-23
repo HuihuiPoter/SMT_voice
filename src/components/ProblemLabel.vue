@@ -1,5 +1,5 @@
 <template>
-    <div id="prog_container">
+    <div id="prog_container" :class="focus_num == num?'progress_scale':''">
         <div :class="label_state == states.correct?'number_true':'number_false'">{{num}}</div>
         <div v-if="label_state == states.wrong" class="false_label_container">
             <div id="lefttop_rightbottom_false"></div>
@@ -21,22 +21,17 @@
 export default {
     name: 'ProblemLabel',
     props: {
-        finished: Boolean,
         no: Number,
-        state: Number
+        state: Number,
+        focus_num: Number
     },
     watch: {
-        finished(val){
-            this.is_finished = val
-        },
         state(val) {
             this.label_state = val
-            // console.log(this.label_state)
         }
     },
     data() {
         return {
-            is_finished: this.finished,
             num: this.no,
             label_state: this.state,
             states: {
@@ -63,6 +58,10 @@ export default {
         margin-left: 0.5%;
         margin-right: 0.5%;
     }
+    }
+    .progress_scale{
+        transform: scale(1.3);
+        transition: 500ms;
     }
     .number_false{
         position: relative;
@@ -141,7 +140,7 @@ export default {
     #lefttop_rightbottom_true{
         position: inherit;
         z-index: 2;
-        left: 16%;
+        left: 21%;
         top: 55%;
         width: 30%;
         height: 12%;
@@ -152,7 +151,7 @@ export default {
     #leftbottom_righttop_true{
         position: inherit;
         z-index: 3;
-        left: 32%;
+        left: 30%;
         width:60%;
         height:12%;
         background-color:#ffffff;

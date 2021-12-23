@@ -13,8 +13,8 @@
             <img class="img_btn" src="../assets/test_board/main.png" alt="" @click="main">
         </div>
         <!-- 进度条 -->
-        <div id="div_prog" align="center" v-if="prog_show">
-            <ProblemLabel v-for="(item, idx) in problem_label" :key="idx + 'prog'" :state="item" :no="idx + 1"></ProblemLabel>
+        <div id="div_prog" align="center">
+            <ProblemLabel v-for="(item, idx) in problem_label" :key="idx + 'prog'" :state="item" :no="idx + 1" :focus_num="content.serial_no + 1"></ProblemLabel>
         </div>
         <!-- helen老师 -->
         <!-- <transition name="fade" > -->
@@ -100,7 +100,6 @@ export default {
             result_visible: false,
             stat_data: [],
             timesOfFailed: 0,
-            prog_show: false,
             problem_label: [],
             ct_num: 5,
             phase: 0,
@@ -179,7 +178,6 @@ export default {
             this.problem_label = new Array(this.len).fill(0)
             this.recording_show = true
             this.content = this.sen_list[this.idx]
-            this.prog_show = true
         },
         setSize(){
             this.bgHeight = 2251 / 4001 * this.bgWidth
@@ -203,7 +201,6 @@ export default {
                     self.recording_show = true
                     self.content = self.sen_list[self.idx]
                     self.problem_label = new Array(self.len).fill(0)
-                    self.prog_show = true
                 }
                 else {
                     alert('网络有问题哦，请重试')
@@ -414,7 +411,7 @@ export default {
             this.audioPlay_1('welcomeaudio.wav', () => {
                 // this.rule_dialog = 'https://smtaudio-1257019756.cos.ap-shanghai.myqcloud.com/photo/ready.png'
                 this.dialog = {
-                    content: `Are you Ready?<br><br>准备好了吗？准备好了就点击开始按钮吧。`,
+                    content: `Are you ready?<br><br>准备好了吗？准备好了就点击开始按钮吧。`,
                     container_width: '130%'
                 }
                 this.audioPlay_1('readywav.wav', () => {

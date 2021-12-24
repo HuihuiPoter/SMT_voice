@@ -116,7 +116,7 @@ export default {
                     else {
                         self.end = new Date()
                     }
-                    if (self.end - self.begin >= 1200 && Math.max(...vol_200) <= 100) { //1秒没有说话则结束录音              
+                    if (self.end - self.begin >= 1600 && Math.max(...vol_200) <= 100) { //1秒没有说话则结束录音              
                         self.recStop()
                     }
                 }
@@ -124,7 +124,7 @@ export default {
             setTimeout(() => {
                 self.begin = new Date() // 思考时间开始
                 recorder.start()
-            }, 200)  //延迟开启录音          
+            }, 100)  //延迟开启录音          
         },
         //结束录音
         recStop() {  

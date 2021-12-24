@@ -189,7 +189,7 @@ export default {
             axios.get(url).then(function (responce) {
                 // console.log('responce', responce)
                 if (responce.status == 200) {
-                    self.word_list = responce.data.data.slice(0, 2)
+                    self.word_list = responce.data.data
                     self.display_word(self.word_list)
                     self.len = self.word_list.length
                     let i = 0
